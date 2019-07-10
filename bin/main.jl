@@ -13,7 +13,7 @@ using DreamCore
 command = ARGS[1]
 if command == "enumerate"
     request_message_file = ARGS[2]
-    response_message_file = DreamCore.run_enumeration(request_message_file)
+    response_message_file = run_enumeration(request_message_file)
 end
 println(response_message_file)
 
