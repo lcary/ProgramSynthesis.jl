@@ -1,31 +1,31 @@
-module Grammar
+module Grammars
 
-using ..Program
+using ..Programs
 using ..Types
 using ..Utils
 
-export GrammarData
+export Grammar
 
 mutable struct GrammarProduction
-    program::DCProgram
+    program::Program
     log_probability::Float64
 end
 
 function GrammarProduction(data::Dict{String,Any})
     return GrammarProduction(
-        DCProgram(data["expression"]),
+        Program(data["expression"]),
         data["logProbability"]
     )
 end
 
-mutable struct GrammarData
+mutable struct Grammar
     library::Array{GrammarProduction}
     log_variable::Float64
-    continuation_type::Union{DCType,Nothing}
+    continuation_type::Union{ProgramType,Nothing}
 end
 
-function GrammarData(data::Dict{String,Any})
-    return GrammarData(
+function Grammar(data::Dict{String,Any})
+    return Grammar(
         map(GrammarProduction, data["productions"]),
         data["logVariable"],
         getoptional(data, "continuationType")

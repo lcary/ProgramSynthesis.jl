@@ -5,8 +5,8 @@ using JSON
 using DataStructures
 
 using ..Types
-using ..Grammar
-using ..Program
+using ..Grammars
+using ..Programs
 using ..Tasks
 using ..Utils
 
@@ -35,8 +35,8 @@ function create_response(filepath::String, data::Dict{String,Any})
 end
 
 struct EnumerationData
-    tasks::Array{DCTask}
-    grammar::GrammarData
+    tasks::Array{ProblemSet}
+    grammar::Grammar
     program_timeout::Float64
     verbose::Bool
     lower_bound::Float64
@@ -47,8 +47,8 @@ end
 
 function EnumerationData(data::Dict{String,Any})
     return EnumerationData(
-        map(DCTask, data["tasks"]),
-        GrammarData(data["DSL"]),
+        map(ProblemSet, data["tasks"]),
+        Grammar(data["DSL"]),
         data["programTimeout"],
         data["verbose"],
         data["lowerBound"],
@@ -69,7 +69,7 @@ end
 
 struct EnumerationProgram
     prior::Float64
-    program::DCProgram
+    program::Program
 end
 
 function enumeration(data::EnumerationData)::Array{EnumerationProgram}
@@ -78,7 +78,7 @@ function enumeration(data::EnumerationData)::Array{EnumerationProgram}
 end
 
 struct FrontierEntry
-    program::DCProgram
+    program::Program
     log_likelihood::Float64
     log_prior::Float64
     hit_time::Float64
@@ -107,7 +107,7 @@ end
 
 function update_frontier(
     index::Int,
-    task::DCTask,
+    task::ProblemSet,
     result::EnumerationProgram,
     hits::HitArray,
     cache::FrontierCache

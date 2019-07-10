@@ -2,19 +2,19 @@ module Types
 
 using ..Utils
 
-export DCType
+export ProgramType
 
-mutable struct DCType
+mutable struct ProgramType
     constructor::String
-    arguments::Array{DCType,1}
+    arguments::Array{ProgramType,1}
     index::Union{Int, Nothing}
-    function DCType(constructor, arguments, index)
-        return new(constructor, map(DCType, arguments), index)
+    function ProgramType(constructor, arguments, index)
+        return new(constructor, map(ProgramType, arguments), index)
     end
 end
 
-function DCType(data::Dict{String,Any})
-    return DCType(
+function ProgramType(data::Dict{String,Any})
+    return ProgramType(
         data["constructor"],
         data["arguments"],
         getoptional(data, "index"),

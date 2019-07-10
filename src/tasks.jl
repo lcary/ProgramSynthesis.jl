@@ -2,7 +2,7 @@ module Tasks
 
 using ..Types
 
-export DCTask
+export ProblemSet
 
 # TODO: should output support any type?
 mutable struct Example
@@ -10,9 +10,9 @@ mutable struct Example
     output::Union{Array{Any},Int,Bool}
 end
 
-mutable struct DCTask
+mutable struct ProblemSet
     name::String
-    type::DCType
+    type::ProgramType
     examples::Array{Example}
     maximum_frontier::Int
 end
@@ -21,10 +21,10 @@ function Example(data::Dict{String,Any})
     return Example(data["inputs"], data["output"])
 end
 
-function DCTask(data::Dict{String,Any})
-    return DCTask(
+function ProblemSet(data::Dict{String,Any})
+    return ProblemSet(
         data["name"],
-        DCType(data["request"]),
+        ProgramType(data["request"]),
         map(Example, data["examples"]),
         data["maximumFrontier"]
     )

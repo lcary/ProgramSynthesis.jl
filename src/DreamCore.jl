@@ -3,22 +3,22 @@ module DreamCore
 include("utils.jl")
 include("types.jl")
 include("tasks.jl")
-include("program.jl")
-include("grammar.jl")
+include("programs.jl")
+include("grammars.jl")
 include("enumeration.jl")
 
 using .Utils
 using .Types
 using .Tasks
-using .Program
-using .Grammar
+using .Programs
+using .Grammars
 using .Enumeration
 
 export run_enumeration,
-       GrammarData,
-       DCType,
+       Grammar,
+       ProgramType,
        EnumerationData,
-       DCProgram,
+       Program,
        enumerate_for_tasks
 
 end
