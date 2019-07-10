@@ -1,7 +1,6 @@
 module Tasks
 
-include("types.jl")
-using .Types
+using ..Types
 
 export DCTask
 

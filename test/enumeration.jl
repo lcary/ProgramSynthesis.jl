@@ -59,4 +59,26 @@ const TEST_FILE4 = get_resource("request_enumeration_example_4.json")
         @test enum_data.upper_bound == 1.5
         @test enum_data.budget_increment == 1.5
     end
+    @testset "enumerate_for_tasks file1" begin
+        json_data = JSON.parsefile(TEST_FILE1)
+        enum_data = EnumerationData(json_data)
+        result = enumerate_for_tasks(enum_data)
+
+        @test length(result) == 7
+        @test haskey(result, "drop-k with k=3")
+        @test haskey(result, "modulo-k with k=3")
+        @test haskey(result, "prepend-k with k=0")
+        @test haskey(result, "keep-mod-head")
+        @test haskey(result, "keep gt 0")
+        @test haskey(result, "slice-k-n with k=1 and n=2")
+        @test haskey(result, "remove gt 1")
+        @test isa(result["remove gt 1"], Array)
+        @test length(result["remove gt 1"]) >= 1
+
+        programs = result["remove gt 1"][1]
+        @test haskey(programs, "program")
+        @test haskey(programs, "time")
+        @test haskey(programs, "logLikelihood")
+        @test haskey(programs, "logPrior")
+    end
 end

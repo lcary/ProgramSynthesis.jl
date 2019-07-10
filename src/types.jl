@@ -1,7 +1,6 @@
 module Types
 
-include("utils.jl")
-using .Utils
+using ..Utils
 
 export DCType
 

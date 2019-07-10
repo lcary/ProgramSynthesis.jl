@@ -1,11 +1,8 @@
 module Grammar
 
-include("program.jl")
-using .Program
-include("types.jl")
-using .Types
-include("utils.jl")
-using .Utils
+using ..Program
+using ..Types
+using ..Utils
 
 export GrammarData
 

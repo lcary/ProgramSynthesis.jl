@@ -2,17 +2,15 @@ module Enumeration
 
 using Dates
 using JSON
+using DataStructures
 
-include("types.jl")
-using .Types
-include("grammar.jl")
-using .Grammar
-include("tasks.jl")
-using .Tasks
-include("utils.jl")
-using .Utils
+using ..Types
+using ..Grammar
+using ..Program
+using ..Tasks
+using ..Utils
 
-export EnumerationData, run_enumeration
+export EnumerationData, run_enumeration, enumerate_for_tasks
 
 const message_dir = "messages"
 
@@ -29,7 +27,7 @@ function get_response_filename()::String
     return abspath("messages", filename)
 end
 
-function create_response(filepath::String, data)
+function create_response(filepath::String, data::Dict{String,Any})
     stringdata = JSON.json(data)
     open(filepath, "w") do f
         write(f, stringdata)
@@ -60,25 +58,125 @@ function EnumerationData(data::Dict{String,Any})
     )
 end
 
-function parse_request_data(filepath::String)::Dict{String,Any}
+function parse_request_data(filepath::String)::EnumerationData
     data = JSON.parsefile(filepath)
-    enum_data = EnumerationData(data)
-    return data
+    return EnumerationData(data)
 end
 
-function get_response_data(request_data::Dict)::Dict{String,Any}
-    response_data = Dict()
-    for t in request_data["tasks"]
-        response_data[t["name"]] = []
+struct InvalidTaskType <: Exception
+    msg::AbstractString
+end
+
+struct EnumerationProgram
+    prior::Float64
+    program::DCProgram
+end
+
+function enumeration(data::EnumerationData)::Array{EnumerationProgram}
+    grammar = data.grammar
+    return [EnumerationProgram(0.0, p.program) for p in grammar.library]  # TODO: fix priors!
+end
+
+struct FrontierEntry
+    program::DCProgram
+    log_likelihood::Float64
+    log_prior::Float64
+    hit_time::Float64
+end
+
+mutable struct FrontierCache
+    index::Dict{String,FrontierEntry}
+    counter::Int
+end
+
+FrontierCache() = FrontierCache(Dict(), 0)
+
+function addfrontier!(cache::FrontierCache, frontier::FrontierEntry)
+    cache.counter += 1
+    key = string(cache.counter)
+    cache.index[key] = frontier
+    return string(cache.counter)
+end
+
+struct HitArray
+    array::Array{PriorityQueue{String,Float64}}
+    function HitArray(n::Int)
+        return new([PriorityQueue{String,Float64}() for i in 1:n])
     end
-    return response_data
+end
+
+function update_frontier(
+    index::Int,
+    task::DCTask,
+    result::EnumerationProgram,
+    hits::HitArray,
+    cache::FrontierCache
+)
+    prior = result.prior
+    program = result.program
+
+    pq = hits.array[index]
+
+    success, likelihood = true, 0.0  # TODO: fix fake data
+    # success, likelihood = likelihoodModel.score(p, task)  TODO
+    # if not success, skip
+
+    priority = -(likelihood + prior)
+
+    frontier = FrontierEntry(
+        program,
+        likelihood,
+        prior,
+        0.0  # TODO: Fix hit_time
+    )
+    frontier_key = addfrontier!(cache, frontier)
+    enqueue!(pq, frontier_key, priority)
+
+    if length(pq) > task.maximum_frontier
+        key = dequeue!(pq)
+        delete!(cache.index, key)
+    end
+end
+
+function enumerate_for_tasks(data::EnumerationData)::Dict{String,Any}
+
+    # TODO: make use of budget/upperbound/lowerbound
+
+    hits = HitArray(length(data.tasks))
+    cache = FrontierCache()
+
+    start = time()
+    while time() < start + data.program_timeout
+        for result in enumeration(data)
+            for (index, task) in enumerate(data.tasks)
+                update_frontier(index, task, result, hits, cache)
+            end
+        end
+    end
+
+    frontiers = Dict()
+    for (index, task) in enumerate(data.tasks)
+        sublist = []
+        for (key, priority) in hits.array[index]
+            frontier = cache.index[key]
+            entry = Dict{String,Union{String,Float64}}(
+                "program" => frontier.program.source,
+                "time" => frontier.hit_time,
+                "logLikelihood" => frontier.log_likelihood,
+                "logPrior" => frontier.log_prior
+            )
+            push!(sublist, entry)
+        end
+        frontiers[task.name] = sublist
+    end
+    return frontiers
 end
 
 function run_enumeration(request_file::String)::String
     create_message_dir()
-    request_data = parse_request_data(request_file)
+    enumeration_data = parse_request_data(request_file)
+    response_data = enumerate_for_tasks(enumeration_data)
     response_file = get_response_filename()
-    response_data = get_response_data(request_data)
     create_response(response_file, response_data)
     return response_file
 end

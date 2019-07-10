@@ -1,6 +1,6 @@
 module Utils
 
-export getoptional
+export getoptional, allequal
 
 function getoptional(
     data::Dict{String,Any},
@@ -13,5 +13,7 @@ function getoptional(
         return default
     end
 end
+
+allequal(x) = all(y->y == x[1], x)
 
 end

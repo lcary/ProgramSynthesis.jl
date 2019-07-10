@@ -1,7 +1,6 @@
 module Program
 
-include("types.jl")
-using .Types
+using ..Types
 
 export DCProgram
 
