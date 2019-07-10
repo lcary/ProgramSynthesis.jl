@@ -3,12 +3,16 @@ module Enumeration
 using Dates
 using JSON
 
+include("types.jl")
+using .Types
 include("grammar.jl")
 using .Grammar
-include("task.jl")
-using .Task
+include("tasks.jl")
+using .Tasks
+include("utils.jl")
+using .Utils
 
-export run_enumeration
+export EnumerationData, run_enumeration
 
 const message_dir = "messages"
 
@@ -33,21 +37,32 @@ function create_response(filepath::String, data)
 end
 
 struct EnumerationData
-    tasks::Array{TaskData}
-    grammar::GrammarDSL
+    tasks::Array{DCTask}
+    grammar::GrammarData
     program_timeout::Float64
-    max_parameters::Int
+    verbose::Bool
     lower_bound::Float64
     upper_bound::Float64
     budget_increment::Float64
+    max_parameters::Int
 end
 
-function EnumerationData(filepath::String)::EnumerationData
-
+function EnumerationData(data::Dict{String,Any})
+    return EnumerationData(
+        map(DCTask, data["tasks"]),
+        GrammarData(data["DSL"]),
+        data["programTimeout"],
+        data["verbose"],
+        data["lowerBound"],
+        data["upperBound"],
+        data["budgetIncrement"],
+        getoptional(data, "maxParameters", 99)
+    )
 end
 
 function parse_request_data(filepath::String)::Dict{String,Any}
     data = JSON.parsefile(filepath)
+    enum_data = EnumerationData(data)
     return data
 end
 

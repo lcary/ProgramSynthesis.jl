@@ -1,18 +1,16 @@
 module DreamCore
 
-using Random
-using JSON
-
-greet() = "Hello World!"
-const x = Random.randstring(8)
-greet_alien() = "Hello $x"
-
+include("types.jl")
 include("grammar.jl")
 include("enumeration.jl")
 
+using .Types
 using .Grammar
 using .Enumeration
 
-export greet, greet_alien, run_enumeration, GrammarDSL
+export run_enumeration,
+       GrammarData,
+       DCType,
+       EnumerationData
 
 end

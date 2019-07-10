@@ -1,0 +1,1987 @@
+{
+  "DSL": {
+    "logVariable": 0.0,
+    "productions": [
+      {
+        "expression": "map",
+        "logProbability": 0.0
+      },
+      {
+        "expression": "unfold",
+        "logProbability": 0.0
+      },
+      {
+        "expression": "range",
+        "logProbability": 0.0
+      },
+      {
+        "expression": "index",
+        "logProbability": 0.0
+      },
+      {
+        "expression": "fold",
+        "logProbability": 0.0
+      },
+      {
+        "expression": "length",
+        "logProbability": 0.0
+      },
+      {
+        "expression": "if",
+        "logProbability": 0.0
+      },
+      {
+        "expression": "+",
+        "logProbability": 0.0
+      },
+      {
+        "expression": "-",
+        "logProbability": 0.0
+      },
+      {
+        "expression": "empty",
+        "logProbability": 0.0
+      },
+      {
+        "expression": "cons",
+        "logProbability": 0.0
+      },
+      {
+        "expression": "car",
+        "logProbability": 0.0
+      },
+      {
+        "expression": "cdr",
+        "logProbability": 0.0
+      },
+      {
+        "expression": "empty?",
+        "logProbability": 0.0
+      },
+      {
+        "expression": "0",
+        "logProbability": 0.0
+      },
+      {
+        "expression": "1",
+        "logProbability": 0.0
+      },
+      {
+        "expression": "*",
+        "logProbability": 0.0
+      },
+      {
+        "expression": "mod",
+        "logProbability": 0.0
+      },
+      {
+        "expression": "gt?",
+        "logProbability": 0.0
+      },
+      {
+        "expression": "eq?",
+        "logProbability": 0.0
+      },
+      {
+        "expression": "is-prime",
+        "logProbability": 0.0
+      },
+      {
+        "expression": "is-square",
+        "logProbability": 0.0
+      }
+    ]
+  },
+  "tasks": [
+    {
+      "examples": [
+        {
+          "inputs": [
+            [
+              16,
+              3,
+              9,
+              1,
+              7,
+              12,
+              5,
+              12,
+              4,
+              14
+            ]
+          ],
+          "output": [
+            1,
+            7,
+            12,
+            5,
+            12,
+            4,
+            14
+          ]
+        },
+        {
+          "inputs": [
+            [
+              10,
+              6,
+              5,
+              4,
+              15,
+              11,
+              8,
+              8
+            ]
+          ],
+          "output": [
+            4,
+            15,
+            11,
+            8,
+            8
+          ]
+        },
+        {
+          "inputs": [
+            [
+              13,
+              0,
+              5,
+              14,
+              1,
+              12,
+              1,
+              12,
+              5,
+              4
+            ]
+          ],
+          "output": [
+            14,
+            1,
+            12,
+            1,
+            12,
+            5,
+            4
+          ]
+        },
+        {
+          "inputs": [
+            [
+              10,
+              15,
+              13,
+              9,
+              13,
+              15,
+              7,
+              12,
+              3,
+              14
+            ]
+          ],
+          "output": [
+            9,
+            13,
+            15,
+            7,
+            12,
+            3,
+            14
+          ]
+        },
+        {
+          "inputs": [
+            [
+              4,
+              1,
+              11,
+              2,
+              3,
+              15,
+              2,
+              0,
+              12
+            ]
+          ],
+          "output": [
+            2,
+            3,
+            15,
+            2,
+            0,
+            12
+          ]
+        },
+        {
+          "inputs": [
+            [
+              1,
+              5,
+              8,
+              16,
+              15,
+              10,
+              14,
+              11
+            ]
+          ],
+          "output": [
+            16,
+            15,
+            10,
+            14,
+            11
+          ]
+        },
+        {
+          "inputs": [
+            [
+              11,
+              12,
+              13,
+              4,
+              0,
+              13,
+              6,
+              9,
+              1,
+              9
+            ]
+          ],
+          "output": [
+            4,
+            0,
+            13,
+            6,
+            9,
+            1,
+            9
+          ]
+        },
+        {
+          "inputs": [
+            [
+              8,
+              5,
+              1,
+              4,
+              15,
+              4,
+              9,
+              11,
+              1
+            ]
+          ],
+          "output": [
+            4,
+            15,
+            4,
+            9,
+            11,
+            1
+          ]
+        },
+        {
+          "inputs": [
+            [
+              9,
+              15,
+              11,
+              10,
+              4,
+              13
+            ]
+          ],
+          "output": [
+            10,
+            4,
+            13
+          ]
+        },
+        {
+          "inputs": [
+            [
+              7,
+              11,
+              12,
+              8,
+              15,
+              1,
+              9,
+              2
+            ]
+          ],
+          "output": [
+            8,
+            15,
+            1,
+            9,
+            2
+          ]
+        },
+        {
+          "inputs": [
+            [
+              9,
+              0,
+              5,
+              8,
+              5,
+              8,
+              13
+            ]
+          ],
+          "output": [
+            8,
+            5,
+            8,
+            13
+          ]
+        },
+        {
+          "inputs": [
+            [
+              2,
+              5,
+              14,
+              8,
+              8
+            ]
+          ],
+          "output": [
+            8,
+            8
+          ]
+        },
+        {
+          "inputs": [
+            [
+              14,
+              0,
+              7,
+              11,
+              10,
+              0,
+              5,
+              2
+            ]
+          ],
+          "output": [
+            11,
+            10,
+            0,
+            5,
+            2
+          ]
+        },
+        {
+          "inputs": [
+            [
+              16,
+              9,
+              15,
+              4
+            ]
+          ],
+          "output": [
+            4
+          ]
+        },
+        {
+          "inputs": [
+            [
+              14,
+              16,
+              4,
+              13,
+              11,
+              6,
+              13,
+              16,
+              1,
+              5
+            ]
+          ],
+          "output": [
+            13,
+            11,
+            6,
+            13,
+            16,
+            1,
+            5
+          ]
+        }
+      ],
+      "name": "drop-k with k=3",
+      "request": {
+        "constructor": "->",
+        "arguments": [
+          {
+            "constructor": "list",
+            "arguments": [
+              {
+                "constructor": "int",
+                "arguments": []
+              }
+            ]
+          },
+          {
+            "constructor": "list",
+            "arguments": [
+              {
+                "constructor": "int",
+                "arguments": []
+              }
+            ]
+          }
+        ]
+      },
+      "maximumFrontier": 10
+    },
+    {
+      "examples": [
+        {
+          "inputs": [
+            [
+              6,
+              8,
+              1,
+              3
+            ]
+          ],
+          "output": [
+            0,
+            2,
+            1,
+            0
+          ]
+        },
+        {
+          "inputs": [
+            []
+          ],
+          "output": []
+        },
+        {
+          "inputs": [
+            [
+              9
+            ]
+          ],
+          "output": [
+            0
+          ]
+        },
+        {
+          "inputs": [
+            [
+              1,
+              7,
+              11,
+              13
+            ]
+          ],
+          "output": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "inputs": [
+            [
+              6,
+              8,
+              2,
+              2
+            ]
+          ],
+          "output": [
+            0,
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "inputs": [
+            [
+              14,
+              15
+            ]
+          ],
+          "output": [
+            2,
+            0
+          ]
+        },
+        {
+          "inputs": [
+            [
+              9,
+              0,
+              3
+            ]
+          ],
+          "output": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "inputs": [
+            []
+          ],
+          "output": []
+        },
+        {
+          "inputs": [
+            [
+              12,
+              4,
+              8,
+              11,
+              0,
+              8,
+              11
+            ]
+          ],
+          "output": [
+            0,
+            1,
+            2,
+            2,
+            0,
+            2,
+            2
+          ]
+        },
+        {
+          "inputs": [
+            [
+              14,
+              13,
+              8,
+              15,
+              8,
+              10,
+              0
+            ]
+          ],
+          "output": [
+            2,
+            1,
+            2,
+            0,
+            2,
+            1,
+            0
+          ]
+        },
+        {
+          "inputs": [
+            [
+              10,
+              8
+            ]
+          ],
+          "output": [
+            1,
+            2
+          ]
+        },
+        {
+          "inputs": [
+            [
+              12,
+              11,
+              8,
+              8
+            ]
+          ],
+          "output": [
+            0,
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "inputs": [
+            [
+              4,
+              4,
+              12,
+              7,
+              13,
+              9
+            ]
+          ],
+          "output": [
+            1,
+            1,
+            0,
+            1,
+            1,
+            0
+          ]
+        },
+        {
+          "inputs": [
+            []
+          ],
+          "output": []
+        },
+        {
+          "inputs": [
+            [
+              13,
+              4,
+              11,
+              10
+            ]
+          ],
+          "output": [
+            1,
+            1,
+            2,
+            1
+          ]
+        }
+      ],
+      "name": "modulo-k with k=3",
+      "request": {
+        "constructor": "->",
+        "arguments": [
+          {
+            "constructor": "list",
+            "arguments": [
+              {
+                "constructor": "int",
+                "arguments": []
+              }
+            ]
+          },
+          {
+            "constructor": "list",
+            "arguments": [
+              {
+                "constructor": "int",
+                "arguments": []
+              }
+            ]
+          }
+        ]
+      },
+      "maximumFrontier": 10
+    },
+    {
+      "examples": [
+        {
+          "inputs": [
+            [
+              12,
+              0,
+              1,
+              9,
+              4
+            ]
+          ],
+          "output": [
+            0,
+            12,
+            0,
+            1,
+            9,
+            4
+          ]
+        },
+        {
+          "inputs": [
+            [
+              9,
+              10,
+              8
+            ]
+          ],
+          "output": [
+            0,
+            9,
+            10,
+            8
+          ]
+        },
+        {
+          "inputs": [
+            []
+          ],
+          "output": [
+            0
+          ]
+        },
+        {
+          "inputs": [
+            [
+              5,
+              11,
+              9,
+              0,
+              7,
+              1,
+              7
+            ]
+          ],
+          "output": [
+            0,
+            5,
+            11,
+            9,
+            0,
+            7,
+            1,
+            7
+          ]
+        },
+        {
+          "inputs": [
+            [
+              14,
+              0,
+              3
+            ]
+          ],
+          "output": [
+            0,
+            14,
+            0,
+            3
+          ]
+        },
+        {
+          "inputs": [
+            [
+              6,
+              9,
+              8,
+              16,
+              1,
+              2
+            ]
+          ],
+          "output": [
+            0,
+            6,
+            9,
+            8,
+            16,
+            1,
+            2
+          ]
+        },
+        {
+          "inputs": [
+            [
+              16,
+              11
+            ]
+          ],
+          "output": [
+            0,
+            16,
+            11
+          ]
+        },
+        {
+          "inputs": [
+            [
+              8,
+              0,
+              16,
+              10,
+              7,
+              12,
+              10
+            ]
+          ],
+          "output": [
+            0,
+            8,
+            0,
+            16,
+            10,
+            7,
+            12,
+            10
+          ]
+        },
+        {
+          "inputs": [
+            [
+              12,
+              4
+            ]
+          ],
+          "output": [
+            0,
+            12,
+            4
+          ]
+        },
+        {
+          "inputs": [
+            [
+              1
+            ]
+          ],
+          "output": [
+            0,
+            1
+          ]
+        },
+        {
+          "inputs": [
+            [
+              1,
+              2,
+              5,
+              13,
+              1,
+              3
+            ]
+          ],
+          "output": [
+            0,
+            1,
+            2,
+            5,
+            13,
+            1,
+            3
+          ]
+        },
+        {
+          "inputs": [
+            [
+              6,
+              8,
+              0,
+              11
+            ]
+          ],
+          "output": [
+            0,
+            6,
+            8,
+            0,
+            11
+          ]
+        },
+        {
+          "inputs": [
+            [
+              16
+            ]
+          ],
+          "output": [
+            0,
+            16
+          ]
+        },
+        {
+          "inputs": [
+            [
+              4,
+              14,
+              11,
+              0
+            ]
+          ],
+          "output": [
+            0,
+            4,
+            14,
+            11,
+            0
+          ]
+        },
+        {
+          "inputs": [
+            [
+              5
+            ]
+          ],
+          "output": [
+            0,
+            5
+          ]
+        }
+      ],
+      "name": "prepend-k with k=0",
+      "request": {
+        "constructor": "->",
+        "arguments": [
+          {
+            "constructor": "list",
+            "arguments": [
+              {
+                "constructor": "int",
+                "arguments": []
+              }
+            ]
+          },
+          {
+            "constructor": "list",
+            "arguments": [
+              {
+                "constructor": "int",
+                "arguments": []
+              }
+            ]
+          }
+        ]
+      },
+      "maximumFrontier": 10
+    },
+    {
+      "examples": [
+        {
+          "inputs": [
+            [
+              3,
+              1,
+              3,
+              4,
+              7,
+              6,
+              9,
+              2
+            ]
+          ],
+          "output": [
+            3,
+            6,
+            9
+          ]
+        },
+        {
+          "inputs": [
+            [
+              4,
+              2,
+              6,
+              10,
+              8,
+              12
+            ]
+          ],
+          "output": [
+            8,
+            12
+          ]
+        },
+        {
+          "inputs": [
+            [
+              1,
+              2,
+              3
+            ]
+          ],
+          "output": [
+            2,
+            3
+          ]
+        },
+        {
+          "inputs": [
+            [
+              2
+            ]
+          ],
+          "output": []
+        },
+        {
+          "inputs": [
+            [
+              8,
+              24,
+              32
+            ]
+          ],
+          "output": [
+            24,
+            32
+          ]
+        },
+        {
+          "inputs": [
+            [
+              1,
+              15
+            ]
+          ],
+          "output": [
+            15
+          ]
+        },
+        {
+          "inputs": [
+            [
+              6,
+              18
+            ]
+          ],
+          "output": [
+            18
+          ]
+        },
+        {
+          "inputs": [
+            [
+              3,
+              24,
+              3,
+              9,
+              12
+            ]
+          ],
+          "output": [
+            24,
+            3,
+            9,
+            12
+          ]
+        },
+        {
+          "inputs": [
+            [
+              7,
+              13
+            ]
+          ],
+          "output": []
+        },
+        {
+          "inputs": [
+            [
+              10,
+              2,
+              12,
+              9
+            ]
+          ],
+          "output": []
+        },
+        {
+          "inputs": [
+            [
+              6,
+              6,
+              5,
+              24,
+              54,
+              24
+            ]
+          ],
+          "output": [
+            6,
+            24,
+            54,
+            24
+          ]
+        },
+        {
+          "inputs": [
+            [
+              4
+            ]
+          ],
+          "output": []
+        },
+        {
+          "inputs": [
+            [
+              5,
+              15,
+              0,
+              20,
+              13,
+              7
+            ]
+          ],
+          "output": [
+            15,
+            0,
+            20
+          ]
+        },
+        {
+          "inputs": [
+            [
+              12,
+              3
+            ]
+          ],
+          "output": []
+        },
+        {
+          "inputs": [
+            [
+              7,
+              3,
+              9
+            ]
+          ],
+          "output": []
+        }
+      ],
+      "name": "keep-mod-head",
+      "request": {
+        "constructor": "->",
+        "arguments": [
+          {
+            "constructor": "list",
+            "arguments": [
+              {
+                "constructor": "int",
+                "arguments": []
+              }
+            ]
+          },
+          {
+            "constructor": "list",
+            "arguments": [
+              {
+                "constructor": "int",
+                "arguments": []
+              }
+            ]
+          }
+        ]
+      },
+      "maximumFrontier": 10
+    },
+    {
+      "examples": [
+        {
+          "inputs": [
+            [
+              1,
+              5,
+              3,
+              5,
+              1
+            ]
+          ],
+          "output": [
+            1,
+            5,
+            3,
+            5,
+            1
+          ]
+        },
+        {
+          "inputs": [
+            [
+              6,
+              0,
+              5,
+              6,
+              3
+            ]
+          ],
+          "output": [
+            6,
+            5,
+            6,
+            3
+          ]
+        },
+        {
+          "inputs": [
+            [
+              1,
+              6,
+              6,
+              3,
+              0
+            ]
+          ],
+          "output": [
+            1,
+            6,
+            6,
+            3
+          ]
+        },
+        {
+          "inputs": [
+            [
+              5,
+              3,
+              4,
+              5,
+              2
+            ]
+          ],
+          "output": [
+            5,
+            3,
+            4,
+            5,
+            2
+          ]
+        },
+        {
+          "inputs": [
+            [
+              1,
+              0,
+              5,
+              4,
+              2
+            ]
+          ],
+          "output": [
+            1,
+            5,
+            4,
+            2
+          ]
+        },
+        {
+          "inputs": [
+            [
+              3,
+              5,
+              4,
+              1,
+              0
+            ]
+          ],
+          "output": [
+            3,
+            5,
+            4,
+            1
+          ]
+        },
+        {
+          "inputs": [
+            [
+              6,
+              5,
+              6,
+              1,
+              0
+            ]
+          ],
+          "output": [
+            6,
+            5,
+            6,
+            1
+          ]
+        },
+        {
+          "inputs": [
+            [
+              4,
+              5,
+              6,
+              0,
+              1
+            ]
+          ],
+          "output": [
+            4,
+            5,
+            6,
+            1
+          ]
+        },
+        {
+          "inputs": [
+            [
+              0,
+              6,
+              1,
+              6,
+              4
+            ]
+          ],
+          "output": [
+            6,
+            1,
+            6,
+            4
+          ]
+        },
+        {
+          "inputs": [
+            [
+              5,
+              1,
+              5,
+              0,
+              0
+            ]
+          ],
+          "output": [
+            5,
+            1,
+            5
+          ]
+        },
+        {
+          "inputs": [
+            [
+              0,
+              2,
+              0,
+              1,
+              0
+            ]
+          ],
+          "output": [
+            2,
+            1
+          ]
+        },
+        {
+          "inputs": [
+            [
+              5,
+              0,
+              6,
+              2,
+              1
+            ]
+          ],
+          "output": [
+            5,
+            6,
+            2,
+            1
+          ]
+        },
+        {
+          "inputs": [
+            [
+              1,
+              3,
+              1,
+              5,
+              6
+            ]
+          ],
+          "output": [
+            1,
+            3,
+            1,
+            5,
+            6
+          ]
+        },
+        {
+          "inputs": [
+            [
+              6,
+              6,
+              1,
+              5,
+              1
+            ]
+          ],
+          "output": [
+            6,
+            6,
+            1,
+            5,
+            1
+          ]
+        },
+        {
+          "inputs": [
+            [
+              4,
+              3,
+              4,
+              0,
+              2
+            ]
+          ],
+          "output": [
+            4,
+            3,
+            4,
+            2
+          ]
+        }
+      ],
+      "name": "keep gt 0",
+      "request": {
+        "constructor": "->",
+        "arguments": [
+          {
+            "constructor": "list",
+            "arguments": [
+              {
+                "constructor": "int",
+                "arguments": []
+              }
+            ]
+          },
+          {
+            "constructor": "list",
+            "arguments": [
+              {
+                "constructor": "int",
+                "arguments": []
+              }
+            ]
+          }
+        ]
+      },
+      "maximumFrontier": 10
+    },
+    {
+      "examples": [
+        {
+          "inputs": [
+            [
+              6,
+              8,
+              7,
+              10,
+              2,
+              5,
+              3,
+              0,
+              15,
+              16,
+              3
+            ]
+          ],
+          "output": [
+            6,
+            8
+          ]
+        },
+        {
+          "inputs": [
+            [
+              8,
+              0,
+              4,
+              6,
+              16,
+              1,
+              6
+            ]
+          ],
+          "output": [
+            8,
+            0
+          ]
+        },
+        {
+          "inputs": [
+            [
+              6,
+              2,
+              13,
+              8
+            ]
+          ],
+          "output": [
+            6,
+            2
+          ]
+        },
+        {
+          "inputs": [
+            [
+              13,
+              13,
+              8,
+              0,
+              5,
+              14,
+              0,
+              2
+            ]
+          ],
+          "output": [
+            13,
+            13
+          ]
+        },
+        {
+          "inputs": [
+            [
+              4,
+              10,
+              5,
+              4,
+              8,
+              8,
+              1,
+              7,
+              10,
+              15,
+              8
+            ]
+          ],
+          "output": [
+            4,
+            10
+          ]
+        },
+        {
+          "inputs": [
+            [
+              12,
+              14,
+              1,
+              6,
+              5,
+              13,
+              3,
+              13,
+              11,
+              15
+            ]
+          ],
+          "output": [
+            12,
+            14
+          ]
+        },
+        {
+          "inputs": [
+            [
+              8,
+              6,
+              10,
+              14,
+              3
+            ]
+          ],
+          "output": [
+            8,
+            6
+          ]
+        },
+        {
+          "inputs": [
+            [
+              10,
+              3,
+              10,
+              2,
+              4
+            ]
+          ],
+          "output": [
+            10,
+            3
+          ]
+        },
+        {
+          "inputs": [
+            [
+              11,
+              3,
+              6,
+              11,
+              12,
+              6
+            ]
+          ],
+          "output": [
+            11,
+            3
+          ]
+        },
+        {
+          "inputs": [
+            [
+              13,
+              3,
+              9,
+              14,
+              15
+            ]
+          ],
+          "output": [
+            13,
+            3
+          ]
+        },
+        {
+          "inputs": [
+            [
+              10,
+              13,
+              8,
+              0,
+              11,
+              12,
+              14,
+              7,
+              9,
+              8
+            ]
+          ],
+          "output": [
+            10,
+            13
+          ]
+        },
+        {
+          "inputs": [
+            [
+              9,
+              5,
+              1,
+              6,
+              8,
+              13,
+              16
+            ]
+          ],
+          "output": [
+            9,
+            5
+          ]
+        },
+        {
+          "inputs": [
+            [
+              13,
+              8,
+              5,
+              4
+            ]
+          ],
+          "output": [
+            13,
+            8
+          ]
+        },
+        {
+          "inputs": [
+            [
+              9,
+              9,
+              13,
+              7,
+              1
+            ]
+          ],
+          "output": [
+            9,
+            9
+          ]
+        },
+        {
+          "inputs": [
+            [
+              5,
+              8,
+              2,
+              6,
+              12,
+              8
+            ]
+          ],
+          "output": [
+            5,
+            8
+          ]
+        }
+      ],
+      "name": "slice-k-n with k=1 and n=2",
+      "request": {
+        "constructor": "->",
+        "arguments": [
+          {
+            "constructor": "list",
+            "arguments": [
+              {
+                "constructor": "int",
+                "arguments": []
+              }
+            ]
+          },
+          {
+            "constructor": "list",
+            "arguments": [
+              {
+                "constructor": "int",
+                "arguments": []
+              }
+            ]
+          }
+        ]
+      },
+      "maximumFrontier": 10
+    },
+    {
+      "examples": [
+        {
+          "inputs": [
+            [
+              6,
+              1,
+              1,
+              6,
+              3
+            ]
+          ],
+          "output": [
+            1,
+            1
+          ]
+        },
+        {
+          "inputs": [
+            [
+              6,
+              2,
+              0,
+              0,
+              3
+            ]
+          ],
+          "output": [
+            0,
+            0
+          ]
+        },
+        {
+          "inputs": [
+            [
+              5,
+              5,
+              1,
+              2,
+              2
+            ]
+          ],
+          "output": [
+            1
+          ]
+        },
+        {
+          "inputs": [
+            [
+              2,
+              5,
+              0,
+              6,
+              2
+            ]
+          ],
+          "output": [
+            0
+          ]
+        },
+        {
+          "inputs": [
+            [
+              6,
+              2,
+              1,
+              3,
+              2
+            ]
+          ],
+          "output": [
+            1
+          ]
+        },
+        {
+          "inputs": [
+            [
+              2,
+              2,
+              1,
+              1,
+              1
+            ]
+          ],
+          "output": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "inputs": [
+            [
+              5,
+              3,
+              6,
+              0,
+              4
+            ]
+          ],
+          "output": [
+            0
+          ]
+        },
+        {
+          "inputs": [
+            [
+              4,
+              2,
+              4,
+              0,
+              5
+            ]
+          ],
+          "output": [
+            0
+          ]
+        },
+        {
+          "inputs": [
+            [
+              4,
+              1,
+              4,
+              3,
+              2
+            ]
+          ],
+          "output": [
+            1
+          ]
+        },
+        {
+          "inputs": [
+            [
+              4,
+              2,
+              5,
+              4,
+              3
+            ]
+          ],
+          "output": []
+        },
+        {
+          "inputs": [
+            [
+              4,
+              6,
+              0,
+              6,
+              0
+            ]
+          ],
+          "output": [
+            0,
+            0
+          ]
+        },
+        {
+          "inputs": [
+            [
+              1,
+              3,
+              5,
+              6,
+              5
+            ]
+          ],
+          "output": [
+            1
+          ]
+        },
+        {
+          "inputs": [
+            [
+              5,
+              5,
+              0,
+              6,
+              2
+            ]
+          ],
+          "output": [
+            0
+          ]
+        },
+        {
+          "inputs": [
+            [
+              2,
+              5,
+              0,
+              5,
+              0
+            ]
+          ],
+          "output": [
+            0,
+            0
+          ]
+        },
+        {
+          "inputs": [
+            [
+              4,
+              4,
+              5,
+              4,
+              4
+            ]
+          ],
+          "output": []
+        }
+      ],
+      "name": "remove gt 1",
+      "request": {
+        "constructor": "->",
+        "arguments": [
+          {
+            "constructor": "list",
+            "arguments": [
+              {
+                "constructor": "int",
+                "arguments": []
+              }
+            ]
+          },
+          {
+            "constructor": "list",
+            "arguments": [
+              {
+                "constructor": "int",
+                "arguments": []
+              }
+            ]
+          }
+        ]
+      },
+      "maximumFrontier": 10
+    }
+  ],
+  "programTimeout": 0.0005,
+  "nc": 1,
+  "timeout": 1.0,
+  "lowerBound": 0.0,
+  "upperBound": 1.5,
+  "budgetIncrement": 1.5,
+  "verbose": false,
+  "shatter": 10
+}
