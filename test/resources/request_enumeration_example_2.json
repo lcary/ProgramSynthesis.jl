@@ -1,0 +1,498 @@
+{
+    "DSL": {
+        "logVariable": 0.0,
+        "productions": [
+            {
+                "expression": "map",
+                "logProbability": 0.0
+            },
+            {
+                "expression": "unfold",
+                "logProbability": 0.0
+            },
+            {
+                "expression": "range",
+                "logProbability": 0.0
+            },
+            {
+                "expression": "index",
+                "logProbability": 0.0
+            },
+            {
+                "expression": "fold",
+                "logProbability": 0.0
+            },
+            {
+                "expression": "length",
+                "logProbability": 0.0
+            },
+            {
+                "expression": "if",
+                "logProbability": 0.0
+            },
+            {
+                "expression": "+",
+                "logProbability": 0.0
+            },
+            {
+                "expression": "-",
+                "logProbability": 0.0
+            },
+            {
+                "expression": "empty",
+                "logProbability": 0.0
+            },
+            {
+                "expression": "cons",
+                "logProbability": 0.0
+            },
+            {
+                "expression": "car",
+                "logProbability": 0.0
+            },
+            {
+                "expression": "cdr",
+                "logProbability": 0.0
+            },
+            {
+                "expression": "empty?",
+                "logProbability": 0.0
+            },
+            {
+                "expression": "0",
+                "logProbability": 0.0
+            },
+            {
+                "expression": "1",
+                "logProbability": 0.0
+            },
+            {
+                "expression": "*",
+                "logProbability": 0.0
+            },
+            {
+                "expression": "mod",
+                "logProbability": 0.0
+            },
+            {
+                "expression": "gt?",
+                "logProbability": 0.0
+            },
+            {
+                "expression": "eq?",
+                "logProbability": 0.0
+            },
+            {
+                "expression": "is-prime",
+                "logProbability": 0.0
+            },
+            {
+                "expression": "is-square",
+                "logProbability": 0.0
+            }
+        ]
+    },
+    "tasks": [
+        {
+            "examples": [
+                {
+                    "inputs": [
+                        [
+                            2,
+                            15,
+                            14,
+                            6,
+                            4,
+                            5,
+                            5
+                        ]
+                    ],
+                    "output": 15
+                },
+                {
+                    "inputs": [
+                        [
+                            3,
+                            15,
+                            1
+                        ]
+                    ],
+                    "output": 15
+                },
+                {
+                    "inputs": [
+                        [
+                            15,
+                            8,
+                            10,
+                            1,
+                            14,
+                            1,
+                            3
+                        ]
+                    ],
+                    "output": 15
+                },
+                {
+                    "inputs": [
+                        [
+                            6,
+                            8,
+                            8,
+                            1,
+                            9
+                        ]
+                    ],
+                    "output": 9
+                },
+                {
+                    "inputs": [
+                        [
+                            11,
+                            2,
+                            10,
+                            10
+                        ]
+                    ],
+                    "output": 11
+                },
+                {
+                    "inputs": [
+                        [
+                            13,
+                            2
+                        ]
+                    ],
+                    "output": 13
+                },
+                {
+                    "inputs": [
+                        [
+                            4,
+                            7,
+                            11,
+                            4,
+                            2,
+                            5,
+                            13,
+                            5
+                        ]
+                    ],
+                    "output": 13
+                },
+                {
+                    "inputs": [
+                        [
+                            12,
+                            0
+                        ]
+                    ],
+                    "output": 12
+                },
+                {
+                    "inputs": [
+                        [
+                            0,
+                            1,
+                            2,
+                            7,
+                            16,
+                            3
+                        ]
+                    ],
+                    "output": 16
+                },
+                {
+                    "inputs": [
+                        [
+                            16,
+                            2,
+                            1,
+                            12,
+                            1,
+                            11,
+                            15
+                        ]
+                    ],
+                    "output": 16
+                },
+                {
+                    "inputs": [
+                        [
+                            9,
+                            9,
+                            15
+                        ]
+                    ],
+                    "output": 15
+                },
+                {
+                    "inputs": [
+                        [
+                            6,
+                            4,
+                            15,
+                            0
+                        ]
+                    ],
+                    "output": 15
+                },
+                {
+                    "inputs": [
+                        [
+                            5,
+                            16,
+                            16,
+                            9
+                        ]
+                    ],
+                    "output": 16
+                },
+                {
+                    "inputs": [
+                        [
+                            8
+                        ]
+                    ],
+                    "output": 8
+                },
+                {
+                    "inputs": [
+                        [
+                            16
+                        ]
+                    ],
+                    "output": 16
+                }
+            ],
+            "name": "kth-largest with k=1",
+            "request": {
+                "constructor": "->",
+                "arguments": [
+                    {
+                        "constructor": "list",
+                        "arguments": [
+                            {
+                                "constructor": "int",
+                                "arguments": []
+                            }
+                        ]
+                    },
+                    {
+                        "constructor": "int",
+                        "arguments": []
+                    }
+                ]
+            },
+            "maximumFrontier": 10
+        },
+        {
+            "examples": [
+                {
+                    "inputs": [
+                        [
+                            3,
+                            13,
+                            12
+                        ]
+                    ],
+                    "output": 12
+                },
+                {
+                    "inputs": [
+                        [
+                            16,
+                            10,
+                            8,
+                            15,
+                            9,
+                            15,
+                            14,
+                            2,
+                            12
+                        ]
+                    ],
+                    "output": 15
+                },
+                {
+                    "inputs": [
+                        [
+                            8,
+                            13,
+                            5,
+                            2
+                        ]
+                    ],
+                    "output": 8
+                },
+                {
+                    "inputs": [
+                        [
+                            16,
+                            15,
+                            13,
+                            0,
+                            15
+                        ]
+                    ],
+                    "output": 15
+                },
+                {
+                    "inputs": [
+                        [
+                            9,
+                            16,
+                            7,
+                            6,
+                            3
+                        ]
+                    ],
+                    "output": 9
+                },
+                {
+                    "inputs": [
+                        [
+                            14,
+                            1
+                        ]
+                    ],
+                    "output": 1
+                },
+                {
+                    "inputs": [
+                        [
+                            2,
+                            12,
+                            7,
+                            12
+                        ]
+                    ],
+                    "output": 12
+                },
+                {
+                    "inputs": [
+                        [
+                            13,
+                            0
+                        ]
+                    ],
+                    "output": 0
+                },
+                {
+                    "inputs": [
+                        [
+                            5,
+                            16,
+                            1,
+                            6,
+                            12,
+                            5,
+                            6,
+                            10,
+                            10
+                        ]
+                    ],
+                    "output": 12
+                },
+                {
+                    "inputs": [
+                        [
+                            7,
+                            3,
+                            2,
+                            8
+                        ]
+                    ],
+                    "output": 7
+                },
+                {
+                    "inputs": [
+                        [
+                            13,
+                            10,
+                            5,
+                            13,
+                            5,
+                            1
+                        ]
+                    ],
+                    "output": 13
+                },
+                {
+                    "inputs": [
+                        [
+                            0,
+                            9,
+                            1
+                        ]
+                    ],
+                    "output": 1
+                },
+                {
+                    "inputs": [
+                        [
+                            15,
+                            11,
+                            4,
+                            15,
+                            14,
+                            16,
+                            2
+                        ]
+                    ],
+                    "output": 15
+                },
+                {
+                    "inputs": [
+                        [
+                            10,
+                            5,
+                            5
+                        ]
+                    ],
+                    "output": 5
+                },
+                {
+                    "inputs": [
+                        [
+                            12,
+                            5,
+                            7,
+                            15,
+                            6
+                        ]
+                    ],
+                    "output": 12
+                }
+            ],
+            "name": "kth-largest with k=2",
+            "request": {
+                "constructor": "->",
+                "arguments": [
+                    {
+                        "constructor": "list",
+                        "arguments": [
+                            {
+                                "constructor": "int",
+                                "arguments": []
+                            }
+                        ]
+                    },
+                    {
+                        "constructor": "int",
+                        "arguments": []
+                    }
+                ]
+            },
+            "maximumFrontier": 10
+        }
+    ],
+    "programTimeout": 0.0005,
+    "nc": 1,
+    "timeout": 1.0,
+    "lowerBound": 0.0,
+    "upperBound": 1.5,
+    "budgetIncrement": 1.5,
+    "verbose": false,
+    "shatter": 10
+}

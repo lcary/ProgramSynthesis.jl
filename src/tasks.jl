@@ -7,7 +7,7 @@ export DCTask
 
 mutable struct Example
     inputs::Array{Any}
-    output::Array{Any}
+    output::Union{Array{Any},Int}
 end
 
 mutable struct DCTask
