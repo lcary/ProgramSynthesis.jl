@@ -1,0 +1,287 @@
+{
+    "DSL": {
+        "logVariable": 0.0,
+        "productions": [
+            {
+                "expression": "map",
+                "logProbability": 0.0
+            },
+            {
+                "expression": "unfold",
+                "logProbability": 0.0
+            },
+            {
+                "expression": "range",
+                "logProbability": 0.0
+            },
+            {
+                "expression": "index",
+                "logProbability": 0.0
+            },
+            {
+                "expression": "fold",
+                "logProbability": 0.0
+            },
+            {
+                "expression": "length",
+                "logProbability": 0.0
+            },
+            {
+                "expression": "if",
+                "logProbability": 0.0
+            },
+            {
+                "expression": "+",
+                "logProbability": 0.0
+            },
+            {
+                "expression": "-",
+                "logProbability": 0.0
+            },
+            {
+                "expression": "empty",
+                "logProbability": 0.0
+            },
+            {
+                "expression": "cons",
+                "logProbability": 0.0
+            },
+            {
+                "expression": "car",
+                "logProbability": 0.0
+            },
+            {
+                "expression": "cdr",
+                "logProbability": 0.0
+            },
+            {
+                "expression": "empty?",
+                "logProbability": 0.0
+            },
+            {
+                "expression": "0",
+                "logProbability": 0.0
+            },
+            {
+                "expression": "1",
+                "logProbability": 0.0
+            },
+            {
+                "expression": "*",
+                "logProbability": 0.0
+            },
+            {
+                "expression": "mod",
+                "logProbability": 0.0
+            },
+            {
+                "expression": "gt?",
+                "logProbability": 0.0
+            },
+            {
+                "expression": "eq?",
+                "logProbability": 0.0
+            },
+            {
+                "expression": "is-prime",
+                "logProbability": 0.0
+            },
+            {
+                "expression": "is-square",
+                "logProbability": 0.0
+            }
+        ]
+    },
+    "tasks": [
+        {
+            "examples": [
+                {
+                    "inputs": [
+                        [
+                            1,
+                            7,
+                            3,
+                            2,
+                            3
+                        ]
+                    ],
+                    "output": true
+                },
+                {
+                    "inputs": [
+                        []
+                    ],
+                    "output": false
+                },
+                {
+                    "inputs": [
+                        [
+                            12,
+                            4,
+                            7,
+                            15
+                        ]
+                    ],
+                    "output": false
+                },
+                {
+                    "inputs": [
+                        [
+                            2
+                        ]
+                    ],
+                    "output": true
+                },
+                {
+                    "inputs": [
+                        [
+                            9,
+                            6
+                        ]
+                    ],
+                    "output": false
+                },
+                {
+                    "inputs": [
+                        [
+                            2,
+                            3,
+                            6,
+                            6,
+                            7,
+                            7
+                        ]
+                    ],
+                    "output": true
+                },
+                {
+                    "inputs": [
+                        [
+                            2,
+                            2,
+                            2,
+                            2,
+                            2
+                        ]
+                    ],
+                    "output": true
+                },
+                {
+                    "inputs": [
+                        [
+                            12
+                        ]
+                    ],
+                    "output": false
+                },
+                {
+                    "inputs": [
+                        [
+                            0,
+                            2
+                        ]
+                    ],
+                    "output": true
+                },
+                {
+                    "inputs": [
+                        [
+                            2,
+                            2,
+                            2,
+                            2,
+                            2,
+                            2
+                        ]
+                    ],
+                    "output": true
+                },
+                {
+                    "inputs": [
+                        [
+                            11,
+                            9,
+                            16,
+                            9,
+                            7,
+                            2,
+                            6
+                        ]
+                    ],
+                    "output": true
+                },
+                {
+                    "inputs": [
+                        [
+                            9,
+                            15,
+                            4,
+                            7
+                        ]
+                    ],
+                    "output": false
+                },
+                {
+                    "inputs": [
+                        [
+                            1,
+                            2,
+                            9,
+                            16
+                        ]
+                    ],
+                    "output": true
+                },
+                {
+                    "inputs": [
+                        [
+                            5,
+                            8,
+                            4,
+                            13,
+                            12
+                        ]
+                    ],
+                    "output": false
+                },
+                {
+                    "inputs": [
+                        [
+                            15,
+                            16
+                        ]
+                    ],
+                    "output": false
+                }
+            ],
+            "name": "has-k with k=2",
+            "request": {
+                "constructor": "->",
+                "arguments": [
+                    {
+                        "constructor": "list",
+                        "arguments": [
+                            {
+                                "constructor": "int",
+                                "arguments": []
+                            }
+                        ]
+                    },
+                    {
+                        "constructor": "bool",
+                        "arguments": []
+                    }
+                ]
+            },
+            "maximumFrontier": 10
+        }
+    ],
+    "programTimeout": 0.0005,
+    "nc": 1,
+    "timeout": 1.0,
+    "lowerBound": 0.0,
+    "upperBound": 1.5,
+    "budgetIncrement": 1.5,
+    "verbose": false,
+    "shatter": 10
+}

@@ -1,5 +1,7 @@
 module Grammar
 
+include("program.jl")
+using .Program
 include("types.jl")
 using .Types
 include("utils.jl")
@@ -7,34 +9,14 @@ using .Utils
 
 export GrammarData
 
-mutable struct Program
-    source::String
-    expression::Any
-    type::DCType
-end
-
-function infertype(prog::Any)::DCType
-    return DCType("?", [], -1)
-end
-
-function Program(prog::String)
-    # expression = Meta.parse(prog)
-    expression = prog
-    return Program(
-        prog,
-        expression,
-        infertype(expression)
-    )
-end
-
 mutable struct GrammarProduction
-    program::Program
+    program::DCProgram
     log_probability::Float64
 end
 
 function GrammarProduction(data::Dict{String,Any})
     return GrammarProduction(
-        Program(data["expression"]),
+        DCProgram(data["expression"]),
         data["logProbability"]
     )
 end

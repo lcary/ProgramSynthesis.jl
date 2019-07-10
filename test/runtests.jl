@@ -5,4 +5,5 @@ using Test
 
 @testset "DreamCore" begin
     include("enumeration.jl")
+    include("program.jl")
 end

@@ -1,0 +1,40 @@
+{
+  "modulo-k with k=3": [],
+  "prepend-k with k=0": [
+    {
+      "program": "(lambda (cons (mod 1 1) $0))",
+      "time": 0.11157417297363281,
+      "logLikelihood": 0.0,
+      "logPrior": -11.989476363991852
+    },
+    {
+      "program": "(lambda (cons (mod 0 1) $0))",
+      "time": 0.11116409301757812,
+      "logLikelihood": 0.0,
+      "logPrior": -11.989476363991852
+    },
+    {
+      "program": "(lambda (cons (- 1 1) $0))",
+      "time": 0.10625576972961426,
+      "logLikelihood": 0.0,
+      "logPrior": -11.989476363991852
+    },
+    {
+      "program": "(lambda (cons (car (range 1)) $0))",
+      "time": 0.0984344482421875,
+      "logLikelihood": 0.0,
+      "logPrior": -11.989476363991852
+    },
+    {
+      "program": "(lambda (cons (length (range 0)) $0))",
+      "time": 0.09610867500305176,
+      "logLikelihood": 0.0,
+      "logPrior": -11.989476363991852
+    }
+  ],
+  "remove gt 1": [],
+  "drop-k with k=3": [],
+  "slice-k-n with k=1 and n=2": [],
+  "keep-mod-head": [],
+  "keep gt 0": []
+}

@@ -5,9 +5,10 @@ using .Types
 
 export DCTask
 
+# TODO: should output support any type?
 mutable struct Example
     inputs::Array{Any}
-    output::Union{Array{Any},Int}
+    output::Union{Array{Any},Int,Bool}
 end
 
 mutable struct DCTask
