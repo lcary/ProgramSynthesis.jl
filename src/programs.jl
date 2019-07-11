@@ -10,12 +10,13 @@ mutable struct Program
     type::ProgramType
 end
 
+# TODO: implement type inference logic
 function infertype(prog::Any)::ProgramType
     return ProgramType("?", [], -1)
 end
 
 function Program(prog::String)
-    # expression = Meta.parse(prog)
+    # expression = Meta.parse(prog)  TODO: Actually parse expressions
     expression = prog
     return Program(
         prog,
