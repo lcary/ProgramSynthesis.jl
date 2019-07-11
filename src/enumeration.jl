@@ -38,7 +38,7 @@ function write_response(data::Dict{String,Any})::String
 end
 
 struct Request
-    tasks::Array{ProblemSet}
+    tasks::Array{ProgramTask}
     grammar::Grammar
     program_timeout::Float64
     verbose::Bool
@@ -50,7 +50,7 @@ end
 
 function Request(data::Dict{String,Any})
     return Request(
-        map(ProblemSet, data["tasks"]),
+        map(ProgramTask, data["tasks"]),
         Grammar(data["DSL"]),
         data["programTimeout"],
         data["verbose"],
@@ -71,12 +71,12 @@ function enumeration(data::Request)::Array{EnumerationResult}
     return [EnumerationResult(0.0, p.program) for p in grammar.library]  # TODO: fix priors!
 end
 
-function json_format(data::Request, cache::FrontierCache)::Dict{String,Any}
+function json_format(data::Request, frontier::Frontier)::Dict{String,Any}
     response = Dict()
     for (index, task) in enumerate(data.tasks)
         sublist = []
-        for (key, priority) in cache.hits[index]
-            entry = Frontiers.json_format(cache.lookup[key])
+        for (key, priority) in frontier.solutions[index]
+            entry = Frontiers.json_format(frontier.lookup[key])
             push!(sublist, entry)
         end
         response[task.name] = sublist
@@ -86,25 +86,25 @@ end
 
 function enumerate_for_tasks(data::Request)::Dict{String,Any}
     budget = data.lower_bound + data.budget_increment
-    max_frontiers = [t.max_frontier for t in data.tasks]
+    max_solutions = [t.max_solutions for t in data.tasks]
 
-    cache = FrontierCache(length(data.tasks))
+    frontier = Frontier(length(data.tasks))
     model = AllOrNothingLikelihoodModel(data.program_timeout)
 
     start = time()
     while (
         time() < start + data.program_timeout
-        && !is_explored(cache, max_frontiers)
+        && !is_explored(frontier, max_solutions)
         && budget <= data.upper_bound
     )
         for result in enumeration(data)
             prior = result.prior
             program = result.program
-            update_frontiers!(cache, prior, program, data.tasks, model)
+            update_frontier!(frontier, prior, program, data.tasks, model)
         end
     end
 
-    return json_format(data, cache)
+    return json_format(data, frontier)
 end
 
 function enumerate_for_tasks(request::Dict{String,Any})::Dict{String,Any}

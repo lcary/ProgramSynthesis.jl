@@ -9,18 +9,18 @@ using ..Tasks
 using ..Utils
 using ..Likelihood
 
-export update_frontiers!,
+export update_frontier!,
        Frontier,
-       FrontierCache,
+       FrontierElement,
        json_format,
        is_explored,
        priority
 
-struct Frontier
+struct FrontierElement
     program::Program
     log_likelihood::Float64
     log_prior::Float64
-    hit_time::Float64
+    solution_time::Float64
 end
 
 """
@@ -28,79 +28,79 @@ end
     priority(frontier)
 
 The priority of the frontier is proportional to the likelihood and prior.
-This value is used by FrontierCache to prune programs with low priorities.
+This value is used by the Frontier to prune programs with low priorities.
 """
-priority(f::Frontier) = f.log_likelihood + f.log_prior
+priority(fe::FrontierElement) = fe.log_likelihood + fe.log_prior
 
-function json_format(frontier::Frontier)
+function json_format(element::FrontierElement)
     return Dict(
-        "program" => frontier.program.source,
-        "time" => frontier.hit_time,
-        "logLikelihood" => frontier.log_likelihood,
-        "logPrior" => frontier.log_prior
+        "program" => element.program.source,
+        "time" => element.solution_time,
+        "logLikelihood" => element.log_likelihood,
+        "logPrior" => element.log_prior
     )
 end
 
 """
-Contains a lookup table for quickly looking up the frontier data
-for a given counter key. The key is used in `hits` to refer to the top
+Contains a lookup table for quickly looking up the frontier element
+for a given counter key. The key is used in `solutions` to refer to the top
 frontiers for all tasks as ordered by the priority of those frontiers.
 
 Note that the index of each priority queue corresponds to the index of
 each task in a complete list of tasks that we are enumerating programs for.
 """
-mutable struct FrontierCache
-    lookup::Dict{String,Frontier}
+mutable struct Frontier
+    lookup::Dict{String,FrontierElement}
     counter::Int
-    hits::Array{PriorityQueue{String,Float64}}
+    solutions::Array{PriorityQueue{String,Float64}}
 
-    function FrontierCache(n::Int)
-        hits = [PriorityQueue{String,Float64}() for i in 1:n]
-        return new(Dict(), 0, hits)
+    function Frontier(n::Int)
+        solutions = [PriorityQueue{String,Float64}() for i in 1:n]
+        return new(Dict(), 0, solutions)
     end
 end
 
 """
 
-    add!(cache, frontier, index)
+    add!(frontier, element, index)
 
-Add the frontier to the lookup table of the cache, then add the lookup key
-of the program to the priority queue in `hits`.
+Add the frontier to the lookup table of the frontier, then add the lookup key
+of the program to the priority queue in `solutions`.
 """
-function add!(cache::FrontierCache, frontier::Frontier, index::Int)
-    cache.counter += 1
-    key = string(cache.counter)
-    cache.lookup[key] = frontier
+function add!(frontier::Frontier, element::FrontierElement, index::Int)
+    frontier.counter += 1
+    key = string(frontier.counter)
+    frontier.lookup[key] = element
 
-    pq = cache.hits[index]
-    enqueue!(pq, key, priority(frontier))
+    pq = frontier.solutions[index]
+    enqueue!(pq, key, priority(element))
     return key
 end
 
 """
 
-    prune!(cache, index, max_frontier)
+    prune!(frontier, index, max_solutions)
 
-Conditionally prune low-priority frontiers in `hits` and the lookup table.
+Conditionally prune low-priority frontiers in `solutions` and the lookup table.
 """
-function prune!(cache::FrontierCache, index::Int, max_frontier::Int)
-    pq = cache.hits[index]
-    if length(pq) > max_frontier
+function prune!(frontier::Frontier, index::Int, max_solutions::Int)
+    pq = frontier.solutions[index]
+    if length(pq) > max_solutions
         key = dequeue!(pq)
-        delete!(cache.lookup, key)
+        delete!(frontier.lookup, key)
     end
 end
 
-function is_explored(cache::FrontierCache, max_frontiers::Array{Int})::Bool
-    pairs = zip(cache.hits, max_frontiers)
+function is_explored(frontier::Frontier, max_solutions::Array{Int})::Bool
+    pairs = zip(frontier.solutions, max_solutions)
     return all(length(h) >= maxfrontier for (h, maxfrontier) in pairs)
 end
 
-function update_frontiers!(
-    cache::FrontierCache,
+function update_frontier!(
+    frontier::Frontier,
     prior::Float64,
     program::Program,
-    task::ProblemSet,
+    task::ProgramTask,
     index::Int,
     model::LikelihoodModel
 )
@@ -109,26 +109,26 @@ function update_frontiers!(
         return
     end
 
-    frontier = Frontier(
+    element = FrontierElement(
         program,
         likelihood,
         prior,
-        0.0  # TODO: Fix hit_time
+        0.0  # TODO: Fix solution_time
     )
 
-    add!(cache, frontier, index)
-    prune!(cache, index, task.max_frontier)
+    add!(frontier, element, index)
+    prune!(frontier, index, task.max_solutions)
 end
 
-function update_frontiers!(
-    cache::FrontierCache,
+function update_frontier!(
+    frontier::Frontier,
     prior::Float64,
     program::Program,
-    tasks::Array{ProblemSet},
+    tasks::Array{ProgramTask},
     model::LikelihoodModel
 )
     for (index, task) in enumerate(tasks)
-        update_frontiers!(cache, prior, program, task, index, model)
+        update_frontier!(frontier, prior, program, task, index, model)
     end
 end
 

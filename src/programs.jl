@@ -26,9 +26,9 @@ function Program(prog::String)
     )
 end
 
-function can_solve(program::Program, task::ProblemSet, timeout::Float64)::Bool
-    # TODO: actually test solving problems
-    return True
+function can_solve(program::Program, task::ProgramTask, timeout::Float64)::Bool
+    # TODO: actually test solving tasks
+    return true
 end
 
 end
