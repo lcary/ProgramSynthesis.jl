@@ -14,7 +14,7 @@ mutable struct ProblemSet
     name::String
     type::ProgramType
     examples::Array{Example}
-    maximum_frontier::Int
+    max_frontier::Int
 end
 
 function Example(data::Dict{String,Any})

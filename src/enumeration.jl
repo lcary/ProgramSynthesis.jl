@@ -132,21 +132,33 @@ function update_frontier(
     frontier_key = addfrontier!(cache, frontier)
     enqueue!(pq, frontier_key, priority)
 
-    if length(pq) > task.maximum_frontier
+    if length(pq) > task.max_frontier
         key = dequeue!(pq)
         delete!(cache.index, key)
     end
 end
 
-function enumerate_for_tasks(data::EnumerationData)::Dict{String,Any}
+function unexplored_frontiers(
+    hits::HitArray,
+    max_frontiers::Array{Int}
+)::Bool
+    pairs = zip(hits.array, max_frontiers)
+    return any(length(h) < maxfrontier for (h, maxfrontier) in pairs)
+end
 
-    # TODO: make use of budget/upperbound/lowerbound
+function enumerate_for_tasks(data::EnumerationData)::Dict{String,Any}
+    budget = data.lower_bound + data.budget_increment
+    max_frontiers = [t.max_frontier for t in data.tasks]
 
     hits = HitArray(length(data.tasks))
     cache = FrontierCache()
 
     start = time()
-    while time() < start + data.program_timeout
+    while (
+        time() < start + data.program_timeout
+        && unexplored_frontiers(hits, max_frontiers)
+        && budget <= data.upper_bound
+    )
         for result in enumeration(data)
             for (index, task) in enumerate(data.tasks)
                 update_frontier(index, task, result, hits, cache)
