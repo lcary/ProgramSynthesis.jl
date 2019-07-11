@@ -1,8 +1,9 @@
 module Programs
 
 using ..Types
+using ..Tasks
 
-export Program
+export Program, evaluates, can_solve
 
 mutable struct Program
     source::String
@@ -23,6 +24,11 @@ function Program(prog::String)
         expression,
         infertype(expression)
     )
+end
+
+function can_solve(program::Program, task::ProblemSet, timeout::Float64)::Bool
+    # TODO: actually test solving problems
+    return True
 end
 
 end
