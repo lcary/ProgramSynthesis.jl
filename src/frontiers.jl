@@ -8,7 +8,12 @@ using ..Programs
 using ..Tasks
 using ..Utils
 
-export update_frontiers!, FrontierCache, json_format, is_explored
+export update_frontiers!,
+       FrontierEntry,
+       FrontierCache,
+       json_format,
+       is_explored,
+       priority
 
 struct FrontierEntry
     program::Program
@@ -17,7 +22,17 @@ struct FrontierEntry
     hit_time::Float64
 end
 
-priority(f::FrontierEntry) = -(f.log_likelihood + f.log_prior)
+"""
+
+    priority(frontier)
+
+The priority of the frontier is proportional to the likelihood
+and prior, and lower is better. This is because the priority
+value is stored in the PriorityQueue of the FrontierCache, and
+the frontiers with the highest priority values are removed first
+during pruning.
+"""
+priority(f::FrontierEntry) = f.log_likelihood + f.log_prior
 
 function json_format(frontier::FrontierEntry)
     return Dict(
@@ -29,7 +44,7 @@ function json_format(frontier::FrontierEntry)
 end
 
 mutable struct FrontierCache
-    index::Dict{String,FrontierEntry}
+    lookup::Dict{String,FrontierEntry}
     counter::Int
     hits::Array{PriorityQueue{String,Float64}}
 
@@ -39,22 +54,39 @@ mutable struct FrontierCache
     end
 end
 
-function add!(cache::FrontierCache, index::Int, frontier::FrontierEntry)
+"""
+
+    add!(cache, frontier, index)
+
+Add the frontier to the lookup table of the cache so that we can retrieve
+the program later, then add the lookup key of the program to the priority
+queue along with the priority value. The lookup key is a counter that is
+incremented with each addition, since we don't want to overwrite any
+existing programs in the lookup table.
+"""
+function add!(cache::FrontierCache, frontier::FrontierEntry, index::Int)
     cache.counter += 1
     key = string(cache.counter)
-    cache.index[key] = frontier
+    cache.lookup[key] = frontier
 
     pq = cache.hits[index]
     enqueue!(pq, key, priority(frontier))
+    return key
 end
 
-# TODO: unit test that this only prunes the lowest frontiers if necessary
+"""
+
+    prune!(cache, index, max_frontier)
+
+If the maximum number of frontiers is reached, remove the frontiers
+that have the highest value, then clear the lookup entry in the cache
+for that program to free up space since we don't care about it anymore.
+"""
 function prune!(cache::FrontierCache, index::Int, max_frontier::Int)
     pq = cache.hits[index]
     if length(pq) > max_frontier
-        # delete the lowest priority frontier
         key = dequeue!(pq)
-        delete!(cache.index, key)
+        delete!(cache.lookup, key)
     end
 end
 
@@ -81,7 +113,7 @@ function update_frontiers!(
         0.0  # TODO: Fix hit_time
     )
 
-    add!(cache, index, frontier)
+    add!(cache, frontier, index)
     prune!(cache, index, task.max_frontier)
 end
 

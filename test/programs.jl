@@ -5,7 +5,7 @@ using DreamCore
 
 parse(x) = true  # TODO: test with actual program functions!
 
-@testset "program.jl" begin
+@testset "programs.jl" begin
     @testset "parse program strings" begin
         @test parse("(+ 1)")
         @test parse("(\$0 \$1)")

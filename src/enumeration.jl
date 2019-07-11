@@ -75,7 +75,7 @@ function json_format(data::Request, cache::FrontierCache)::Dict{String,Any}
     for (index, task) in enumerate(data.tasks)
         sublist = []
         for (key, priority) in cache.hits[index]
-            entry = Frontiers.json_format(cache.index[key])
+            entry = Frontiers.json_format(cache.lookup[key])
             push!(sublist, entry)
         end
         response[task.name] = sublist

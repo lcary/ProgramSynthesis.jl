@@ -20,9 +20,12 @@ export run_enumeration,
        Grammar,
        ProgramType,
        Program,
+       ProblemSet,
        enumerate_for_tasks,
        update_frontiers!,
        FrontierCache,
+       FrontierEntry,
+       priority,
        json_format,
        is_explored
 
