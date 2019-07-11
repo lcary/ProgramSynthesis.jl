@@ -17,7 +17,6 @@ using .Enumeration
 export run_enumeration,
        Grammar,
        ProgramType,
-       EnumerationData,
        Program,
        enumerate_for_tasks
 

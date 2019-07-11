@@ -10,7 +10,7 @@ using ..Programs
 using ..Tasks
 using ..Utils
 
-export EnumerationData, run_enumeration, enumerate_for_tasks
+export run_enumeration, enumerate_for_tasks
 
 const message_dir = "messages"
 
@@ -20,21 +20,23 @@ function create_message_dir()
     end
 end
 
-function get_response_filename()::String
+function response_filename()::String
     ts = Dates.format(Dates.now(), "yyyymmdd_THHMMSS")
     parts = ["response", "enumeration", "PID", getpid(), ts]
     filename = "response_enumeration_PID$(getpid())_$(ts).json"
     return abspath("messages", filename)
 end
 
-function create_response(filepath::String, data::Dict{String,Any})
+function write_response(data::Dict{String,Any})::String
     stringdata = JSON.json(data)
-    open(filepath, "w") do f
+    filename = response_filename()
+    open(filename, "w") do f
         write(f, stringdata)
     end
+    return filename
 end
 
-struct EnumerationData
+struct Request
     tasks::Array{ProblemSet}
     grammar::Grammar
     program_timeout::Float64
@@ -45,8 +47,8 @@ struct EnumerationData
     max_parameters::Int
 end
 
-function EnumerationData(data::Dict{String,Any})
-    return EnumerationData(
+function Request(data::Dict{String,Any})
+    return Request(
         map(ProblemSet, data["tasks"]),
         Grammar(data["DSL"]),
         data["programTimeout"],
@@ -58,23 +60,14 @@ function EnumerationData(data::Dict{String,Any})
     )
 end
 
-function parse_request_data(filepath::String)::EnumerationData
-    data = JSON.parsefile(filepath)
-    return EnumerationData(data)
-end
-
-struct InvalidTaskType <: Exception
-    msg::AbstractString
-end
-
-struct EnumerationProgram
+struct EnumerationResult
     prior::Float64
     program::Program
 end
 
-function enumeration(data::EnumerationData)::Array{EnumerationProgram}
+function enumeration(data::Request)::Array{EnumerationResult}
     grammar = data.grammar
-    return [EnumerationProgram(0.0, p.program) for p in grammar.library]  # TODO: fix priors!
+    return [EnumerationResult(0.0, p.program) for p in grammar.library]  # TODO: fix priors!
 end
 
 struct FrontierEntry
@@ -84,44 +77,59 @@ struct FrontierEntry
     hit_time::Float64
 end
 
+priority(f::FrontierEntry) = -(f.log_likelihood + f.log_prior)
+
+function json_format(frontier::FrontierEntry)
+    return Dict(
+        "program" => frontier.program.source,
+        "time" => frontier.hit_time,
+        "logLikelihood" => frontier.log_likelihood,
+        "logPrior" => frontier.log_prior
+    )
+end
+
 mutable struct FrontierCache
     index::Dict{String,FrontierEntry}
     counter::Int
+    hits::Array{PriorityQueue{String,Float64}}
+
+    function FrontierCache(n::Int)
+        hits = [PriorityQueue{String,Float64}() for i in 1:n]
+        return new(Dict(), 0, hits)
+    end
 end
 
-FrontierCache() = FrontierCache(Dict(), 0)
-
-function addfrontier!(cache::FrontierCache, frontier::FrontierEntry)
+function add!(cache::FrontierCache, index::Int, frontier::FrontierEntry)
     cache.counter += 1
     key = string(cache.counter)
     cache.index[key] = frontier
-    return string(cache.counter)
+
+    pq = cache.hits[index]
+    enqueue!(pq, key, priority(frontier))
 end
 
-struct HitArray
-    array::Array{PriorityQueue{String,Float64}}
-    function HitArray(n::Int)
-        return new([PriorityQueue{String,Float64}() for i in 1:n])
+# TODO: unit test that this only prunes the lowest frontiers if necessary
+function prune!(cache::FrontierCache, index::Int, max_frontier::Int)
+    pq = cache.hits[index]
+    if length(pq) > max_frontier
+        # delete the lowest priority frontier
+        key = dequeue!(pq)
+        delete!(cache.index, key)
     end
 end
 
 function update_frontier(
     index::Int,
     task::ProblemSet,
-    result::EnumerationProgram,
-    hits::HitArray,
+    result::EnumerationResult,
     cache::FrontierCache
 )
     prior = result.prior
     program = result.program
 
-    pq = hits.array[index]
-
     success, likelihood = true, 0.0  # TODO: fix fake data
     # success, likelihood = likelihoodModel.score(p, task)  TODO
     # if not success, skip
-
-    priority = -(likelihood + prior)
 
     frontier = FrontierEntry(
         program,
@@ -129,68 +137,60 @@ function update_frontier(
         prior,
         0.0  # TODO: Fix hit_time
     )
-    frontier_key = addfrontier!(cache, frontier)
-    enqueue!(pq, frontier_key, priority)
 
-    if length(pq) > task.max_frontier
-        key = dequeue!(pq)
-        delete!(cache.index, key)
+    add!(cache, index, frontier)
+    prune!(cache, index, task.max_frontier)
+end
+
+function is_explored(cache::FrontierCache, max_frontiers::Array{Int})::Bool
+    pairs = zip(cache.hits, max_frontiers)
+    return all(length(h) >= maxfrontier for (h, maxfrontier) in pairs)
+end
+
+function json_format(data::Request, cache::FrontierCache)::Dict{String,Any}
+    response = Dict()
+    for (index, task) in enumerate(data.tasks)
+        sublist = []
+        for (key, priority) in cache.hits[index]
+            entry = json_format(cache.index[key])
+            push!(sublist, entry)
+        end
+        response[task.name] = sublist
     end
+    return response
 end
 
-function unexplored_frontiers(
-    hits::HitArray,
-    max_frontiers::Array{Int}
-)::Bool
-    pairs = zip(hits.array, max_frontiers)
-    return any(length(h) < maxfrontier for (h, maxfrontier) in pairs)
-end
-
-function enumerate_for_tasks(data::EnumerationData)::Dict{String,Any}
+function enumerate_for_tasks(data::Request)::Dict{String,Any}
     budget = data.lower_bound + data.budget_increment
     max_frontiers = [t.max_frontier for t in data.tasks]
 
-    hits = HitArray(length(data.tasks))
-    cache = FrontierCache()
+    cache = FrontierCache(length(data.tasks))
 
     start = time()
     while (
         time() < start + data.program_timeout
-        && unexplored_frontiers(hits, max_frontiers)
+        && !is_explored(cache, max_frontiers)
         && budget <= data.upper_bound
     )
         for result in enumeration(data)
             for (index, task) in enumerate(data.tasks)
-                update_frontier(index, task, result, hits, cache)
+                update_frontier(index, task, result, cache)
             end
         end
     end
 
-    frontiers = Dict()
-    for (index, task) in enumerate(data.tasks)
-        sublist = []
-        for (key, priority) in hits.array[index]
-            frontier = cache.index[key]
-            entry = Dict{String,Union{String,Float64}}(
-                "program" => frontier.program.source,
-                "time" => frontier.hit_time,
-                "logLikelihood" => frontier.log_likelihood,
-                "logPrior" => frontier.log_prior
-            )
-            push!(sublist, entry)
-        end
-        frontiers[task.name] = sublist
-    end
-    return frontiers
+    return json_format(data, cache)
 end
 
-function run_enumeration(request_file::String)::String
+function enumerate_for_tasks(request::Dict{String,Any})::Dict{String,Any}
+    return enumerate_for_tasks(Request(request))
+end
+
+function run_enumeration(filename::String)::String
     create_message_dir()
-    enumeration_data = parse_request_data(request_file)
-    response_data = enumerate_for_tasks(enumeration_data)
-    response_file = get_response_filename()
-    create_response(response_file, response_data)
-    return response_file
+    request = JSON.parsefile(filename)
+    response = enumerate_for_tasks(request)
+    return write_response(response)
 end
 
 end

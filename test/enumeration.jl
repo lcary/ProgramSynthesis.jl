@@ -2,6 +2,7 @@ using Test
 using JSON
 
 using DreamCore
+using DreamCore.Enumeration: Request
 
 get_resource(filename) = abspath(@__DIR__, "resources", filename)
 
@@ -13,7 +14,7 @@ const TEST_FILE4 = get_resource("request_enumeration_example_4.json")
 @testset "enumeration.jl" begin
     @testset "parse list-to-list enumeration request data" begin
         json_data = JSON.parsefile(TEST_FILE1)
-        enum_data = EnumerationData(json_data)
+        enum_data = Request(json_data)
 
         @test length(enum_data.grammar.library) == 22
         @test length(enum_data.tasks) == 7
@@ -29,7 +30,7 @@ const TEST_FILE4 = get_resource("request_enumeration_example_4.json")
     end
     @testset "parse list-to-int enumeration request data" begin
         json_data = JSON.parsefile(TEST_FILE2)
-        enum_data = EnumerationData(json_data)
+        enum_data = Request(json_data)
 
         @test length(enum_data.grammar.library) == 22
         @test length(enum_data.tasks) == 2
@@ -45,7 +46,7 @@ const TEST_FILE4 = get_resource("request_enumeration_example_4.json")
     end
     @testset "parse list-to-bool enumeration request data" begin
         json_data = JSON.parsefile(TEST_FILE4)
-        enum_data = EnumerationData(json_data)
+        enum_data = Request(json_data)
 
         @test length(enum_data.grammar.library) == 22
         @test length(enum_data.tasks) == 1
@@ -61,8 +62,7 @@ const TEST_FILE4 = get_resource("request_enumeration_example_4.json")
     end
     @testset "enumerate_for_tasks file1" begin
         json_data = JSON.parsefile(TEST_FILE1)
-        enum_data = EnumerationData(json_data)
-        result = enumerate_for_tasks(enum_data)
+        result = enumerate_for_tasks(json_data)
 
         @test length(result) == 7
         @test haskey(result, "drop-k with k=3")
