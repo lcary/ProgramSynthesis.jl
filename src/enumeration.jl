@@ -45,6 +45,7 @@ struct Request
     upper_bound::Float64
     budget_increment::Float64
     max_parameters::Int
+    max_depth::Int
 end
 
 function Request(data::Dict{String,Any})
@@ -56,8 +57,12 @@ function Request(data::Dict{String,Any})
         data["lowerBound"],
         data["upperBound"],
         data["budgetIncrement"],
-        getoptional(data, "maxParameters", 99)
+        getoptional(data, "maxParameters", 99),
+        getoptional(data, "maxDepth", 99)
     )
+end
+
+struct Context
 end
 
 struct EnumerationResult
@@ -65,9 +70,36 @@ struct EnumerationResult
     program::Program
 end
 
-function enumeration(data::Request)::Array{EnumerationResult}
-    grammar = data.grammar
-    return [EnumerationResult(0.0, p.program) for p in grammar.library]  # TODO: fix priors!
+function enumeration(
+    channel::Channel,
+    grammar::Grammar,
+    context::Context,
+    env::Array{Any},  # TODO: improve type
+    type::ProgramType,
+    upper_bound::Float64,
+    lower_bound::Float64,
+    depth::Int
+)
+    if upper_bound < 0 || depth == 1
+        return
+    end
+    for p in grammar.library
+        put!(channel, EnumerationResult(0.0, p.program))
+    end
+end
+
+function generate_results(
+    request::Request,
+    env::Array{Any},  # TODO: improve type
+    type::ProgramType
+)
+    grammar = request.grammar
+    context = Context()
+    upper = request.upper_bound
+    lower = request.lower_bound
+    depth = request.max_depth
+    args = (grammar, context, env, type, upper, lower, depth)
+    return Channel((channel) -> enumeration(channel, args...))
 end
 
 function json_format(data::Request, solutions::SolutionSet)::Dict{String,Any}
@@ -99,27 +131,36 @@ function solve!(
     end
 end
 
-function run_enumeration(data::Request)::Dict{String,Any}
-    budget = data.lower_bound + data.budget_increment
-    max_solutions = [t.max_solutions for t in data.problems]
+struct TypeMismatchError <: Exception
+    msg::String
+end
 
-    solutions = SolutionSet(length(data.problems))
+function run_enumeration(request::Request)::Dict{String,Any}
+    problems = request.problems
+    budget = request.lower_bound + request.budget_increment
+    max_solutions = [p.max_solutions for p in problems]
+    solutions = SolutionSet(length(problems))
+
+    if !Utils.allequal([Types.hashed(p.type) for p in problems])
+        throw(TypeMismatchError("Types differ in problem set."))
+    end
+    type = problems[1].type
 
     start = time()
     while (
-        time() < start + data.program_timeout
+        time() < start + request.program_timeout
         && !is_explored(solutions, max_solutions)
-        && budget <= data.upper_bound
+        && budget <= request.upper_bound
     )
-        for result in enumeration(data)
-            for (index, problem) in enumerate(data.problems)
+        for result in generate_results(request, [], type)
+            for (index, problem) in enumerate(problems)
                 # TODO: run with program timeout
                 solve!(solutions, result, problem, index, start)
             end
         end
     end
 
-    return json_format(data, solutions)
+    return json_format(request, solutions)
 end
 
 function run_enumeration(request::Dict{String,Any})::Dict{String,Any}

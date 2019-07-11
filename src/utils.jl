@@ -14,6 +14,8 @@ function getoptional(
     end
 end
 
+allequal(x) = all(y->y == x[1], x)
+
 curry(f, x) = (xs...) -> f(x, xs...)
 
 end
