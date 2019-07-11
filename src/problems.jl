@@ -1,8 +1,8 @@
-module Tasks
+module Problems
 
 using ..Types
 
-export ProgramTask, Example
+export Problem, Example
 
 # TODO: should output support any type?
 mutable struct Example
@@ -10,7 +10,7 @@ mutable struct Example
     output::Union{Array{Any},Int,Bool}
 end
 
-mutable struct ProgramTask
+mutable struct Problem
     name::String
     type::ProgramType
     examples::Array{Example}
@@ -21,8 +21,8 @@ function Example(data::Dict{String,Any})
     return Example(data["inputs"], data["output"])
 end
 
-function ProgramTask(data::Dict{String,Any})
-    return ProgramTask(
+function Problem(data::Dict{String,Any})
+    return Problem(
         data["name"],
         ProgramType(data["request"]),
         map(Example, data["examples"]),

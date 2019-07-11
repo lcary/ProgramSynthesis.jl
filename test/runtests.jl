@@ -6,5 +6,5 @@ using Test
 @testset "DreamCore" begin
     include("enumeration.jl")
     include("programs.jl")
-    include("frontiers.jl")
+    include("solutions.jl")
 end

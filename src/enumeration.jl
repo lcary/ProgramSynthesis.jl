@@ -6,11 +6,11 @@ using JSON
 using ..Types
 using ..Grammars
 using ..Programs
-using ..Tasks
+using ..Problems
 using ..Utils
-using ..Frontiers
+using ..Solutions
 
-export run_enumeration, enumerate_for_tasks
+export run_enumeration
 
 const message_dir = "messages"
 
@@ -37,7 +37,7 @@ function write_response(data::Dict{String,Any})::String
 end
 
 struct Request
-    tasks::Array{ProgramTask}
+    problems::Array{Problem}
     grammar::Grammar
     program_timeout::Float64
     verbose::Bool
@@ -49,7 +49,7 @@ end
 
 function Request(data::Dict{String,Any})
     return Request(
-        map(ProgramTask, data["tasks"]),
+        map(Problem, data["tasks"]),
         Grammar(data["DSL"]),
         data["programTimeout"],
         data["verbose"],
@@ -70,15 +70,10 @@ function enumeration(data::Request)::Array{EnumerationResult}
     return [EnumerationResult(0.0, p.program) for p in grammar.library]  # TODO: fix priors!
 end
 
-function json_format(data::Request, frontier::Frontier)::Dict{String,Any}
+function json_format(data::Request, solutions::SolutionSet)::Dict{String,Any}
     response = Dict()
-    for (index, task) in enumerate(data.tasks)
-        sublist = []
-        for (key, priority) in frontier.solutions[index]
-            entry = Frontiers.json_format(frontier.lookup[key])
-            push!(sublist, entry)
-        end
-        response[task.name] = sublist
+    for (index, problem) in enumerate(data.problems)
+        response[problem.name] = Solutions.json_format(solutions, index)
     end
     return response
 end
@@ -88,52 +83,53 @@ function solved(log_likelihood::Float64)::Bool
 end
 
 function solve!(
-    frontier::Frontier,
+    solutions::SolutionSet,
     result::EnumerationResult,
-    task::ProgramTask,
-    index::Int
+    problem::Problem,
+    index::Int,
+    start::Float64
 )
     prior = result.prior
     program = result.program
-    log_likelihood = try_solve(program, task)
-    search_time = 0.0  # TODO: Use an actual solution_time
+    log_likelihood = try_solve(program, problem)
+    search_time = time() - start
     if solved(log_likelihood)
-        element = FrontierElement(program, log_likelihood, prior, search_time)
-        update_frontier!(frontier, element, task, index)
+        solution = Solution(program, log_likelihood, prior, search_time)
+        update_solutions!(solutions, solution, problem, index)
     end
 end
 
-function enumerate_for_tasks(data::Request)::Dict{String,Any}
+function run_enumeration(data::Request)::Dict{String,Any}
     budget = data.lower_bound + data.budget_increment
-    max_solutions = [t.max_solutions for t in data.tasks]
+    max_solutions = [t.max_solutions for t in data.problems]
 
-    frontier = Frontier(length(data.tasks))
+    solutions = SolutionSet(length(data.problems))
 
     start = time()
     while (
         time() < start + data.program_timeout
-        && !is_explored(frontier, max_solutions)
+        && !is_explored(solutions, max_solutions)
         && budget <= data.upper_bound
     )
         for result in enumeration(data)
-            for (index, task) in enumerate(data.tasks)
+            for (index, problem) in enumerate(data.problems)
                 # TODO: run with program timeout
-                solve!(frontier, result, task, index)
+                solve!(solutions, result, problem, index, start)
             end
         end
     end
 
-    return json_format(data, frontier)
+    return json_format(data, solutions)
 end
 
-function enumerate_for_tasks(request::Dict{String,Any})::Dict{String,Any}
-    return enumerate_for_tasks(Request(request))
+function run_enumeration(request::Dict{String,Any})::Dict{String,Any}
+    return run_enumeration(Request(request))
 end
 
 function run_enumeration(filename::String)::String
     create_message_dir()
     request = JSON.parsefile(filename)
-    response = enumerate_for_tasks(request)
+    response = run_enumeration(request)
     return write_response(response)
 end
 

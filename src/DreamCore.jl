@@ -2,31 +2,30 @@ module DreamCore
 
 include("utils.jl")
 include("types.jl")
-include("tasks.jl")
+include("problems.jl")
 include("programs.jl")
 include("grammars.jl")
-include("frontiers.jl")
+include("solutions.jl")
 include("enumeration.jl")
 
 using .Utils
 using .Types
-using .Tasks
+using .Problems
 using .Programs
 using .Grammars
-using .Frontiers
+using .Solutions
 using .Enumeration
 
 export run_enumeration,
        Grammar,
        Program,
-       ProgramTask,
+       Problem,
        ProgramType,
        Example,
        try_solve,
-       enumerate_for_tasks,
-       update_frontier!,
-       Frontier,
-       FrontierElement,
+       update_solutions!,
+       SolutionSet,
+       Solution,
        priority,
        json_format,
        is_explored

@@ -1,7 +1,7 @@
 module Programs
 
 using ..Types
-using ..Tasks
+using ..Problems
 
 export Program, evaluates, can_solve, try_solve
 
@@ -45,7 +45,7 @@ function can_solve(program::Program, example::Example)::Bool
     return true
 end
 
-function can_solve(program::Program, task::ProgramTask)::Bool
+function can_solve(program::Program, problem::Problem)::Bool
 
     return true  # TODO: REMOVE AFTER COMPLETING IMPLEMENTATION
 
@@ -56,7 +56,7 @@ function can_solve(program::Program, task::ProgramTask)::Bool
         return false
     end
 
-    for example in task.examples
+    for example in problem.examples
         if !can_solve(program, example)
             return false
         end
@@ -65,8 +65,8 @@ function can_solve(program::Program, task::ProgramTask)::Bool
     return true
 end
 
-function try_solve(program::Program, task::ProgramTask)::Float64
-    if can_solve(program, task)
+function try_solve(program::Program, problem::Problem)::Float64
+    if can_solve(program, problem)
         log_likelihood = 0.0
     else
         log_likelihood = -Inf
