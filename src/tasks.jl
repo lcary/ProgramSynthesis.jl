@@ -2,7 +2,7 @@ module Tasks
 
 using ..Types
 
-export ProgramTask
+export ProgramTask, Example
 
 # TODO: should output support any type?
 mutable struct Example

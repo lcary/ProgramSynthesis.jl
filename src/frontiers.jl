@@ -7,7 +7,6 @@ using ..Grammars
 using ..Programs
 using ..Tasks
 using ..Utils
-using ..Likelihood
 
 export update_frontier!,
        Frontier,
@@ -16,11 +15,15 @@ export update_frontier!,
        is_explored,
        priority
 
+"""
+A program and its task-solving metrics within a Frontier.
+The search time is the time it took to find the program.
+"""
 struct FrontierElement
     program::Program
     log_likelihood::Float64
     log_prior::Float64
-    solution_time::Float64
+    search_time::Float64
 end
 
 """
@@ -35,7 +38,7 @@ priority(fe::FrontierElement) = fe.log_likelihood + fe.log_prior
 function json_format(element::FrontierElement)
     return Dict(
         "program" => element.program.source,
-        "time" => element.solution_time,
+        "time" => element.search_time,
         "logLikelihood" => element.log_likelihood,
         "logPrior" => element.log_prior
     )
@@ -98,38 +101,12 @@ end
 
 function update_frontier!(
     frontier::Frontier,
-    prior::Float64,
-    program::Program,
+    element::FrontierElement,
     task::ProgramTask,
-    index::Int,
-    model::LikelihoodModel
+    index::Int
 )
-    success, likelihood = score(model, program, task)
-    if !success
-        return
-    end
-
-    element = FrontierElement(
-        program,
-        likelihood,
-        prior,
-        0.0  # TODO: Fix solution_time
-    )
-
     add!(frontier, element, index)
     prune!(frontier, index, task.max_solutions)
-end
-
-function update_frontier!(
-    frontier::Frontier,
-    prior::Float64,
-    program::Program,
-    tasks::Array{ProgramTask},
-    model::LikelihoodModel
-)
-    for (index, task) in enumerate(tasks)
-        update_frontier!(frontier, prior, program, task, index, model)
-    end
 end
 
 end

@@ -14,4 +14,6 @@ function getoptional(
     end
 end
 
+curry(f, x) = (xs...) -> f(x, xs...)
+
 end

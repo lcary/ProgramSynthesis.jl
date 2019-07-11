@@ -8,7 +8,6 @@ using ..Grammars
 using ..Programs
 using ..Tasks
 using ..Utils
-using ..Likelihood
 using ..Frontiers
 
 export run_enumeration, enumerate_for_tasks
@@ -84,12 +83,31 @@ function json_format(data::Request, frontier::Frontier)::Dict{String,Any}
     return response
 end
 
+function solved(log_likelihood::Float64)::Bool
+    return !isinf(log_likelihood) && !isnan(log_likelihood)
+end
+
+function solve!(
+    frontier::Frontier,
+    result::EnumerationResult,
+    task::ProgramTask,
+    index::Int
+)
+    prior = result.prior
+    program = result.program
+    log_likelihood = try_solve(program, task)
+    search_time = 0.0  # TODO: Use an actual solution_time
+    if solved(log_likelihood)
+        element = FrontierElement(program, log_likelihood, prior, search_time)
+        update_frontier!(frontier, element, task, index)
+    end
+end
+
 function enumerate_for_tasks(data::Request)::Dict{String,Any}
     budget = data.lower_bound + data.budget_increment
     max_solutions = [t.max_solutions for t in data.tasks]
 
     frontier = Frontier(length(data.tasks))
-    model = AllOrNothingLikelihoodModel(data.program_timeout)
 
     start = time()
     while (
@@ -98,9 +116,10 @@ function enumerate_for_tasks(data::Request)::Dict{String,Any}
         && budget <= data.upper_bound
     )
         for result in enumeration(data)
-            prior = result.prior
-            program = result.program
-            update_frontier!(frontier, prior, program, data.tasks, model)
+            for (index, task) in enumerate(data.tasks)
+                # TODO: run with program timeout
+                solve!(frontier, result, task, index)
+            end
         end
     end
 
