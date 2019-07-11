@@ -4,6 +4,7 @@ using DataStructures
 
 using DreamCore
 using DreamCore.Frontiers: add!, prune!
+using DreamCore.Likelihood: AllOrNothingLikelihoodModel
 
 function get_test_task()
     filename = abspath(@__DIR__, "resources", "example_request_task_1.json")
@@ -87,9 +88,10 @@ end
     @testset "test update_frontiers!" begin
         tasks = [get_test_task()]
         cache = FrontierCache(length(tasks))
+        model = AllOrNothingLikelihoodModel(1.0)
         prior = 0.0
         program = Program("(+ 1)")
-        update_frontiers!(cache, prior, program, tasks)
+        update_frontiers!(cache, prior, program, tasks, model)
         key = "1"
 
         @test length(cache.lookup) == 1

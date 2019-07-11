@@ -8,6 +8,7 @@ using ..Grammars
 using ..Programs
 using ..Tasks
 using ..Utils
+using ..Likelihood
 using ..Frontiers
 
 export run_enumeration, enumerate_for_tasks
@@ -88,6 +89,7 @@ function enumerate_for_tasks(data::Request)::Dict{String,Any}
     max_frontiers = [t.max_frontier for t in data.tasks]
 
     cache = FrontierCache(length(data.tasks))
+    model = AllOrNothingLikelihoodModel(data.program_timeout)
 
     start = time()
     while (
@@ -98,7 +100,7 @@ function enumerate_for_tasks(data::Request)::Dict{String,Any}
         for result in enumeration(data)
             prior = result.prior
             program = result.program
-            update_frontiers!(cache, prior, program, data.tasks)
+            update_frontiers!(cache, prior, program, data.tasks, model)
         end
     end
 

@@ -5,6 +5,7 @@ include("types.jl")
 include("tasks.jl")
 include("programs.jl")
 include("grammars.jl")
+include("likelihood.jl")
 include("frontiers.jl")
 include("enumeration.jl")
 
@@ -13,6 +14,7 @@ using .Types
 using .Tasks
 using .Programs
 using .Grammars
+using .Likelihood
 using .Frontiers
 using .Enumeration
 

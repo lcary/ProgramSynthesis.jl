@@ -7,6 +7,7 @@ using ..Grammars
 using ..Programs
 using ..Tasks
 using ..Utils
+using ..Likelihood
 
 export update_frontiers!,
        Frontier,
@@ -100,11 +101,13 @@ function update_frontiers!(
     prior::Float64,
     program::Program,
     task::ProblemSet,
-    index::Int
+    index::Int,
+    model::LikelihoodModel
 )
-    success, likelihood = true, 0.0  # TODO: fix fake data
-    # success, likelihood = likelihoodModel.score(p, task)  TODO
-    # if not success, skip
+    success, likelihood = score(model, program, task)
+    if !success
+        return
+    end
 
     frontier = Frontier(
         program,
@@ -121,10 +124,11 @@ function update_frontiers!(
     cache::FrontierCache,
     prior::Float64,
     program::Program,
-    tasks::Array{ProblemSet}
+    tasks::Array{ProblemSet},
+    model::LikelihoodModel
 )
     for (index, task) in enumerate(tasks)
-        update_frontiers!(cache, prior, program, task, index)
+        update_frontiers!(cache, prior, program, task, index, model)
     end
 end
 
