@@ -24,7 +24,7 @@ export run_enumeration,
        enumerate_for_tasks,
        update_frontiers!,
        FrontierCache,
-       FrontierEntry,
+       Frontier,
        priority,
        json_format,
        is_explored

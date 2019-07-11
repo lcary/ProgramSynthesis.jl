@@ -12,10 +12,10 @@ function get_test_task()
 end
 
 @testset "frontiers.jl" begin
-    @testset "test FrontierEntry" begin
+    @testset "test Frontier" begin
         ptype = ProgramType("?", ProgramType[], -1)
         program = Program("(+ 1)", "(+ 1)", ptype)
-        frontier = FrontierEntry(program, 1.0, 1.0, 0.0)
+        frontier = Frontier(program, 1.0, 1.0, 0.0)
 
         expect = Dict(
             "program" => "(+ 1)",
@@ -37,9 +37,9 @@ end
 
         ptype = ProgramType("?", ProgramType[], -1)
         program = Program("(+ 1)", "(+ 1)", ptype)
-        frontier1 = FrontierEntry(program, 1.0, 1.0, 0.0)
-        frontier2 = FrontierEntry(program, 0.1, 0.1, 0.0)
-        frontier3 = FrontierEntry(program, 0.11, 0.11, 0.0)
+        frontier1 = Frontier(program, 1.0, 1.0, 0.0)
+        frontier2 = Frontier(program, 0.1, 0.1, 0.0)
+        frontier3 = Frontier(program, 0.11, 0.11, 0.0)
 
         key1 = add!(cache, frontier1, 1)
         key2 = add!(cache, frontier2, 1)
@@ -58,7 +58,7 @@ end
         @test length(cache.hits) == 1
         @test length(hits1) == 2
 
-        frontier4 = FrontierEntry(program, 0.2, 0.2, 0.0)
+        frontier4 = Frontier(program, 0.2, 0.2, 0.0)
         key4 = add!(cache, frontier4, 1)
         prune!(cache, 1, 2)
 
@@ -75,7 +75,14 @@ end
         @test res2 == key1
     end
     @testset "test is_explored" begin
-        @test true
+        cache = FrontierCache(2)
+        enqueue!(cache.hits[1], "x1", 1)
+        enqueue!(cache.hits[2], "y1", 1)
+        enqueue!(cache.hits[2], "y2", 2)
+        max_frontiers = [2, 2]
+        @test !is_explored(cache, max_frontiers)
+        enqueue!(cache.hits[1], "x2", 2)
+        @test is_explored(cache, max_frontiers)
     end
     @testset "test update_frontiers!" begin
         tasks = [get_test_task()]
@@ -87,7 +94,7 @@ end
 
         @test length(cache.lookup) == 1
         @test haskey(cache.lookup, key)
-        @test isa(cache.lookup[key], FrontierEntry)
+        @test isa(cache.lookup[key], Frontier)
 
         frontier = cache.lookup[key]
         @test frontier.program == program

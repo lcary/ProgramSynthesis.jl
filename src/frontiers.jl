@@ -9,13 +9,13 @@ using ..Tasks
 using ..Utils
 
 export update_frontiers!,
-       FrontierEntry,
+       Frontier,
        FrontierCache,
        json_format,
        is_explored,
        priority
 
-struct FrontierEntry
+struct Frontier
     program::Program
     log_likelihood::Float64
     log_prior::Float64
@@ -26,15 +26,12 @@ end
 
     priority(frontier)
 
-The priority of the frontier is proportional to the likelihood
-and prior, and lower is better. This is because the priority
-value is stored in the PriorityQueue of the FrontierCache, and
-the frontiers with the highest priority values are removed first
-during pruning.
+The priority of the frontier is proportional to the likelihood and prior.
+This value is used by FrontierCache to prune programs with low priorities.
 """
-priority(f::FrontierEntry) = f.log_likelihood + f.log_prior
+priority(f::Frontier) = f.log_likelihood + f.log_prior
 
-function json_format(frontier::FrontierEntry)
+function json_format(frontier::Frontier)
     return Dict(
         "program" => frontier.program.source,
         "time" => frontier.hit_time,
@@ -43,8 +40,16 @@ function json_format(frontier::FrontierEntry)
     )
 end
 
+"""
+Contains a lookup table for quickly looking up the frontier data
+for a given counter key. The key is used in `hits` to refer to the top
+frontiers for all tasks as ordered by the priority of those frontiers.
+
+Note that the index of each priority queue corresponds to the index of
+each task in a complete list of tasks that we are enumerating programs for.
+"""
 mutable struct FrontierCache
-    lookup::Dict{String,FrontierEntry}
+    lookup::Dict{String,Frontier}
     counter::Int
     hits::Array{PriorityQueue{String,Float64}}
 
@@ -58,13 +63,10 @@ end
 
     add!(cache, frontier, index)
 
-Add the frontier to the lookup table of the cache so that we can retrieve
-the program later, then add the lookup key of the program to the priority
-queue along with the priority value. The lookup key is a counter that is
-incremented with each addition, since we don't want to overwrite any
-existing programs in the lookup table.
+Add the frontier to the lookup table of the cache, then add the lookup key
+of the program to the priority queue in `hits`.
 """
-function add!(cache::FrontierCache, frontier::FrontierEntry, index::Int)
+function add!(cache::FrontierCache, frontier::Frontier, index::Int)
     cache.counter += 1
     key = string(cache.counter)
     cache.lookup[key] = frontier
@@ -78,9 +80,7 @@ end
 
     prune!(cache, index, max_frontier)
 
-If the maximum number of frontiers is reached, remove the frontiers
-that have the highest value, then clear the lookup entry in the cache
-for that program to free up space since we don't care about it anymore.
+Conditionally prune low-priority frontiers in `hits` and the lookup table.
 """
 function prune!(cache::FrontierCache, index::Int, max_frontier::Int)
     pq = cache.hits[index]
@@ -106,7 +106,7 @@ function update_frontiers!(
     # success, likelihood = likelihoodModel.score(p, task)  TODO
     # if not success, skip
 
-    frontier = FrontierEntry(
+    frontier = Frontier(
         program,
         likelihood,
         prior,
