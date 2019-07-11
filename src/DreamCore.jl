@@ -23,6 +23,7 @@ export run_enumeration,
        enumerate_for_tasks,
        update_frontiers!,
        FrontierCache,
-       json_format
+       json_format,
+       is_explored
 
 end

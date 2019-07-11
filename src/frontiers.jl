@@ -8,7 +8,7 @@ using ..Programs
 using ..Tasks
 using ..Utils
 
-export update_frontiers!, FrontierCache, json_format
+export update_frontiers!, FrontierCache, json_format, is_explored
 
 struct FrontierEntry
     program::Program
@@ -56,6 +56,11 @@ function prune!(cache::FrontierCache, index::Int, max_frontier::Int)
         key = dequeue!(pq)
         delete!(cache.index, key)
     end
+end
+
+function is_explored(cache::FrontierCache, max_frontiers::Array{Int})::Bool
+    pairs = zip(cache.hits, max_frontiers)
+    return all(length(h) >= maxfrontier for (h, maxfrontier) in pairs)
 end
 
 function update_frontiers!(

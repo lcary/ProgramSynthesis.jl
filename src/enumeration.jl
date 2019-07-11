@@ -70,11 +70,6 @@ function enumeration(data::Request)::Array{EnumerationResult}
     return [EnumerationResult(0.0, p.program) for p in grammar.library]  # TODO: fix priors!
 end
 
-function is_explored(cache::FrontierCache, max_frontiers::Array{Int})::Bool
-    pairs = zip(cache.hits, max_frontiers)
-    return all(length(h) >= maxfrontier for (h, maxfrontier) in pairs)
-end
-
 function json_format(data::Request, cache::FrontierCache)::Dict{String,Any}
     response = Dict()
     for (index, task) in enumerate(data.tasks)
