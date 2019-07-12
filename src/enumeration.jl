@@ -102,7 +102,7 @@ function shadow_enumeration(
     results = Array{Result}([])
 
     # do a depth-first search of the queue
-    queue = Deque{Frame}()
+    queue = Stack{Frame}()
     push!(queue, frame)
 
     while !isempty(queue)
