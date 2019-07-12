@@ -34,4 +34,20 @@ function hashed(t::ProgramType)::UInt64
     return h
 end
 
+function tostr(t::ProgramType)
+    if is_arrow(t)
+        a1 = tostr(t.arguments[1])
+        a2 = tostr(t.arguments[2])
+        return "$a1 $ARROW $a2"
+    elseif isempty(t.arguments)
+        return t.constructor
+    else
+        cons = t.constructor
+        args = join([tostr(x) for x in t.arguments], ", ")
+        return "$cons($args)"
+    end
+end
+
+Base.show(io::IO, t::ProgramType) = print(io, tostr(t))
+
 end

@@ -2,6 +2,7 @@ module Enumeration
 
 using Dates
 using JSON
+using DataStructures
 
 using ..Types
 using ..Grammars
@@ -65,11 +66,100 @@ end
 struct Context
 end
 
-struct EnumerationResult
+struct Result
     prior::Float64
-    program::Program
+    program::AbstractProgram
+    context::Context
 end
 
+abstract type Frame end
+
+struct EnumerateFrame <: Frame
+    context::Context
+    environment::Any  # TODO: use specific type
+    request_type::ProgramType
+    upper_bound::Float64
+    lower_bound::Float64
+    depth::Int
+end
+
+struct EnumerateAppFrame <: Frame
+    context::Context
+    environment::Any  # TODO: use specific type
+    func::Any  # TODO: use specific type
+    argument_requests::Array{ProgramType}
+    upper_bound::Float64
+    lower_bound::Float64
+    depth::Int
+    original_function::Any # TODO: use specific type
+    argument_index::Int
+end
+
+function shadow_enumeration(
+    grammar::Grammar,
+    frame::EnumerateFrame
+)
+    results = Array{Result}([])
+
+    # do a depth-first search of the queue
+    queue = Deque{Frame}()
+    push!(queue, frame)
+
+    while !isempty(queue)
+        f = pop!(queue)
+
+        if f.upper_bound < 0.0 || f.depth <= 1
+            break
+        end
+
+        # DEBUG:
+        if isa(f, EnumerateFrame)
+            println(f.context, " ", f.environment, " ", f.request_type)
+            if Types.is_arrow(f.request_type)
+                lhs = f.request_type.arguments[1]
+                rhs = f.request_type.arguments[2]
+                new_env = append!([lhs], f.environment)
+                new_f = EnumerateFrame(
+                    f.context,
+                    new_env,
+                    rhs,
+                    f.upper_bound,
+                    f.lower_bound,
+                    f.depth
+                )
+                push!(queue, new_f)
+            end
+        else
+            println(f.context, " ", f.environment, " ", f.argument_requests)
+        end
+
+        # if f.enumerate_application
+        #
+        # else
+    end
+    push!(results, Result(1.0, grammar.library[1].program, Context()))
+    return results
+end
+
+function shadow_generate_results(
+    request::Request,
+    environment::Array{Any},  # TODO: improve type
+    request_type::ProgramType,
+    upper_bound::Float64,
+    lower_bound::Float64
+)
+    frame = EnumerateFrame(
+        Context(),
+        environment,
+        request_type,
+        upper_bound,
+        lower_bound,
+        request.max_depth
+    )
+    return shadow_enumeration(request.grammar, frame)
+end
+
+# TODO: replace with shadow_enumeration eventually
 function enumeration(
     channel::Channel,
     grammar::Grammar,
@@ -84,10 +174,11 @@ function enumeration(
         return
     end
     for p in grammar.library
-        put!(channel, EnumerationResult(0.0, p.program))
+        put!(channel, Result(0.0, p.program, context))
     end
 end
 
+# TODO: replace with shadow_generate_results eventually
 function generate_results(
     request::Request,
     env::Array{Any},  # TODO: improve type
@@ -116,7 +207,7 @@ end
 
 function solve!(
     solutions::SolutionSet,
-    result::EnumerationResult,
+    result::Result,
     problem::Problem,
     index::Int,
     start::Float64
@@ -137,6 +228,7 @@ end
 
 function run_enumeration(request::Request)::Dict{String,Any}
     problems = request.problems
+    previous_budget = request.lower_bound
     budget = request.lower_bound + request.budget_increment
     max_solutions = [p.max_solutions for p in problems]
     solutions = SolutionSet(length(problems))
@@ -158,6 +250,13 @@ function run_enumeration(request::Request)::Dict{String,Any}
                 solve!(solutions, result, problem, index, start)
             end
         end
+        args = (request, [], type, budget, previous_budget)
+        for result in shadow_generate_results(args...)
+            println("shadow_generate_results:")
+            println(result)
+        end
+        previous_budget = budget
+        budget += request.budget_increment
     end
 
     return json_format(request, solutions)

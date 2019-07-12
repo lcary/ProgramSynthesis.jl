@@ -2,7 +2,7 @@ using Test
 using JSON
 
 using DreamCore
-using DreamCore.Enumeration: Request
+using DreamCore.Enumeration: Request, shadow_generate_results
 
 get_resource(filename) = abspath(@__DIR__, "resources", filename)
 
@@ -80,5 +80,12 @@ const TEST_FILE4 = get_resource("request_enumeration_example_4.json")
         @test haskey(programs, "time")
         @test haskey(programs, "logLikelihood")
         @test haskey(programs, "logPrior")
+    end
+    @testset "run shadow enumeration file2" begin
+        json_data = JSON.parsefile(TEST_FILE2)
+        enum_data = Request(json_data)
+        type = enum_data.problems[1].type
+        r = shadow_generate_results(enum_data, [], type, 1.5, 0.0)
+        @test true  # TODO: add actual tests
     end
 end
