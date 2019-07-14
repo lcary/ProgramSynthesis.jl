@@ -7,4 +7,5 @@ using Test
     include("enumeration.jl")
     include("programs.jl")
     include("solutions.jl")
+    include("generation.jl")
 end

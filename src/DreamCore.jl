@@ -6,6 +6,7 @@ include("problems.jl")
 include("programs.jl")
 include("grammars.jl")
 include("solutions.jl")
+include("generation.jl")
 include("enumeration.jl")
 
 using .Utils
@@ -14,6 +15,7 @@ using .Problems
 using .Programs
 using .Grammars
 using .Solutions
+using .Generation
 using .Enumeration
 
 export run_enumeration,
