@@ -4,6 +4,7 @@ using ..Utils
 
 export ProgramType, function_arguments
 
+# TODO:: rename to TypeConstructor, and add TypeVariable
 mutable struct ProgramType
     constructor::String
     arguments::Array{ProgramType,1}

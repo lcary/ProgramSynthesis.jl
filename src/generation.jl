@@ -18,7 +18,8 @@ end
 Context() = Context(0, [])
 
 function apply(t::ProgramType, c::Context)
-    return true  # TODO: implement
+    # TODO: implement for TypeVariables too
+    return t
 end
 
 function Base.show(io::IO, c::Context)
@@ -47,6 +48,15 @@ struct EnumerateFrame <: Frame
     parent::Union{Frame, Nothing}  # TODO: might only need parent's logProbability, not entire parent object reference
 end
 
+function convert_arrow(f::EnumerateFrame)::EnumerateFrame
+    lhs = f.type.arguments[1]
+    rhs = f.type.arguments[2]
+    env = append!([lhs], f.env)
+    upper = f.upper_bound
+    lower = f.lower_bound
+    return EnumerateFrame(f.context, env, rhs, upper, lower, f.depth, nothing)
+end
+
 struct EnumerateAppFrame <: Frame
     context::Context
     env::Any  # TODO: use specific type
@@ -57,6 +67,7 @@ struct EnumerateAppFrame <: Frame
     depth::Int
     argument_index::Int
     parent::Union{Frame, Nothing}  # TODO: might only need parent's logProbability, not entire parent object reference
+    original_func::Any  # TODO: use specific type
 end
 
 struct Candidate
@@ -73,8 +84,27 @@ function EnumerateAppFrame(c::Candidate, f::EnumerateFrame)
     new_depth = f.depth - 1
     return EnumerateAppFrame(
         c.context, f.env, c.program, func_args,
-        new_upper, new_lower, new_depth, 0, f)
+        new_upper, new_lower, new_depth, 0, f, c.program)
 end
+
+function EnumerateFrame(f::EnumerateAppFrame)  # TODO: improve func type
+    new_func = Application(f.func, f.parent.type)
+    arg_request = apply(f.func_args[1], f.context)
+    later_requests = f.func_args[2:end]
+    return EnumerateFrame(
+        f.context, f.env, arg_request,
+        f.upper_bound, 0.0, f.depth, f)
+end
+
+# function EnumerateAppFrame(f::EnumerateAppFrame)
+#     func_args = function_arguments(c.type)
+#     new_upper = f.upper_bound + c.log_probability
+#     new_lower = f.lower_bound + c.log_probability
+#     new_depth = f.depth - 1
+#     return EnumerateAppFrame(
+#         c.context, f.env, c.program, func_args,
+#         new_upper, new_lower, new_depth, 0, f, f.func)
+# end
 
 function build_candidates(grammar::Grammar, frame::Frame)::Array{Candidate}
     type, context, env = frame.type, frame.context, frame.env
@@ -126,15 +156,6 @@ function all_invalid(candidates::Array{Candidate}, upper_bound::Float64)::Bool
     return false
 end
 
-function convert_arrow(f::EnumerateFrame)::EnumerateFrame
-    lhs = f.type.arguments[1]
-    rhs = f.type.arguments[2]
-    env = append!([lhs], f.env)
-    upper = f.upper_bound
-    lower = f.lower_bound
-    return EnumerateFrame(f.context, env, rhs, upper, lower, f.depth, nothing)
-end
-
 struct InvalidFrameType <: Exception end
 
 function add_candidates!(queue::Stack{Frame}, g::Grammar, f::EnumerateFrame)
@@ -148,6 +169,11 @@ function add_candidates!(queue::Stack{Frame}, g::Grammar, f::EnumerateFrame)
             push!(queue, EnumerateAppFrame(c, f))
         end
     end
+end
+
+function is_symmetrical(f::EnumerateAppFrame)
+    println("TODO: actually implement is_symmetrical()!")
+    return true
 end
 
 function generator(
@@ -186,19 +212,20 @@ function generator(
                 if f.lower_bound <= 0.0 && f.upper_bound > 0.0
                     # TODO: verify that the program is always sent to the outside in this case in actual dreamcoder
                     put!(channel, Result(1.0, Abstraction(f.func), Context()))  # TODO: use actual log_probability calculation!
+                    continue
                 else
                     # Reject this enumerate application frame
                     continue
                 end
+            else
+                if !is_symmetrical(f)
+                    continue
+                end
+                push!(queue, EnumerateFrame(f))
             end
-            println("TODO: other EnumerateAppFrame logic")
         else
             throw(InvalidFrameType)
         end
-
-        # if f.enumerate_application
-        #
-        # else
     end
 end
 

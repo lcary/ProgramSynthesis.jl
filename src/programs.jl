@@ -8,7 +8,8 @@ export Program,
        can_solve,
        try_solve,
        AbstractProgram,
-       Abstraction
+       Abstraction,
+       Application
 
 abstract type AbstractProgram end
 
@@ -84,12 +85,19 @@ function evaluate(program::Program, env::Any)
     return program
 end
 
+# TODO: docstring
 mutable struct Abstraction <: AbstractProgram
     body::Any  # TODO: improve type
 end
 
 function evaluate(program::Abstraction, env::Any)
     return (x) -> program.body.evaluate([x] + env)
+end
+
+# TODO: docstring
+mutable struct Application <: AbstractProgram
+    func::Any  # TODO: improve type
+    args::Any  # TODO: improve type
 end
 
 end
