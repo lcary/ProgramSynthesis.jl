@@ -77,6 +77,8 @@ function Program(prog::String)
     )
 end
 
+Base.show(io::IO, p::Program) = print(io, p.source)
+
 # TODO: implement
 function evaluate(program::Program, env::Any)
     return program
@@ -89,6 +91,5 @@ end
 function evaluate(program::Abstraction, env::Any)
     return (x) -> program.body.evaluate([x] + env)
 end
-
 
 end

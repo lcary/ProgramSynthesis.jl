@@ -30,6 +30,7 @@ export run_enumeration,
        Solution,
        priority,
        json_format,
-       is_explored
+       is_explored,
+       generator
 
 end
