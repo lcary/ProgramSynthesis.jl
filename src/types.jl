@@ -2,7 +2,7 @@ module Types
 
 using ..Utils
 
-export ProgramType
+export ProgramType, function_arguments
 
 mutable struct ProgramType
     constructor::String
@@ -49,5 +49,14 @@ function tostr(t::ProgramType)
 end
 
 Base.show(io::IO, t::ProgramType) = print(io, tostr(t))
+
+function function_arguments(t::ProgramType)
+    if is_arrow(t)
+        arg1 = t.arguments[1]
+        args = function_arguments(t.arguments[2])
+        return append!([arg1], args)
+    end
+    return []
+end
 
 end

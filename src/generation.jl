@@ -44,18 +44,19 @@ struct EnumerateFrame <: Frame
     upper_bound::Float64
     lower_bound::Float64
     depth::Int
+    parent::Union{Frame, Nothing}
 end
 
 struct EnumerateAppFrame <: Frame
     context::Context
     env::Any  # TODO: use specific type
     func::Any  # TODO: use specific type
-    argument_requests::Array{ProgramType}
+    func_args::Array{ProgramType}
     upper_bound::Float64
     lower_bound::Float64
     depth::Int
-    original_function::Any # TODO: use specific type
     argument_index::Int
+    parent::Union{Frame, Nothing}
 end
 
 struct Candidate
@@ -98,7 +99,7 @@ function convert_arrow(f::EnumerateFrame)::EnumerateFrame
     env = append!([lhs], f.env)
     upper = f.upper_bound
     lower = f.lower_bound
-    return EnumerateFrame(f.context, env, rhs, upper, lower, f.depth)
+    return EnumerateFrame(f.context, env, rhs, upper, lower, f.depth, nothing)
 end
 
 function generator(
@@ -112,8 +113,11 @@ function generator(
     queue = Stack{Frame}()
     push!(queue, initial_frame)
 
+    counter = 0
     while !isempty(queue)
+        counter += 1
         f = pop!(queue)
+        println("frame #$counter: $f")
 
         if f.upper_bound < 0.0 || f.depth <= 1
             continue
@@ -121,22 +125,30 @@ function generator(
 
         if isa(f, EnumerateFrame)
             if Types.is_arrow(f.type)
+                println("convert arrow")
                 push!(queue, convert_arrow(f))
             else
                 candidates = build_candidates(grammar, f)
                 if all_invalid(candidates, f.upper_bound)
+                    println("All invalid!")
                     continue
                 end
                 for c in candidates
                     if valid(c, f.upper_bound)
-                        print("TODO")
+                        func_args = function_arguments(c.type)
+                        new_upper = f.upper_bound + c.log_probability
+                        new_lower = f.lower_bound + c.log_probability
+                        new_frame = EnumerateAppFrame(
+                            c.context, f.env, c.program, func_args,
+                            new_upper, new_lower, f.depth - 1, 0, f)
+                        push!(queue, new_frame)
                     end
                 end
             end
         elseif isa(f, EnumerateAppFrame)
             println("whoa")
         else
-            println(f.context, " ", f.env, " ", f.argument_requests)
+            println(f.context, " ", f.env, " ", f.func_args)
         end
 
         # if f.enumerate_application
@@ -160,7 +172,8 @@ function generator(
         type,
         upper_bound,
         lower_bound,
-        max_depth
+        max_depth,
+        nothing
     )
     return Channel((channel) -> generator(channel, grammar, frame))
 end

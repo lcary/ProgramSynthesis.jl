@@ -15,7 +15,7 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
         grammar = Grammar(data["DSL"])
         problems = map(Problem, data["tasks"])
         type = problems[1].type
-        r = generator(grammar, [], type, 1.5, 0.0, 99)
+        r = generator(grammar, [], type, 6.0, 4.5, 99)
         r1 = take!(r)
         println(r1)
         @test true  # TODO: add actual tests
