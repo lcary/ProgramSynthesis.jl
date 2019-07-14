@@ -8,8 +8,6 @@ using ..Programs
 
 export generator, Result, Context, generator
 
-abstract type Frame end
-
 struct Context
     next_variable::Int
     substitution::Array{Tuple}
@@ -24,10 +22,7 @@ end
 
 function Base.show(io::IO, c::Context)
     n = c.next_variable
-    # TODO: replace substr with next line when apply is defined
-    substr = []
-    # substr = ["t$a ||> $b" for (a, b) in c.substitution]
-    # substr = ["t$a ||> $b" for (a, apply(b, c)) in c.substitution]
+    substr = ["t$a ||> $b" for (a, apply(b, c)) in c.substitution]
     s = join(substr, ", ")
     print(io, "Context(next = $n, {$s}")
 end
@@ -38,6 +33,17 @@ struct Result
     context::Context
 end
 
+abstract type Frame end
+
+struct FrameMetadata
+    recurse::Bool
+    outer_args::Union{Array{ProgramType}, Nothing}  # TODO: use specific type
+    outer_upper::Union{Float64, Nothing}
+    outer_lower::Union{Float64, Nothing}
+end
+
+FrameMetadata() = FrameMetadata(false, nothing, nothing, nothing)
+
 struct EnumerateFrame <: Frame
     context::Context
     env::Any  # TODO: use specific type
@@ -46,6 +52,7 @@ struct EnumerateFrame <: Frame
     lower_bound::Float64
     depth::Int
     parent::Union{Frame, Nothing}  # TODO: might only need parent's logProbability, not entire parent object reference
+    metadata::FrameMetadata
 end
 
 function convert_arrow(f::EnumerateFrame)::EnumerateFrame
@@ -54,7 +61,9 @@ function convert_arrow(f::EnumerateFrame)::EnumerateFrame
     env = append!([lhs], f.env)
     upper = f.upper_bound
     lower = f.lower_bound
-    return EnumerateFrame(f.context, env, rhs, upper, lower, f.depth, nothing)
+    return EnumerateFrame(
+        f.context, env, rhs, upper, lower,
+        f.depth, f.parent, f.metadata)
 end
 
 struct EnumerateAppFrame <: Frame
@@ -68,6 +77,7 @@ struct EnumerateAppFrame <: Frame
     argument_index::Int
     parent::Union{Frame, Nothing}  # TODO: might only need parent's logProbability, not entire parent object reference
     original_func::Any  # TODO: use specific type
+    metadata::FrameMetadata
 end
 
 struct Candidate
@@ -84,27 +94,32 @@ function EnumerateAppFrame(c::Candidate, f::EnumerateFrame)
     new_depth = f.depth - 1
     return EnumerateAppFrame(
         c.context, f.env, c.program, func_args,
-        new_upper, new_lower, new_depth, 0, f, c.program)
+        new_upper, new_lower, new_depth, 0, f, c.program,
+        f.metadata)
 end
 
 function EnumerateFrame(f::EnumerateAppFrame)  # TODO: improve func type
-    new_func = Application(f.func, f.parent.type)
     arg_request = apply(f.func_args[1], f.context)
-    later_requests = f.func_args[2:end]
+    outer_args = f.func_args[2:end]
+    metadata = FrameMetadata(
+        true, outer_args,
+        f.upper_bound, f.lower_bound)
     return EnumerateFrame(
         f.context, f.env, arg_request,
-        f.upper_bound, 0.0, f.depth, f)
+        f.upper_bound, 0.0, f.depth, f, metadata)
 end
 
-# function EnumerateAppFrame(f::EnumerateAppFrame)
-#     func_args = function_arguments(c.type)
-#     new_upper = f.upper_bound + c.log_probability
-#     new_lower = f.lower_bound + c.log_probability
-#     new_depth = f.depth - 1
-#     return EnumerateAppFrame(
-#         c.context, f.env, c.program, func_args,
-#         new_upper, new_lower, new_depth, 0, f, f.func)
-# end
+function EnumerateAppFrame(f::EnumerateAppFrame)
+    new_func = Application(f.func, f.parent.type)
+    new_upper = f.metadata.outer_upper + 0.0  # TODO: verify if the outer log log_probability is ever non-zero
+    new_lower = f.metadata.outer_lower + 0.0  # TODO: verify if the outer log log_probability is ever non-zero
+    new_arg_index = f.argument_index + 1
+    return EnumerateAppFrame(
+        f.context, f.env, new_func,
+        f.metadata.outer_args,
+        new_upper, new_lower, f.depth, new_arg_index,
+        f, f.func, FrameMetadata())  # TODO: use original_func from outer EnumerateAppFrame
+end
 
 function build_candidates(grammar::Grammar, frame::Frame)::Array{Candidate}
     type, context, env = frame.type, frame.context, frame.env
@@ -139,6 +154,10 @@ function build_candidates(grammar::Grammar, frame::Frame)::Array{Candidate}
     d3 = Dict("constructor" => "int", "arguments" => [])
     t3 = ProgramType(d3)
     push!(candidates, Candidate(l, t3, Program("0"), Context(1, [])))
+
+    # d4 = Dict("constructor" => "list(t1)", "arguments" => [])
+    # t4 = ProgramType(d4)
+    # push!(candidates, Candidate(l, t4, Program("empty"), Context(2, [(t0, t1)])))
 
     return candidates
 end
@@ -210,17 +229,21 @@ function generator(
         elseif isa(f, EnumerateAppFrame)
             if f.func_args == []
                 if f.lower_bound <= 0.0 && f.upper_bound > 0.0
-                    # TODO: verify that the program is always sent to the outside in this case in actual dreamcoder
-                    put!(channel, Result(1.0, Abstraction(f.func), Context()))  # TODO: use actual log_probability calculation!
-                    continue
+                    if f.metadata.recurse
+                        if !is_symmetrical(f)
+                            continue
+                        end
+                        push!(queue, EnumerateAppFrame(f))
+                    else
+                        # TODO: verify that the program is always sent to the outside in this case in actual dreamcoder
+                        put!(channel, Result(1.0, Abstraction(f.func), Context()))  # TODO: use actual log_probability calculation!
+                        continue
+                    end
                 else
                     # Reject this enumerate application frame
                     continue
                 end
             else
-                if !is_symmetrical(f)
-                    continue
-                end
                 push!(queue, EnumerateFrame(f))
             end
         else
@@ -244,7 +267,8 @@ function generator(
         upper_bound,
         lower_bound,
         max_depth,
-        nothing
+        nothing,
+        FrameMetadata()
     )
     return Channel((channel) -> generator(channel, grammar, frame))
 end
