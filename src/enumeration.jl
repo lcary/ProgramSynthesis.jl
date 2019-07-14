@@ -76,8 +76,8 @@ abstract type Frame end
 
 struct EnumerateFrame <: Frame
     context::Context
-    environment::Any  # TODO: use specific type
-    request_type::ProgramType
+    env::Any  # TODO: use specific type
+    type::ProgramType
     upper_bound::Float64
     lower_bound::Float64
     depth::Int
@@ -85,7 +85,7 @@ end
 
 struct EnumerateAppFrame <: Frame
     context::Context
-    environment::Any  # TODO: use specific type
+    env::Any  # TODO: use specific type
     func::Any  # TODO: use specific type
     argument_requests::Array{ProgramType}
     upper_bound::Float64
@@ -93,6 +93,41 @@ struct EnumerateAppFrame <: Frame
     depth::Int
     original_function::Any # TODO: use specific type
     argument_index::Int
+end
+
+struct Candidate
+    log_probability::Float64
+    type::ProgramType
+    program::Program
+    context::Context
+end
+
+function build_candidates(grammar::Grammar, frame::Frame)::Array{Candidate}
+    type, context, env = frame.type, frame.context, frame.env
+    candidates = Array{Candidate}([])
+    return candidates
+end
+
+function valid(c::Candidate, upper_bound::Float64)::Bool
+    return -c.log_probability < upper_bound
+end
+
+function all_invalid(candidates::Array{Candidate}, upper_bound::Float64)::Bool
+    for c in candidates
+        if !valid(c, upperBound)
+            return true
+        end
+    end
+    return false
+end
+
+function convert_arrow_frame(f::EnumerateFrame)::EnumerateFrame
+    lhs = f.type.arguments[1]
+    rhs = f.type.arguments[2]
+    env = append!([lhs], f.env)
+    upper = f.upper_bound
+    lower = f.lower_bound
+    return EnumerateFrame(f.context, env, rhs, upper, lower, f.depth)
 end
 
 function shadow_enumeration(
@@ -109,28 +144,26 @@ function shadow_enumeration(
         f = pop!(queue)
 
         if f.upper_bound < 0.0 || f.depth <= 1
-            break
+            continue
         end
 
-        # DEBUG:
         if isa(f, EnumerateFrame)
-            println(f.context, " ", f.environment, " ", f.request_type)
-            if Types.is_arrow(f.request_type)
-                lhs = f.request_type.arguments[1]
-                rhs = f.request_type.arguments[2]
-                new_env = append!([lhs], f.environment)
-                new_f = EnumerateFrame(
-                    f.context,
-                    new_env,
-                    rhs,
-                    f.upper_bound,
-                    f.lower_bound,
-                    f.depth
-                )
-                push!(queue, new_f)
+            println(f.context, " ", f.env, " ", f.type)
+            if Types.is_arrow(f.type)
+                push!(queue, convert_arrow_frame(f))
+            else
+                candidates = build_candidates(grammar, f)
+                if all_invalid(candidates, f.upper_bound)
+                    continue
+                end
+                for c in candidates
+                    if valid(c, f.upper_bound)
+                        print("TODO")
+                    end
+                end
             end
         else
-            println(f.context, " ", f.environment, " ", f.argument_requests)
+            println(f.context, " ", f.env, " ", f.argument_requests)
         end
 
         # if f.enumerate_application
@@ -143,15 +176,15 @@ end
 
 function shadow_generate_results(
     request::Request,
-    environment::Array{Any},  # TODO: improve type
-    request_type::ProgramType,
+    env::Array{Any},  # TODO: improve type
+    type::ProgramType,
     upper_bound::Float64,
     lower_bound::Float64
 )
     frame = EnumerateFrame(
         Context(),
-        environment,
-        request_type,
+        env,
+        type,
         upper_bound,
         lower_bound,
         request.max_depth
