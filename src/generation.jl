@@ -66,6 +66,16 @@ struct Candidate
     context::Context
 end
 
+function EnumerateAppFrame(c::Candidate, f::EnumerateFrame)
+    func_args = function_arguments(c.type)
+    new_upper = f.upper_bound + c.log_probability
+    new_lower = f.lower_bound + c.log_probability
+    new_depth = f.depth - 1
+    return EnumerateAppFrame(
+        c.context, f.env, c.program, func_args,
+        new_upper, new_lower, new_depth, 0, f)
+end
+
 function build_candidates(grammar::Grammar, frame::Frame)::Array{Candidate}
     type, context, env = frame.type, frame.context, frame.env
     candidates = Array{Candidate}([])
@@ -125,6 +135,21 @@ function convert_arrow(f::EnumerateFrame)::EnumerateFrame
     return EnumerateFrame(f.context, env, rhs, upper, lower, f.depth, nothing)
 end
 
+struct InvalidFrameType <: Exception end
+
+function add_candidates!(queue::Stack{Frame}, g::Grammar, f::EnumerateFrame)
+    candidates = build_candidates(g, f)
+    if all_invalid(candidates, f.upper_bound)
+        println("All invalid!")
+        return
+    end
+    for c in candidates
+        if valid(c, f.upper_bound)
+            push!(queue, EnumerateAppFrame(c, f))
+        end
+    end
+end
+
 function generator(
     channel::Channel,
     grammar::Grammar,
@@ -151,29 +176,16 @@ function generator(
         if isa(f, EnumerateFrame)
             if Types.is_arrow(f.type)
                 push!(queue, convert_arrow(f))
+                continue
             else
-                candidates = build_candidates(grammar, f)
-                if all_invalid(candidates, f.upper_bound)
-                    println("All invalid!")
-                    continue
-                end
-                for c in candidates
-                    if valid(c, f.upper_bound)
-                        func_args = function_arguments(c.type)
-                        new_upper = f.upper_bound + c.log_probability
-                        new_lower = f.lower_bound + c.log_probability
-                        new_frame = EnumerateAppFrame(
-                            c.context, f.env, c.program, func_args,
-                            new_upper, new_lower, f.depth - 1, 0, f)
-                        push!(queue, new_frame)
-                    end
-                end
+                add_candidates!(queue, grammar, f)
+                continue
             end
         elseif isa(f, EnumerateAppFrame)
             if f.func_args == []
                 if f.lower_bound <= 0.0 && f.upper_bound > 0.0
                     # TODO: verify that the program is always sent to the outside in this case in actual dreamcoder
-                    put!(channel, Result(1.0, f.func, Context()))  # TODO: use actual log_probability calculation!
+                    put!(channel, Result(1.0, Abstraction(f.func), Context()))  # TODO: use actual log_probability calculation!
                 else
                     # Reject this enumerate application frame
                     continue
@@ -181,8 +193,7 @@ function generator(
             end
             println("TODO: other EnumerateAppFrame logic")
         else
-            println("other frame?")
-            println(f.context, " ", f.env, " ", f.func_args)
+            throw(InvalidFrameType)
         end
 
         # if f.enumerate_application
