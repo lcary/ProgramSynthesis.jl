@@ -50,7 +50,7 @@ end
 
 Base.show(io::IO, t::ProgramType) = print(io, tostr(t))
 
-function function_arguments(t::ProgramType)
+function function_arguments(t::ProgramType)::Array{ProgramType}
     if is_arrow(t)
         arg1 = t.arguments[1]
         args = function_arguments(t.arguments[2])

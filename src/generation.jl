@@ -44,7 +44,7 @@ struct EnumerateFrame <: Frame
     upper_bound::Float64
     lower_bound::Float64
     depth::Int
-    parent::Union{Frame, Nothing}
+    parent::Union{Frame, Nothing}  # TODO: might only need parent's logProbability, not entire parent object reference
 end
 
 struct EnumerateAppFrame <: Frame
@@ -56,7 +56,7 @@ struct EnumerateAppFrame <: Frame
     lower_bound::Float64
     depth::Int
     argument_index::Int
-    parent::Union{Frame, Nothing}
+    parent::Union{Frame, Nothing}  # TODO: might only need parent's logProbability, not entire parent object reference
 end
 
 struct Candidate
@@ -69,14 +69,37 @@ end
 function build_candidates(grammar::Grammar, frame::Frame)::Array{Candidate}
     type, context, env = frame.type, frame.context, frame.env
     candidates = Array{Candidate}([])
+
+    # TODO: replace with actual logic
     l = -2.3978952727983707
-    # !push(candidates, Candidate(l, , Context(1, [("t0", "int")])))
-    # "(-2.3978952727983707, int -> list(int) -> int, index, Context(next = 1, {t0 ||> int}))"
-    # !push(candidates, Candidate(l, , Context(2, [("t1", "int")]))
-    # "(-2.3978952727983707, list(t0) -> int -> (t0 -> int -> int) -> int, fold, Context(next = 2, {t1 ||> int}))"
-    d = Dict("constructor" => "->", "arguments" => [Dict("constructor" => "list(t0)", "arguments" => []), Dict("constructor" => "int", "arguments" => [])])
-    t3 = ProgramType(d)
-    push!(candidates, Candidate(l, t3, Program("index"), Context(1, [])))
+
+    d1 = Dict(
+        "constructor" => "->", "arguments" => [
+            Dict("constructor" => "int", "arguments" => []),
+            Dict(
+                "constructor" => "->", "arguments" => [
+                    Dict("constructor" => "list(int)", "arguments" => []),
+                    Dict("constructor" => "int", "arguments" => [])
+                ]
+            )
+        ]
+    )
+    t1 = ProgramType(d1)
+    push!(candidates, Candidate(l, t1, Program("index"), Context(1, [])))
+
+    d2 = Dict(
+        "constructor" => "->", "arguments" => [
+            Dict("constructor" => "list(t0)", "arguments" => []),
+            Dict("constructor" => "int", "arguments" => [])
+        ]
+    )
+    t2 = ProgramType(d2)
+    push!(candidates, Candidate(l, t2, Program("length"), Context(1, [])))
+
+    d3 = Dict("constructor" => "int", "arguments" => [])
+    t3 = ProgramType(d3)
+    push!(candidates, Candidate(l, t3, Program("0"), Context(1, [])))
+
     return candidates
 end
 
@@ -117,7 +140,9 @@ function generator(
     while !isempty(queue)
         counter += 1
         f = pop!(queue)
-        println("frame #$counter: $f")
+
+        # DEBUG:
+        # println("frame #$counter: $f")
 
         if f.upper_bound < 0.0 || f.depth <= 1
             continue
@@ -125,7 +150,6 @@ function generator(
 
         if isa(f, EnumerateFrame)
             if Types.is_arrow(f.type)
-                println("convert arrow")
                 push!(queue, convert_arrow(f))
             else
                 candidates = build_candidates(grammar, f)
@@ -146,8 +170,18 @@ function generator(
                 end
             end
         elseif isa(f, EnumerateAppFrame)
-            println("whoa")
+            if f.func_args == []
+                if f.lower_bound <= 0.0 && f.upper_bound > 0.0
+                    # TODO: verify that the program is always sent to the outside in this case in actual dreamcoder
+                    put!(channel, Result(1.0, f.func, Context()))  # TODO: use actual log_probability calculation!
+                else
+                    # Reject this enumerate application frame
+                    continue
+                end
+            end
+            println("TODO: other EnumerateAppFrame logic")
         else
+            println("other frame?")
             println(f.context, " ", f.env, " ", f.func_args)
         end
 
@@ -155,7 +189,6 @@ function generator(
         #
         # else
     end
-    put!(channel, Result(1.0, grammar.library[1].program, Context()))
 end
 
 function generator(
