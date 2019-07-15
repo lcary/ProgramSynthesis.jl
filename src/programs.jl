@@ -100,4 +100,8 @@ mutable struct Application <: AbstractProgram
     args::Any  # TODO: improve type
 end
 
+function Base.show(io::IO, p::Application)
+    print(io, "Application($(p.func), args=$(p.args))")
+end
+
 end

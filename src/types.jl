@@ -14,6 +14,8 @@ mutable struct ProgramType
     end
 end
 
+ProgramType(c::String) = ProgramType(c, [], nothing)
+
 function ProgramType(data::Dict{String,Any})
     return ProgramType(
         data["constructor"],
@@ -50,6 +52,11 @@ function tostr(t::ProgramType)
 end
 
 Base.show(io::IO, t::ProgramType) = print(io, tostr(t))
+
+function Base.show(io::IO, a::Array{ProgramType})
+    t = join([tostr(i) for i in a], ", ")
+    print(io, "[$t]")
+end
 
 function function_arguments(t::ProgramType)::Array{ProgramType}
     if is_arrow(t)

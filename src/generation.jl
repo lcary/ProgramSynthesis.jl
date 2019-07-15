@@ -15,16 +15,17 @@ end
 
 Context() = Context(0, [])
 
-function apply(t::ProgramType, c::Context)
+function apply(type::ProgramType, context::Context)
     # TODO: implement for TypeVariables too
-    return t
+    return type
 end
 
 function Base.show(io::IO, context::Context)
     n = context.next_variable
-    substr = ["t$a ||> $b" for (a, apply(b, c)) in context.substitution]
+    pairs = [(a, apply(b, context)) for (a, b) in context.substitution]
+    substr = ["$a ||> $b" for (a, b) in pairs]
     s = join(substr, ", ")
-    print(io, "Context(next = $n, {$s}")
+    print(io, "Context(next=$n, {$s})")
 end
 
 struct Result
@@ -55,6 +56,17 @@ struct ProgramState <: State
     metadata::StateMetadata
 end
 
+function Base.show(io::IO, state::ProgramState)
+    cls = "ProgramState"
+    t = state.type
+    e = state.env
+    c = state.context
+    u = round(state.upper_bound, digits=3)
+    l = round(state.lower_bound, digits=3)
+    d = state.depth
+    print(io, "$cls($t, env=$e, $c, upper=$u, lower=$l, depth=$d)")
+end
+
 function convert_arrow(state::ProgramState)::ProgramState
     lhs = state.type.arguments[1]
     rhs = state.type.arguments[2]
@@ -78,6 +90,18 @@ struct ApplicationState <: State
     previous_state::Union{State, Nothing}  # TODO: might only need previous_state's logProbability, not entire previous_state object reference
     original_func::Any  # TODO: use specific type
     metadata::StateMetadata
+end
+
+function Base.show(io::IO, state::ApplicationState)
+    cls = "ApplicationState"
+    f = state.func
+    a = state.func_args
+    e = state.env
+    c = state.context
+    u = round(state.upper_bound, digits=3)
+    l = round(state.lower_bound, digits=3)
+    d = state.depth
+    print(io, "$cls($f, args=$a, env=$e, $c, upper=$u, lower=$l, depth=$d)")
 end
 
 struct Candidate
@@ -152,9 +176,9 @@ function build_candidates(grammar::Grammar, state::State)::Array{Candidate}
     t3 = ProgramType(Dict("constructor" => "int", "arguments" => []))
     push!(candidates, Candidate(l, t3, Program("0"), Context(1, [])))
 
-    # t4 = ProgramType(("constructor" => "list(t1)", "arguments" => []))
-    # t4 = ProgramType(d4)
-    # push!(candidates, Candidate(l, t4, Program("empty"), Context(2, [(t0, t1)])))
+    # t4 = ProgramType(Dict("constructor" => "list(t1)", "arguments" => []))
+    # ctx = Context(2, [(ProgramType("t0"), ProgramType("t1"))])
+    # push!(candidates, Candidate(l, t4, Program("empty"), ctx))
 
     return candidates
 end
@@ -181,7 +205,7 @@ function add_candidates!(
 )
     candidates = build_candidates(grammar, state)
     if all_invalid(candidates, state.upper_bound)
-        println("All invalid!")
+        # println("all invalid")
         return
     end
     for c in candidates
@@ -192,7 +216,7 @@ function add_candidates!(
 end
 
 function is_symmetrical(s::ApplicationState)
-    println("TODO: actually implement is_symmetrical()!")
+    # TODO: add implementation
     return true
 end
 
@@ -240,7 +264,8 @@ end
 function generator(
     results::Channel,
     grammar::Grammar,
-    initial::ProgramState
+    initial::ProgramState,
+    debug::Bool=false
 )
     requests = Stack{State}()
     push!(requests, initial)
@@ -250,14 +275,13 @@ function generator(
         counter += 1
         state = pop!(requests)
 
-        # DEBUG:
-        # println("state #$counter: $s")
+        if debug
+            println("state #$counter: $state")
+        end
 
         if state.upper_bound < 0.0 || state.depth <= 1
             continue
-        end
-
-        if isa(state, ProgramState)
+        elseif isa(state, ProgramState)
             process_program_state!(requests, grammar, state)
         elseif isa(state, ApplicationState)
             process_application_state!(results, requests, grammar, state)
@@ -273,7 +297,8 @@ function generator(
     type::ProgramType,
     upper_bound::Float64,
     lower_bound::Float64,
-    max_depth::Int
+    max_depth::Int,
+    debug::Bool=false
 )
     state = ProgramState(
         Context(),
