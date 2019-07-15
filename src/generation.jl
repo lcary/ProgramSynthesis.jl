@@ -18,9 +18,9 @@ abstract type State end
 
 struct StateMetadata
     recurse::Bool
-    outer_args::Union{Array{ProgramType}, Nothing}  # TODO: use specific type
-    outer_upper::Union{Float64, Nothing}
-    outer_lower::Union{Float64, Nothing}
+    outer_args::Union{Array{ProgramType},Nothing}  # TODO: use specific type
+    outer_upper::Union{Float64,Nothing}
+    outer_lower::Union{Float64,Nothing}
 end
 
 StateMetadata() = StateMetadata(false, nothing, nothing, nothing)
@@ -32,7 +32,7 @@ struct ProgramState <: State
     upper_bound::Float64
     lower_bound::Float64
     depth::Int
-    previous_state::Union{State, Nothing}  # TODO: might only need previous_state's logProbability, not entire previous_state object reference
+    previous_state::Union{State,Nothing}  # TODO: might only need previous_state's logProbability, not entire previous_state object reference
     metadata::StateMetadata
 end
 
@@ -50,7 +50,8 @@ end
 function convert_arrow(state::ProgramState)::ProgramState
     lhs = state.type.arguments[1]
     rhs = state.type.arguments[2]
-    env = append!([lhs], state.env)
+    env1 = Array{Union{TypeConstructor,TypeVariable}}([lhs])  # TODO: better UnionAll syntax?
+    env = append!(env1, state.env)
     upper = state.upper_bound
     lower = state.lower_bound
     return ProgramState(
@@ -126,24 +127,17 @@ function to_application(state::ApplicationState)
 end
 
 function build_candidates(grammar::Grammar, state::State)::Array{Candidate}
-    type, context, env = state.type, state.context, state.env
+    type = state.type
+    context = state.context
+    env = state.env
     candidates = Array{Candidate}([])
 
-    # TODO: replace with actual logic
-    l = -2.3978952727983707
-
-    p1 = Program("index", grammar.primitives)
-    push!(candidates, Candidate(l, p1.type, p1, Context(1, [])))
-
-    p2 = Program("length", grammar.primitives)
-    push!(candidates, Candidate(l, p2.type, p2, Context(1, [])))
-
-    p3 = Program("0", grammar.primitives)
-    push!(candidates, Candidate(l, p3.type, p3, Context(1, [])))
-
-    # t4 = TypeConstructor(Dict("constructor" => "list(t1)", "arguments" => []))
-    # ctx = Context(2, [(TypeConstructor("t0"), TypeConstructor("t1"))])
-    # push!(candidates, Candidate(l, t4, Program("empty", grammar.primitives), ctx))
+    for p in grammar.productions
+        # TODO: replace with actual logic
+        l = p.log_probability
+        prog = p.program
+        push!(candidates, Candidate(l, prog.type, prog, Context(1, [])))
+    end
 
     return candidates
 end
@@ -170,7 +164,6 @@ function add_candidates!(
 )
     candidates = build_candidates(grammar, state)
     if all_invalid(candidates, state.upper_bound)
-        # println("all invalid")
         return
     end
     for c in candidates

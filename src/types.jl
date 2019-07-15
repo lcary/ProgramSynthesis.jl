@@ -3,6 +3,7 @@ module Types
 using ..Utils
 
 export TypeConstructor,
+       TypeVariable,
        ProgramType,
        Context, apply,
        function_arguments,
@@ -116,11 +117,19 @@ function Base.show(io::IO, a::Array{TypeConstructor})
     print(io, "[$t]")
 end
 
-function function_arguments(t::TypeConstructor)::Array{TypeConstructor}
+# function function_arguments(t::TypeVariable)::Array{TypeVariable}
+#     println("function_arguments(TypeVariable) ", t)
+#     return []
+# end
+
+function function_arguments(t::ProgramType)::Array{ProgramType}
     if is_arrow(t)
+        args = Array{Union{TypeConstructor,TypeVariable}}([])  # TODO: better UnionAll syntax?
         arg1 = t.arguments[1]
-        args = function_arguments(t.arguments[2])
-        return append!([arg1], args)
+        arg2 = function_arguments(t.arguments[2])
+        push!(args, arg1)
+        append!(args, arg2)
+        return args
     end
     return []
 end
@@ -133,7 +142,15 @@ end
 Context() = Context(0, [])
 
 function apply(type::TypeConstructor, context::Context)
-    # TODO: implement for TypeVariables too
+    return type
+end
+
+function apply(type::TypeVariable, context::Context)
+    for (v, t) in context.substitution
+        if v == type.value
+            return apply(t, context)
+        end
+    end
     return type
 end
 

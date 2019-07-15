@@ -16,7 +16,7 @@ const TEST_FILE4 = get_resource("request_enumeration_example_4.json")
         json_data = JSON.parsefile(TEST_FILE1)
         enum_data = Request(json_data)
 
-        @test length(enum_data.grammar.library) == 22
+        @test length(enum_data.grammar.productions) == 22
         @test length(enum_data.problems) == 7
         @test enum_data.problems[1].name == "drop-k with k=3"
         @test length(enum_data.problems[1].examples) == 15
@@ -32,7 +32,7 @@ const TEST_FILE4 = get_resource("request_enumeration_example_4.json")
         json_data = JSON.parsefile(TEST_FILE2)
         enum_data = Request(json_data)
 
-        @test length(enum_data.grammar.library) == 22
+        @test length(enum_data.grammar.productions) == 22
         @test length(enum_data.problems) == 2
         @test enum_data.problems[1].name == "kth-largest with k=1"
         @test length(enum_data.problems[1].examples) == 15
@@ -48,7 +48,7 @@ const TEST_FILE4 = get_resource("request_enumeration_example_4.json")
         json_data = JSON.parsefile(TEST_FILE4)
         enum_data = Request(json_data)
 
-        @test length(enum_data.grammar.library) == 22
+        @test length(enum_data.grammar.productions) == 22
         @test length(enum_data.problems) == 1
         @test enum_data.problems[1].name == "has-k with k=2"
         @test length(enum_data.problems[1].examples) == 15

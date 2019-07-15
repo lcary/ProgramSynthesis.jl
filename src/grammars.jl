@@ -20,7 +20,7 @@ end
 
 mutable struct Grammar
     primitives::Dict{String,Primitive}
-    library::Array{Production}
+    productions::Array{Production}
     log_variable::Float64
     continuation_type::Union{ProgramType,Nothing}
 end

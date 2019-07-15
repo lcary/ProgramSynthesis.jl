@@ -80,7 +80,7 @@ function enumeration(
     if upper_bound < 0 || depth == 1
         return
     end
-    for p in grammar.library
+    for p in grammar.productions
         put!(channel, Result(0.0, p.program, context))
     end
 end
@@ -168,6 +168,7 @@ function run_enumeration(request::Request)::Dict{String,Any}
             if time() > start + request.program_timeout
                 println("timeout exceeded during generation.")
                 timeout_exceeded = true
+                break
             end
         end
         if timeout_exceeded

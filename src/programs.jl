@@ -61,7 +61,7 @@ end
 struct Primitive <: AbstractProgram
     name::String
     type::ProgramType
-    func::Any  # TODO: fix type
+    func::Any  # TODO: use Function type
 end
 
 mutable struct Program <: AbstractProgram
