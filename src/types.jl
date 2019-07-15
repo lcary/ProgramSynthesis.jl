@@ -19,6 +19,7 @@ mutable struct TypeConstructor <: ProgramType
     constructor::String
     arguments::Array{ProgramType,1}  # TODO: Fix
     index::Union{Int, Nothing}
+    is_polymorphic::Bool
 end
 
 function split_arguments(a::Array{<:ProgramType,1})::Array{<:ProgramType}
@@ -27,6 +28,11 @@ function split_arguments(a::Array{<:ProgramType,1})::Array{<:ProgramType}
     else
         return a
     end
+end
+
+function TypeConstructor(c, args, index)
+    is_polymorphic = any([i.is_polymorphic for i in args])
+    return TypeConstructor(c, args, index, is_polymorphic)
 end
 
 function TypeConstructor(c::String, a::Array{<:ProgramType,1})
@@ -112,15 +118,10 @@ tostr(t::TypeVariable) = "t$(t.value)"
 
 Base.show(io::IO, t::ProgramType) = print(io, tostr(t))
 
-function Base.show(io::IO, a::Array{TypeConstructor})
+function Base.show(io::IO, a::Array{<:ProgramType})
     t = join([tostr(i) for i in a], ", ")
     print(io, "[$t]")
 end
-
-# function function_arguments(t::TypeVariable)::Array{TypeVariable}
-#     println("function_arguments(TypeVariable) ", t)
-#     return []
-# end
 
 function function_arguments(t::ProgramType)::Array{ProgramType}
     if is_arrow(t)
@@ -160,6 +161,10 @@ function Base.show(io::IO, context::Context)
     substr = ["$a ||> $b" for (a, b) in pairs]
     s = join(substr, ", ")
     print(io, "Context(next=$n, {$s})")
+end
+
+function instantiate(t::TypeConstructor, c::Context)
+    throw(TypeError)
 end
 
 end
