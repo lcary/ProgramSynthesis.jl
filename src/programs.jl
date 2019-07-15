@@ -9,10 +9,11 @@ export Program,
        try_solve,
        AbstractProgram,
        Abstraction,
-       Application
+       Application,
+       AbstractProgram,
+       Primitive
 
 abstract type AbstractProgram end
-
 
 function can_solve(program::AbstractProgram, example::Example)::Bool
     try
@@ -57,6 +58,12 @@ function try_solve(program::AbstractProgram, problem::Problem)::Float64
     return log_likelihood
 end
 
+struct Primitive <: AbstractProgram
+    name::String
+    type::ProgramType
+    func::Any  # TODO: fix type
+end
+
 mutable struct Program <: AbstractProgram
     source::String
     expression::Any
@@ -68,13 +75,24 @@ function infertype(prog::Any)::ProgramType
     return TypeConstructor("?", [], -1)
 end
 
-function Program(prog::String)
-    # expression = Meta.parse(prog)  TODO: Actually parse expressions
-    expression = prog
+struct ParseFailure <: Exception
+    msg::String
+end
+
+# TODO: Support invented, abstraction, application, index, and fragment programs
+function parse(s::String, primitives::Dict{String,Primitive})
+    if haskey(primitives, s)
+        return primitives[s]
+    end
+    throw(ParseFailure("Unable to parse Program from string ($s)."))
+end
+
+function Program(name::String, primitives::Dict{String,Primitive})
+    expression = parse(name, primitives)
     return Program(
-        prog,
-        expression,
-        infertype(expression)
+        name,
+        expression.func,
+        expression.type
     )
 end
 

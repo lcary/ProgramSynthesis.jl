@@ -14,7 +14,7 @@ end
 @testset "solutions.jl" begin
     @testset "test Solution" begin
         ptype = TypeConstructor("?", TypeConstructor[], -1)
-        program = Program("(+ 1)", "(+ 1)", ptype)
+        program = Program("(+ 1)", (x) -> (x + 1), ptype)
         solution = Solution(program, 1.0, 1.0, 0.0)
 
         expect = Dict(
@@ -36,7 +36,7 @@ end
         @test length(best1) == 0
 
         ptype = TypeConstructor("?", TypeConstructor[], -1)
-        program = Program("(+ 1)", "(+ 1)", ptype)
+        program = Program("(+ 1)", (x) -> (x + 1), ptype)
         solution1 = Solution(program, 1.0, 1.0, 0.0)
         solution2 = Solution(program, 0.1, 0.1, 0.0)
         solution3 = Solution(program, 0.11, 0.11, 0.0)
@@ -88,7 +88,8 @@ end
         problems = [get_test_problem()]
         solutions = SolutionSet(length(problems))
         prior = 0.0
-        program = Program("(+ 1)")
+        ptype = TypeConstructor("?", TypeConstructor[], -1)
+        program = Program("(+ 1)", (x) -> (x + 1), ptype)
 
         for (index, problem) in enumerate(problems)
             element = Solution(program, 0.0, prior, 0.0)

@@ -2,33 +2,101 @@ module Types
 
 using ..Utils
 
-export TypeConstructor, ProgramType, Context, function_arguments
+export TypeConstructor,
+       ProgramType,
+       Context, apply,
+       function_arguments,
+       tint, tlist, t0, t1, t2,
+       treal, tbool, tchar, tstr,
+       arrow
+
+const ARROW = "->"
 
 abstract type ProgramType end
 
-# TODO:: rename to TypeConstructor, and add TypeVariable
 mutable struct TypeConstructor <: ProgramType
     constructor::String
-    arguments::Array{TypeConstructor,1}
+    arguments::Array{ProgramType,1}  # TODO: Fix
     index::Union{Int, Nothing}
-    function TypeConstructor(constructor, arguments, index)
-        return new(constructor, map(TypeConstructor, arguments), index)
-    end
 end
 
-TypeConstructor(c::String) = TypeConstructor(c, [], nothing)
+function TypeConstructor(c::String, a::Array{ProgramType,1})
+    if length(a) >= 3
+        args = [a[1], a[2:end]]
+    else
+        args = a
+    end
+    return TypeConstructor(c, args, nothing)
+end
+
+function TypeConstructor(c::String, a::Array{TypeConstructor,1})
+    if length(a) >= 3
+        args = [a[1], a[2:end]]
+    else
+        args = a
+    end
+    return TypeConstructor(c, args, nothing)
+end
+
+function TypeConstructor(c::String, a::Tuple{TypeConstructor,TypeConstructor})
+    return TypeConstructor(c, [a[1], [a[2]]], nothing)
+end
+
+TypeConstructor(c::String) = TypeConstructor(c, Array{TypeConstructor,1}([]))
 
 function TypeConstructor(data::Dict{String,Any})
     return TypeConstructor(
         data["constructor"],
-        data["arguments"],
+        [TypeConstructor(a) for a in data["arguments"]],
         getoptional(data, "index"),
     )
 end
 
-const ARROW = "->"
+mutable struct TypeVariable <: ProgramType
+    value::Int
+    is_polymorphic::Bool
+    function TypeVariable(value)
+        if !isa(value, Int)
+            throw(TypeError)
+        end
+        return new(value, true)
+    end
+end
+
+function TypeConstructor(c::String, a::Array{TypeVariable,1})
+    if length(a) >= 3
+        args = [a[1], a[2:end]]
+    else
+        args = a
+    end
+    return TypeConstructor(c, args, nothing)
+end
+
+const tint = TypeConstructor("int")
+const treal = TypeConstructor("real")
+const tbool = TypeConstructor("bool")
+const tchar = TypeConstructor("char")
+tlist(t::ProgramType) = return TypeConstructor("list", [t])
+const tstr = tlist(tchar)
+const t0 = TypeVariable(0)
+const t1 = TypeVariable(1)
+const t2 = TypeVariable(2)
 
 is_arrow(t::TypeConstructor)::Bool = t.constructor == ARROW
+is_arrow(t::TypeVariable)::Bool = false
+
+arrow(arg::ProgramType) = arg
+
+function arrow(args...)::Any
+    if length(args) == 0
+        return nothing
+    elseif length(args) == 1
+        return args[1]
+    elseif length(args) == 2
+        return TypeConstructor(ARROW, [args[1], args[2]])
+    end
+    return TypeConstructor(ARROW, [args[1], arrow(args[2])])
+end
 
 function hashed(t::TypeConstructor)::UInt64
     h = UInt64(0)
@@ -53,7 +121,9 @@ function tostr(t::TypeConstructor)
     end
 end
 
-Base.show(io::IO, t::TypeConstructor) = print(io, tostr(t))
+tostr(t::TypeVariable) = "t$(t.value)"
+
+Base.show(io::IO, t::ProgramType) = print(io, tostr(t))
 
 function Base.show(io::IO, a::Array{TypeConstructor})
     t = join([tostr(i) for i in a], ", ")

@@ -132,33 +132,18 @@ function build_candidates(grammar::Grammar, state::State)::Array{Candidate}
     # TODO: replace with actual logic
     l = -2.3978952727983707
 
-    t1 = TypeConstructor(Dict(
-        "constructor" => "->", "arguments" => [
-            Dict("constructor" => "int", "arguments" => []),
-            Dict(
-                "constructor" => "->", "arguments" => [
-                    Dict("constructor" => "list(int)", "arguments" => []),
-                    Dict("constructor" => "int", "arguments" => [])
-                ]
-            )
-        ]
-    ))
-    push!(candidates, Candidate(l, t1, Program("index"), Context(1, [])))
+    p1 = Program("index", grammar.primitives)
+    push!(candidates, Candidate(l, p1.type, p1, Context(1, [])))
 
-    t2 = TypeConstructor(Dict(
-        "constructor" => "->", "arguments" => [
-            Dict("constructor" => "list(t0)", "arguments" => []),
-            Dict("constructor" => "int", "arguments" => [])
-        ]
-    ))
-    push!(candidates, Candidate(l, t2, Program("length"), Context(1, [])))
+    p2 = Program("length", grammar.primitives)
+    push!(candidates, Candidate(l, p2.type, p2, Context(1, [])))
 
-    t3 = TypeConstructor(Dict("constructor" => "int", "arguments" => []))
-    push!(candidates, Candidate(l, t3, Program("0"), Context(1, [])))
+    p3 = Program("0", grammar.primitives)
+    push!(candidates, Candidate(l, p3.type, p3, Context(1, [])))
 
     # t4 = TypeConstructor(Dict("constructor" => "list(t1)", "arguments" => []))
     # ctx = Context(2, [(TypeConstructor("t0"), TypeConstructor("t1"))])
-    # push!(candidates, Candidate(l, t4, Program("empty"), ctx))
+    # push!(candidates, Candidate(l, t4, Program("empty", grammar.primitives), ctx))
 
     return candidates
 end

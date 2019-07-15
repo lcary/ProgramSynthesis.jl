@@ -2,6 +2,7 @@ using Test
 using JSON
 
 using DreamCore
+using DreamCore.Primitives: base_primitives
 using DreamCore.Enumeration: Request
 using DreamCore.Generation: generator, Result
 
@@ -12,7 +13,7 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
 @testset "generation.jl" begin
     @testset "run program generation file2 good bounds" begin
         data = JSON.parsefile(TEST_FILE2)
-        grammar = Grammar(data["DSL"])
+        grammar = Grammar(data["DSL"], base_primitives())
         problems = map(Problem, data["tasks"])
         type = problems[1].type
         r = generator(grammar, [], type, 3.0, 1.5, 99)
@@ -26,7 +27,7 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
     end
     @testset "run program generation file2 bad bounds" begin
         data = JSON.parsefile(TEST_FILE2)
-        grammar = Grammar(data["DSL"])
+        grammar = Grammar(data["DSL"], base_primitives())
         problems = map(Problem, data["tasks"])
         type = problems[1].type
         r = generator(grammar, [], type, 6.0, 4.5, 99)

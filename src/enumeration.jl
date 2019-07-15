@@ -10,6 +10,7 @@ using ..Programs
 using ..Problems
 using ..Utils
 using ..Solutions
+using ..Primitives
 using ..Generation
 
 export run_enumeration
@@ -51,9 +52,10 @@ struct Request
 end
 
 function Request(data::Dict{String,Any})
+    primitives = base_primitives()
     return Request(
         map(Problem, data["tasks"]),
-        Grammar(data["DSL"]),
+        Grammar(data["DSL"], primitives),
         data["programTimeout"],
         data["verbose"],
         data["lowerBound"],

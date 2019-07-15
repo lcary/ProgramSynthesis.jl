@@ -10,7 +10,8 @@ using DreamCore
 filename = "request_enumeration_example_2.json"
 filepath = abspath(@__DIR__, "..", "test", "resources", filename)
 data = JSON.parsefile(filepath)
-grammar = Grammar(data["DSL"])
+primitives = base_primitives()
+grammar = Grammar(data["DSL"], primitives)
 problems = map(Problem, data["tasks"])
 type = problems[1].type
 
