@@ -20,9 +20,9 @@ function apply(t::ProgramType, c::Context)
     return t
 end
 
-function Base.show(io::IO, c::Context)
-    n = c.next_variable
-    substr = ["t$a ||> $b" for (a, apply(b, c)) in c.substitution]
+function Base.show(io::IO, context::Context)
+    n = context.next_variable
+    substr = ["t$a ||> $b" for (a, apply(b, c)) in context.substitution]
     s = join(substr, ", ")
     print(io, "Context(next = $n, {$s}")
 end
@@ -33,40 +33,40 @@ struct Result
     context::Context
 end
 
-abstract type Frame end
+abstract type State end
 
-struct FrameMetadata
+struct StateMetadata
     recurse::Bool
     outer_args::Union{Array{ProgramType}, Nothing}  # TODO: use specific type
     outer_upper::Union{Float64, Nothing}
     outer_lower::Union{Float64, Nothing}
 end
 
-FrameMetadata() = FrameMetadata(false, nothing, nothing, nothing)
+StateMetadata() = StateMetadata(false, nothing, nothing, nothing)
 
-struct EnumerateFrame <: Frame
+struct ProgramState <: State
     context::Context
     env::Any  # TODO: use specific type
     type::ProgramType
     upper_bound::Float64
     lower_bound::Float64
     depth::Int
-    parent::Union{Frame, Nothing}  # TODO: might only need parent's logProbability, not entire parent object reference
-    metadata::FrameMetadata
+    previous_state::Union{State, Nothing}  # TODO: might only need previous_state's logProbability, not entire previous_state object reference
+    metadata::StateMetadata
 end
 
-function convert_arrow(f::EnumerateFrame)::EnumerateFrame
-    lhs = f.type.arguments[1]
-    rhs = f.type.arguments[2]
-    env = append!([lhs], f.env)
-    upper = f.upper_bound
-    lower = f.lower_bound
-    return EnumerateFrame(
-        f.context, env, rhs, upper, lower,
-        f.depth, f.parent, f.metadata)
+function convert_arrow(state::ProgramState)::ProgramState
+    lhs = state.type.arguments[1]
+    rhs = state.type.arguments[2]
+    env = append!([lhs], state.env)
+    upper = state.upper_bound
+    lower = state.lower_bound
+    return ProgramState(
+        state.context, env, rhs, upper, lower,
+        state.depth, state.previous_state, state.metadata)
 end
 
-struct EnumerateAppFrame <: Frame
+struct ApplicationState <: State
     context::Context
     env::Any  # TODO: use specific type
     func::Any  # TODO: use specific type
@@ -75,9 +75,9 @@ struct EnumerateAppFrame <: Frame
     lower_bound::Float64
     depth::Int
     argument_index::Int
-    parent::Union{Frame, Nothing}  # TODO: might only need parent's logProbability, not entire parent object reference
+    previous_state::Union{State, Nothing}  # TODO: might only need previous_state's logProbability, not entire previous_state object reference
     original_func::Any  # TODO: use specific type
-    metadata::FrameMetadata
+    metadata::StateMetadata
 end
 
 struct Candidate
@@ -87,48 +87,48 @@ struct Candidate
     context::Context
 end
 
-function EnumerateAppFrame(c::Candidate, f::EnumerateFrame)
-    func_args = function_arguments(c.type)
-    new_upper = f.upper_bound + c.log_probability
-    new_lower = f.lower_bound + c.log_probability
-    new_depth = f.depth - 1
-    return EnumerateAppFrame(
-        c.context, f.env, c.program, func_args,
-        new_upper, new_lower, new_depth, 0, f, c.program,
-        f.metadata)
+function to_application(candidate::Candidate, state::ProgramState)
+    func_args = function_arguments(candidate.type)
+    new_upper = state.upper_bound + candidate.log_probability
+    new_lower = state.lower_bound + candidate.log_probability
+    new_depth = state.depth - 1
+    return ApplicationState(
+        candidate.context, state.env, candidate.program, func_args,
+        new_upper, new_lower, new_depth, 0, state, candidate.program,
+        state.metadata)
 end
 
-function EnumerateFrame(f::EnumerateAppFrame)  # TODO: improve func type
-    arg_request = apply(f.func_args[1], f.context)
-    outer_args = f.func_args[2:end]
-    metadata = FrameMetadata(
+function request_candidates(state::ApplicationState)  # TODO: improve func type
+    arg_request = apply(state.func_args[1], state.context)
+    outer_args = state.func_args[2:end]
+    metadata = StateMetadata(
         true, outer_args,
-        f.upper_bound, f.lower_bound)
-    return EnumerateFrame(
-        f.context, f.env, arg_request,
-        f.upper_bound, 0.0, f.depth, f, metadata)
+        state.upper_bound, state.lower_bound)
+    return ProgramState(
+        state.context, state.env, arg_request,
+        state.upper_bound, 0.0, state.depth, state, metadata)
 end
 
-function EnumerateAppFrame(f::EnumerateAppFrame)
-    new_func = Application(f.func, f.parent.type)
-    new_upper = f.metadata.outer_upper + 0.0  # TODO: verify if the outer log log_probability is ever non-zero
-    new_lower = f.metadata.outer_lower + 0.0  # TODO: verify if the outer log log_probability is ever non-zero
-    new_arg_index = f.argument_index + 1
-    return EnumerateAppFrame(
-        f.context, f.env, new_func,
-        f.metadata.outer_args,
-        new_upper, new_lower, f.depth, new_arg_index,
-        f, f.func, FrameMetadata())  # TODO: use original_func from outer EnumerateAppFrame
+function to_application(state::ApplicationState)
+    new_func = Application(state.func, state.previous_state.type)
+    new_upper = state.metadata.outer_upper + 0.0  # TODO: verify if the outer log log_probability is ever non-zero
+    new_lower = state.metadata.outer_lower + 0.0  # TODO: verify if the outer log log_probability is ever non-zero
+    new_arg_index = state.argument_index + 1
+    return ApplicationState(
+        state.context, state.env, new_func,
+        state.metadata.outer_args,
+        new_upper, new_lower, state.depth, new_arg_index,
+        state, state.func, StateMetadata())  # TODO: use original_func from outer ApplicationState
 end
 
-function build_candidates(grammar::Grammar, frame::Frame)::Array{Candidate}
-    type, context, env = frame.type, frame.context, frame.env
+function build_candidates(grammar::Grammar, state::State)::Array{Candidate}
+    type, context, env = state.type, state.context, state.env
     candidates = Array{Candidate}([])
 
     # TODO: replace with actual logic
     l = -2.3978952727983707
 
-    d1 = Dict(
+    t1 = ProgramType(Dict(
         "constructor" => "->", "arguments" => [
             Dict("constructor" => "int", "arguments" => []),
             Dict(
@@ -138,32 +138,29 @@ function build_candidates(grammar::Grammar, frame::Frame)::Array{Candidate}
                 ]
             )
         ]
-    )
-    t1 = ProgramType(d1)
+    ))
     push!(candidates, Candidate(l, t1, Program("index"), Context(1, [])))
 
-    d2 = Dict(
+    t2 = ProgramType(Dict(
         "constructor" => "->", "arguments" => [
             Dict("constructor" => "list(t0)", "arguments" => []),
             Dict("constructor" => "int", "arguments" => [])
         ]
-    )
-    t2 = ProgramType(d2)
+    ))
     push!(candidates, Candidate(l, t2, Program("length"), Context(1, [])))
 
-    d3 = Dict("constructor" => "int", "arguments" => [])
-    t3 = ProgramType(d3)
+    t3 = ProgramType(Dict("constructor" => "int", "arguments" => []))
     push!(candidates, Candidate(l, t3, Program("0"), Context(1, [])))
 
-    # d4 = Dict("constructor" => "list(t1)", "arguments" => [])
+    # t4 = ProgramType(("constructor" => "list(t1)", "arguments" => []))
     # t4 = ProgramType(d4)
     # push!(candidates, Candidate(l, t4, Program("empty"), Context(2, [(t0, t1)])))
 
     return candidates
 end
 
-function valid(c::Candidate, upper_bound::Float64)::Bool
-    return -c.log_probability < upper_bound
+function valid(candidate::Candidate, upper_bound::Float64)::Bool
+    return -candidate.log_probability < upper_bound
 end
 
 function all_invalid(candidates::Array{Candidate}, upper_bound::Float64)::Bool
@@ -175,79 +172,97 @@ function all_invalid(candidates::Array{Candidate}, upper_bound::Float64)::Bool
     return false
 end
 
-struct InvalidFrameType <: Exception end
+struct InvalidStateType <: Exception end
 
-function add_candidates!(queue::Stack{Frame}, g::Grammar, f::EnumerateFrame)
-    candidates = build_candidates(g, f)
-    if all_invalid(candidates, f.upper_bound)
+function add_candidates!(
+    requests::Stack{State},
+    grammar::Grammar,
+    state::ProgramState
+)
+    candidates = build_candidates(grammar, state)
+    if all_invalid(candidates, state.upper_bound)
         println("All invalid!")
         return
     end
     for c in candidates
-        if valid(c, f.upper_bound)
-            push!(queue, EnumerateAppFrame(c, f))
+        if valid(c, state.upper_bound)
+            push!(requests, to_application(c, state))
         end
     end
 end
 
-function is_symmetrical(f::EnumerateAppFrame)
+function is_symmetrical(s::ApplicationState)
     println("TODO: actually implement is_symmetrical()!")
     return true
 end
 
-function generator(
-    channel::Channel,
+function process_program_state!(
+    requests::Stack{State},
     grammar::Grammar,
-    initial_frame::EnumerateFrame
+    state::ProgramState
 )
-    results = Array{Result}([])
+    if Types.is_arrow(state.type)
+        push!(requests, convert_arrow(state))
+        return
+    else
+        add_candidates!(requests, grammar, state)
+        return
+    end
+end
 
-    # do a depth-first search of the queue
-    queue = Stack{Frame}()
-    push!(queue, initial_frame)
+function process_application_state!(
+    results::Channel,
+    requests::Stack{State},
+    grammar::Grammar,
+    state::ApplicationState
+)
+    if state.func_args == []
+        if state.lower_bound <= 0.0 && state.upper_bound > 0.0
+            if state.metadata.recurse
+                if !is_symmetrical(state)
+                    return
+                end
+                push!(requests, to_application(state))
+            else
+                # TODO: verify that the program is always sent to the outside in this case in actual dreamcoder
+                put!(results, Result(1.0, Abstraction(state.func), Context()))  # TODO: use actual log_probability calculation!
+                return
+            end
+        else
+            # Reject this enumerate application state
+            return
+        end
+    else
+        push!(requests, request_candidates(state))
+    end
+end
+
+function generator(
+    results::Channel,
+    grammar::Grammar,
+    initial::ProgramState
+)
+    requests = Stack{State}()
+    push!(requests, initial)
 
     counter = 0
-    while !isempty(queue)
+    while !isempty(requests)
         counter += 1
-        f = pop!(queue)
+        state = pop!(requests)
 
         # DEBUG:
-        # println("frame #$counter: $f")
+        # println("state #$counter: $s")
 
-        if f.upper_bound < 0.0 || f.depth <= 1
+        if state.upper_bound < 0.0 || state.depth <= 1
             continue
         end
 
-        if isa(f, EnumerateFrame)
-            if Types.is_arrow(f.type)
-                push!(queue, convert_arrow(f))
-                continue
-            else
-                add_candidates!(queue, grammar, f)
-                continue
-            end
-        elseif isa(f, EnumerateAppFrame)
-            if f.func_args == []
-                if f.lower_bound <= 0.0 && f.upper_bound > 0.0
-                    if f.metadata.recurse
-                        if !is_symmetrical(f)
-                            continue
-                        end
-                        push!(queue, EnumerateAppFrame(f))
-                    else
-                        # TODO: verify that the program is always sent to the outside in this case in actual dreamcoder
-                        put!(channel, Result(1.0, Abstraction(f.func), Context()))  # TODO: use actual log_probability calculation!
-                        continue
-                    end
-                else
-                    # Reject this enumerate application frame
-                    continue
-                end
-            else
-                push!(queue, EnumerateFrame(f))
-            end
+        if isa(state, ProgramState)
+            process_program_state!(requests, grammar, state)
+        elseif isa(state, ApplicationState)
+            process_application_state!(results, requests, grammar, state)
         else
-            throw(InvalidFrameType)
+            throw(InvalidStateType)
         end
     end
 end
@@ -260,7 +275,7 @@ function generator(
     lower_bound::Float64,
     max_depth::Int
 )
-    frame = EnumerateFrame(
+    state = ProgramState(
         Context(),
         env,
         type,
@@ -268,9 +283,9 @@ function generator(
         lower_bound,
         max_depth,
         nothing,
-        FrameMetadata()
+        StateMetadata()
     )
-    return Channel((channel) -> generator(channel, grammar, frame))
+    return Channel((results) -> generator(results, grammar, state))
 end
 
 end
