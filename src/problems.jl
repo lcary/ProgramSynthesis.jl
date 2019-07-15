@@ -24,7 +24,7 @@ end
 function Problem(data::Dict{String,Any})
     return Problem(
         data["name"],
-        ProgramType(data["request"]),
+        TypeConstructor(data["request"]),
         map(Example, data["examples"]),
         data["maximumFrontier"]
     )

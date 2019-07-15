@@ -2,6 +2,7 @@ module Enumeration
 
 using Dates
 using JSON
+using DataStructures
 
 using ..Types
 using ..Grammars
@@ -9,6 +10,8 @@ using ..Programs
 using ..Problems
 using ..Utils
 using ..Solutions
+using ..Primitives
+using ..Generation
 
 export run_enumeration
 
@@ -49,9 +52,10 @@ struct Request
 end
 
 function Request(data::Dict{String,Any})
+    primitives = base_primitives()
     return Request(
         map(Problem, data["tasks"]),
-        Grammar(data["DSL"]),
+        Grammar(data["DSL"], primitives),
         data["programTimeout"],
         data["verbose"],
         data["lowerBound"],
@@ -62,14 +66,7 @@ function Request(data::Dict{String,Any})
     )
 end
 
-struct Context
-end
-
-struct EnumerationResult
-    prior::Float64
-    program::Program
-end
-
+# TODO: replace with shadow_enumeration eventually
 function enumeration(
     channel::Channel,
     grammar::Grammar,
@@ -84,10 +81,11 @@ function enumeration(
         return
     end
     for p in grammar.library
-        put!(channel, EnumerationResult(0.0, p.program))
+        put!(channel, Result(0.0, p.program, context))
     end
 end
 
+# TODO: replace with shadow_generate_results eventually
 function generate_results(
     request::Request,
     env::Array{Any},  # TODO: improve type
@@ -116,7 +114,7 @@ end
 
 function solve!(
     solutions::SolutionSet,
-    result::EnumerationResult,
+    result::Result,
     problem::Problem,
     index::Int,
     start::Float64
@@ -137,6 +135,7 @@ end
 
 function run_enumeration(request::Request)::Dict{String,Any}
     problems = request.problems
+    previous_budget = request.lower_bound
     budget = request.lower_bound + request.budget_increment
     max_solutions = [p.max_solutions for p in problems]
     solutions = SolutionSet(length(problems))
@@ -158,6 +157,24 @@ function run_enumeration(request::Request)::Dict{String,Any}
                 solve!(solutions, result, problem, index, start)
             end
         end
+        timeout_exceeded = false
+        args = (
+            request.grammar, [], type, budget,
+            previous_budget, request.max_depth
+        )
+        for result in generator(args...)
+            println("new generator:")
+            println(result)
+            if time() > start + request.program_timeout
+                println("timeout exceeded during generation.")
+                timeout_exceeded = true
+            end
+        end
+        if timeout_exceeded
+            break
+        end
+        previous_budget = budget
+        budget += request.budget_increment
     end
 
     return json_format(request, solutions)
