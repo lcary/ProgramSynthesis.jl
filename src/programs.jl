@@ -123,6 +123,10 @@ function Base.show(io::IO, p::Application)
     print(io, "Application($(p.func), args=$(p.args))")
 end
 
+function Base.show(io::IO, p::Abstraction)
+    print(io, "Abstraction($(p.body))")
+end
+
 json_format(p::Program) = p.source
 json_format(p::Abstraction) = p.body
 

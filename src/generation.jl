@@ -14,6 +14,10 @@ struct Result
     context::Context
 end
 
+function Base.show(io::IO, r::Result)
+    print(io, "Result($(r.prior), $(r.program), $(r.context))")
+end
+
 abstract type State end
 
 struct StateMetadata
