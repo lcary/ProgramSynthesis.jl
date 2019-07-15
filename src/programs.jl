@@ -65,7 +65,7 @@ end
 
 # TODO: implement type inference logic
 function infertype(prog::Any)::ProgramType
-    return ProgramType("?", [], -1)
+    return TypeConstructor("?", [], -1)
 end
 
 function Program(prog::String)

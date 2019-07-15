@@ -6,27 +6,7 @@ using ..Types
 using ..Grammars
 using ..Programs
 
-export generator, Result, Context, generator
-
-struct Context
-    next_variable::Int
-    substitution::Array{Tuple}
-end
-
-Context() = Context(0, [])
-
-function apply(type::ProgramType, context::Context)
-    # TODO: implement for TypeVariables too
-    return type
-end
-
-function Base.show(io::IO, context::Context)
-    n = context.next_variable
-    pairs = [(a, apply(b, context)) for (a, b) in context.substitution]
-    substr = ["$a ||> $b" for (a, b) in pairs]
-    s = join(substr, ", ")
-    print(io, "Context(next=$n, {$s})")
-end
+export generator, Result, generator
 
 struct Result
     prior::Float64
@@ -152,7 +132,7 @@ function build_candidates(grammar::Grammar, state::State)::Array{Candidate}
     # TODO: replace with actual logic
     l = -2.3978952727983707
 
-    t1 = ProgramType(Dict(
+    t1 = TypeConstructor(Dict(
         "constructor" => "->", "arguments" => [
             Dict("constructor" => "int", "arguments" => []),
             Dict(
@@ -165,7 +145,7 @@ function build_candidates(grammar::Grammar, state::State)::Array{Candidate}
     ))
     push!(candidates, Candidate(l, t1, Program("index"), Context(1, [])))
 
-    t2 = ProgramType(Dict(
+    t2 = TypeConstructor(Dict(
         "constructor" => "->", "arguments" => [
             Dict("constructor" => "list(t0)", "arguments" => []),
             Dict("constructor" => "int", "arguments" => [])
@@ -173,11 +153,11 @@ function build_candidates(grammar::Grammar, state::State)::Array{Candidate}
     ))
     push!(candidates, Candidate(l, t2, Program("length"), Context(1, [])))
 
-    t3 = ProgramType(Dict("constructor" => "int", "arguments" => []))
+    t3 = TypeConstructor(Dict("constructor" => "int", "arguments" => []))
     push!(candidates, Candidate(l, t3, Program("0"), Context(1, [])))
 
-    # t4 = ProgramType(Dict("constructor" => "list(t1)", "arguments" => []))
-    # ctx = Context(2, [(ProgramType("t0"), ProgramType("t1"))])
+    # t4 = TypeConstructor(Dict("constructor" => "list(t1)", "arguments" => []))
+    # ctx = Context(2, [(TypeConstructor("t0"), TypeConstructor("t1"))])
     # push!(candidates, Candidate(l, t4, Program("empty"), ctx))
 
     return candidates
