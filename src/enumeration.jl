@@ -106,7 +106,7 @@ function run_enumeration(request::Request)::Dict{String,Any}
     max_solutions = [p.max_solutions for p in problems]
     solutions = SolutionSet(length(problems))
 
-    if !Utils.allequal([Types.hashed(p.type) for p in problems])
+    if !Utils.allequal([p.type for p in problems])
         throw(TypeMismatchError("Types differ in problem set."))
     end
     type = problems[1].type

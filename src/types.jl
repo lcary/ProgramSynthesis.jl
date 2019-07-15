@@ -5,11 +5,22 @@ using ..Utils
 export TypeConstructor,
        TypeVariable,
        ProgramType,
-       Context, apply,
+       Context,
+       apply,
        function_arguments,
-       tint, tlist, t0, t1, t2,
-       treal, tbool, tchar, tstr,
-       arrow, instantiate
+       tint,
+       tlist,
+       t0,
+       t1,
+       t2,
+       treal,
+       tbool,
+       tchar,
+       tstr,
+       arrow,
+       instantiate,
+       returns,
+       unify
 
 const ARROW = "->"
 
@@ -88,16 +99,24 @@ function arrow(args...)::Any
     elseif length(args) == 2
         return TypeConstructor(ARROW, [args[1], args[2]])
     end
-    return TypeConstructor(ARROW, [args[1], arrow(args[2])])
+    return TypeConstructor(ARROW, [args[1], arrow(args[2:end]...)])
 end
 
-function hashed(t::TypeConstructor)::UInt64
-    h = UInt64(0)
-    h += hash(t.constructor)
-    for a in t.arguments
-        h += hashed(a)
+function Base.hash(t::TypeConstructor, h::UInt)::UInt
+    args = t.arguments
+    if length(args) == 0
+        return hash(t.constructor, h)
+    elseif length(args) == 1
+        return hash(t.constructor, hash(args[1], h))
+    elseif length(args) == 2
+        return hash(t.constructor, hash(args[1], hash(args[2], h)))
     end
-    return h
+end
+
+Base.hash(t::TypeVariable, h::UInt)::UInt = hash(t.value, h)
+
+function Base.isequal(a::ProgramType, b::ProgramType)
+    return Base.isequal(hash(a), hash(b))
 end
 
 function tostr(t::TypeConstructor)
@@ -196,6 +215,62 @@ end
 
 function instantiate(type::TypeConstructor, context::Context)
     return instantiate(type, context, Dict{String,TypeVariable}())
+end
+
+returns(t::TypeVariable) = t
+returns(t::TypeConstructor) = is_arrow(t) ? returns(t.arguments[2]) : t
+
+struct UnificationFailure <: Exception
+    msg
+end
+
+struct Occurs <: Exception end  # TODO: docstring
+
+occurs(t::TypeVariable, v::Int) = t.value == v
+
+function occurs(t::TypeConstructor, v::Int)
+    if !t.is_polymorphic
+        return false
+    end
+    return any([occurs(a, v) for a in t.arguments])
+end
+
+function extend(context::Context, j::Int, t::ProgramType)
+    sub = append!([(j, t)], context.substitution)
+    return Context(context.next_variable, sub)
+end
+
+function unify(context::Context, t1::ProgramType, t2::ProgramType)
+    t1 = apply(t1, context)
+    t2 = apply(t2, context)
+    if isequal(t1, t2)
+        return context
+    end
+    if !t1.is_polymorphic && !t2.is_polymorphic
+        msg = string("Types are not equal: ", t1, " != ", t2)
+        throw(UnificationFailure(msg))
+    end
+    if isa(t1, TypeVariable)
+        if occurs(t2, t1.value)
+            throw(Occurs)
+        end
+        return extend(context, t1.value, t2)
+    end
+    if isa(t2, TypeVariable)
+        if occurs(t1, t2.value)
+            throw(Occurs)
+        end
+        return extend(context, t2.value, t1)
+    end
+    if t1.constructor != t2.constructor
+        msg = string("Types are not equal: ", t1, " != ", t2)
+        throw(UnificationFailure(msg))
+    end
+    k = context
+    for (x, y) in zip(t2.arguments, t1.arguments)
+        k = unify(k, x, y)
+    end
+    return k
 end
 
 end

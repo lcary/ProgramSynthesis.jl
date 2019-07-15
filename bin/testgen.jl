@@ -14,7 +14,12 @@ primitives = base_primitives()
 grammar = Grammar(data["DSL"], primitives)
 problems = map(Problem, data["tasks"])
 type = problems[1].type
-program_timeout = 5.0
+# program_timeout = 5.0
+program_timeout = 0.5
+
+# warm the JIT cache
+r = generator(grammar, [], type, 3.0, 1.5, 99, false)
+take!(r)
 
 start_time = time()
 

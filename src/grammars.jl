@@ -4,7 +4,7 @@ using ..Programs
 using ..Types
 using ..Utils
 
-export Grammar
+export Grammar, Production
 
 mutable struct Production
     program::Program

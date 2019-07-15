@@ -85,7 +85,7 @@ function Base.show(io::IO, state::ApplicationState)
     print(io, "$cls($f, args=$a, env=$e, $c, upper=$u, lower=$l, depth=$d)")
 end
 
-struct Candidate
+mutable struct Candidate
     log_probability::Float64
     type::ProgramType
     program::Program
@@ -126,19 +126,27 @@ function to_application(state::ApplicationState)
         state, state.func, StateMetadata())  # TODO: use original_func from outer ApplicationState
 end
 
-function build_candidates(grammar::Grammar, state::State)::Array{Candidate}
+function build_candidate(production::Production, state::State)::Candidate
     request = state.type
     context = state.context
-    env = state.env
+    l = production.log_probability
+    p = production.program
+    new_context, t = instantiate(p.type, context)
+    new_context = unify(new_context, returns(t), request)
+    t = apply(t, new_context)
+    return Candidate(l, t, p, new_context)
+end
+
+function build_candidates(grammar::Grammar, state::State)::Array{Candidate}
     candidates = Array{Candidate}([])
+    variable_candidates = Array{Any}([])  # TODO: improve type
 
-    for production in grammar.productions
-        l = production.log_probability
-        p = production.program
-        new_context, t = instantiate(p.type, context)
-        # println(new_context, " ", t)
-
-        push!(candidates, Candidate(l, p.type, p, Context(1, [])))
+    for p in grammar.productions
+        try
+            push!(candidates, build_candidate(p, state))
+        catch
+            continue
+        end
     end
 
     return candidates

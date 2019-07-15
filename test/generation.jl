@@ -4,16 +4,21 @@ using JSON
 using DreamCore
 using DreamCore.Primitives: base_primitives
 using DreamCore.Enumeration: Request
-using DreamCore.Generation: generator, Result
+using DreamCore.Generation: generator,
+                            Result,
+                            build_candidate,
+                            StateMetadata,
+                            ProgramState
+using DreamCore.Types: tlist, tint
 
 get_resource(filename) = abspath(@__DIR__, "resources", filename)
 
 const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
-const log_probability = -2.3978952727983707
 
 @testset "generation.jl" begin
     @testset "run program generation file2 good bounds" begin
         data = JSON.parsefile(TEST_FILE2)
+        log_probability = -2.3978952727983707
         data["DSL"]["productions"] = [
             Dict(
                 "expression" => "index",
@@ -41,6 +46,7 @@ const log_probability = -2.3978952727983707
     end
     @testset "run program generation file2 bad bounds" begin
         data = JSON.parsefile(TEST_FILE2)
+        log_probability = -2.3978952727983707
         data["DSL"]["productions"] = [
             Dict(
                 "expression" => "index",
@@ -66,5 +72,65 @@ const log_probability = -2.3978952727983707
             threw_error = true
         end
         @test threw_error
+    end
+    @testset "test build_candidate" begin
+        data = JSON.parsefile(TEST_FILE2)
+        log_probability = -2.3978952727983707
+        data["DSL"]["productions"] = [
+            Dict(
+                "expression" => "1",
+                "logProbability" => log_probability
+            )
+        ]
+        grammar = Grammar(data["DSL"], base_primitives())
+        state = ProgramState(
+            Context(),
+            [tlist(tint)],
+            tint,
+            3.0,
+            1.5,
+            99,
+            nothing,
+            StateMetadata()
+        )
+        @test length(grammar.productions) == 1
+        @test grammar.productions[1].program.source == "1"
+        throws_error = false
+        try
+            build_candidate(grammar.productions[1], state)
+        catch
+            throws_error = true
+        end
+        @test !throws_error
+    end
+    @testset "test build_candidate error" begin
+        data = JSON.parsefile(TEST_FILE2)
+        log_probability = -2.3978952727983707
+        data["DSL"]["productions"] = [
+            Dict(
+                "expression" => "map",
+                "logProbability" => log_probability
+            )
+        ]
+        grammar = Grammar(data["DSL"], base_primitives())
+        state = ProgramState(
+            Context(),
+            [tlist(tint)],
+            tint,
+            3.0,
+            1.5,
+            99,
+            nothing,
+            StateMetadata()
+        )
+        @test length(grammar.productions) == 1
+        @test grammar.productions[1].program.source == "map"
+        throws_error = false
+        try
+            build_candidate(grammar.productions[1], state)
+        catch
+            throws_error = true
+        end
+        @test throws_error
     end
 end
