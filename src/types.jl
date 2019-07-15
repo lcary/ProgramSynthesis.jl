@@ -20,7 +20,8 @@ export TypeConstructor,
        arrow,
        instantiate,
        returns,
-       unify
+       unify,
+       UnificationFailure
 
 const ARROW = "->"
 

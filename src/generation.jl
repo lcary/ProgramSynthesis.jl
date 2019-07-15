@@ -148,10 +148,22 @@ function build_candidates(grammar::Grammar, state::State)::Array{Candidate}
     for p in grammar.productions
         try
             push!(candidates, build_candidate(p, state))
-        catch
-            continue
+        catch e
+            if typeof(e) <: UnificationFailure
+                continue
+            end
+            rethrow(e)
         end
     end
+
+    # for (j, t) in enumerate(state.env)
+    #     try
+    #         push!(candidates, build_candidate(p, state))
+    #     catch e
+    #         println(typeof(e) <: UnificationFailure)
+    #         continue
+    #     end
+    # end
 
     return candidates
 end

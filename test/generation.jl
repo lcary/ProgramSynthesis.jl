@@ -8,8 +8,9 @@ using DreamCore.Generation: generator,
                             Result,
                             build_candidate,
                             StateMetadata,
-                            ProgramState
-using DreamCore.Types: tlist, tint
+                            ProgramState,
+                            InvalidStateException
+using DreamCore.Types: tlist, tint, UnificationFailure
 
 get_resource(filename) = abspath(@__DIR__, "resources", filename)
 
@@ -68,8 +69,12 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
         threw_error = false
         try
             take!(r)
-        catch
-            threw_error = true
+        catch e
+            if typeof(e) <: InvalidStateException
+                threw_error = true
+            else
+                rethrow(e)
+            end
         end
         @test threw_error
     end
@@ -98,8 +103,12 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
         throws_error = false
         try
             build_candidate(grammar.productions[1], state)
-        catch
-            throws_error = true
+        catch e
+            if typeof(e) <: UnificationFailure
+                throws_error = true
+            else
+                rethrow(e)
+            end
         end
         @test !throws_error
     end
@@ -128,8 +137,12 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
         throws_error = false
         try
             build_candidate(grammar.productions[1], state)
-        catch
-            throws_error = true
+        catch e
+            if typeof(e) <: UnificationFailure
+                throws_error = true
+            else
+                rethrow(e)
+            end
         end
         @test throws_error
     end

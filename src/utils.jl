@@ -9,8 +9,12 @@ function getoptional(
 )
     try
         return data[key]
-    catch KeyError
-        return default
+    catch e
+        if typeof(e) <: KeyError
+            return default
+        else
+            rethrow(e)
+        end
     end
 end
 
