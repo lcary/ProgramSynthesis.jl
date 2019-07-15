@@ -9,7 +9,7 @@ export TypeConstructor,
        function_arguments,
        tint, tlist, t0, t1, t2,
        treal, tbool, tchar, tstr,
-       arrow
+       arrow, instantiate
 
 const ARROW = "->"
 
@@ -163,8 +163,39 @@ function Base.show(io::IO, context::Context)
     print(io, "Context(next=$n, {$s})")
 end
 
-function instantiate(t::TypeConstructor, c::Context)
-    throw(TypeError)
+function instantiate(
+    type::TypeVariable,
+    context::Context,
+    bindings::Dict{String,TypeVariable}
+)
+    key = string(type)
+    if haskey(bindings, key)
+        return (context, bindings[key])
+    end
+    new_type = TypeVariable(context.next_variable)
+    bindings[key] = new_type
+    new_context = Context(context.next_variable + 1, context.substitution)
+    return new_context, new_type
+end
+
+function instantiate(
+    type::TypeConstructor,
+    context::Context,
+    bindings::Dict{String,TypeVariable}
+)
+    if !type.is_polymorphic
+        return context, type
+    end
+    new_args = Array{Union{TypeConstructor,TypeVariable}}([])
+    for a in type.arguments
+        context, new_type = instantiate(a, context, bindings)
+        push!(new_args, new_type)
+    end
+    return context, TypeConstructor(type.constructor, new_args)
+end
+
+function instantiate(type::TypeConstructor, context::Context)
+    return instantiate(type, context, Dict{String,TypeVariable}())
 end
 
 end

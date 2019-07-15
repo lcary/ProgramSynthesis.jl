@@ -127,16 +127,18 @@ function to_application(state::ApplicationState)
 end
 
 function build_candidates(grammar::Grammar, state::State)::Array{Candidate}
-    type = state.type
+    request = state.type
     context = state.context
     env = state.env
     candidates = Array{Candidate}([])
 
-    for p in grammar.productions
-        # TODO: replace with actual logic
-        l = p.log_probability
-        prog = p.program
-        push!(candidates, Candidate(l, prog.type, prog, Context(1, [])))
+    for production in grammar.productions
+        l = production.log_probability
+        p = production.program
+        new_context, t = instantiate(p.type, context)
+        # println(new_context, " ", t)
+
+        push!(candidates, Candidate(l, p.type, p, Context(1, [])))
     end
 
     return candidates
