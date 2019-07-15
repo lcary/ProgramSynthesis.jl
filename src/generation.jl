@@ -152,6 +152,9 @@ function build_candidates(grammar::Grammar, state::State)::Array{Candidate}
             if typeof(e) <: UnificationFailure
                 continue
             end
+            println(p)
+            println(grammar)
+            println(state)
             rethrow(e)
         end
     end

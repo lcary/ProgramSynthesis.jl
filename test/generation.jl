@@ -10,7 +10,7 @@ using DreamCore.Generation: generator,
                             StateMetadata,
                             ProgramState,
                             InvalidStateException
-using DreamCore.Types: tlist, tint, UnificationFailure
+using DreamCore.Types: tlist, tint, t0, t1, UnificationFailure
 
 get_resource(filename) = abspath(@__DIR__, "resources", filename)
 
@@ -78,7 +78,7 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
         end
         @test threw_error
     end
-    @testset "test build_candidate" begin
+    @testset "test build_candidate 1" begin
         data = JSON.parsefile(TEST_FILE2)
         log_probability = -2.3978952727983707
         data["DSL"]["productions"] = [
@@ -100,19 +100,35 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
         )
         @test length(grammar.productions) == 1
         @test grammar.productions[1].program.source == "1"
-        throws_error = false
-        try
-            build_candidate(grammar.productions[1], state)
-        catch e
-            if typeof(e) <: UnificationFailure
-                throws_error = true
-            else
-                rethrow(e)
-            end
-        end
-        @test !throws_error
+        result = build_candidate(grammar.productions[1], state)
+        @test result.program.source == "1"
     end
-    @testset "test build_candidate error" begin
+    @testset "test build_candidate map" begin
+        data = JSON.parsefile(TEST_FILE2)
+        log_probability = -2.3978952727983707
+        data["DSL"]["productions"] = [
+            Dict(
+                "expression" => "map",
+                "logProbability" => log_probability
+            )
+        ]
+        grammar = Grammar(data["DSL"], base_primitives())
+        state = ProgramState(
+            Context(2, [(t1, tint)]),
+            [tlist(tint)],
+            tlist(t0),
+            3.0,
+            0.0,
+            2,
+            nothing,
+            StateMetadata()
+        )
+        @test length(grammar.productions) == 1
+        @test grammar.productions[1].program.source == "map"
+        result = build_candidate(grammar.productions[1], state)
+        @test result.program.source == "map"
+    end
+    @testset "test build_candidate error1" begin
         data = JSON.parsefile(TEST_FILE2)
         log_probability = -2.3978952727983707
         data["DSL"]["productions"] = [

@@ -21,7 +21,8 @@ export TypeConstructor,
        instantiate,
        returns,
        unify,
-       UnificationFailure
+       UnificationFailure,
+       extend
 
 const ARROW = "->"
 
@@ -86,6 +87,7 @@ const tstr = tlist(tchar)
 const t0 = TypeVariable(0)
 const t1 = TypeVariable(1)
 const t2 = TypeVariable(2)
+const t3 = TypeVariable(3)
 
 is_arrow(t::TypeConstructor)::Bool = t.constructor == ARROW
 is_arrow(t::TypeVariable)::Bool = false
@@ -162,10 +164,6 @@ end
 
 Context() = Context(0, [])
 
-function apply(type::TypeConstructor, context::Context)
-    return type
-end
-
 function apply(type::TypeVariable, context::Context)
     for (v, t) in context.substitution
         if v == type.value
@@ -173,6 +171,14 @@ function apply(type::TypeVariable, context::Context)
         end
     end
     return type
+end
+
+function apply(type::TypeConstructor, context::Context)
+    if !type.is_polymorphic
+        return type
+    end
+    args = [apply(x, context) for x in type.arguments]
+    return TypeConstructor(type.constructor, args)
 end
 
 function Base.show(io::IO, context::Context)
@@ -237,7 +243,11 @@ function occurs(t::TypeConstructor, v::Int)
 end
 
 function extend(context::Context, j::Int, t::ProgramType)
-    sub = append!([(j, t)], context.substitution)
+    T1 = Union{TypeVariable,TypeConstructor,Int}
+    T2 = Union{TypeVariable,TypeConstructor}
+    l = Array{Tuple{T1,T2}}([])  # TODO: fix type
+    a1 = push!(l, (j, t))
+    sub = append!(a1, context.substitution)
     return Context(context.next_variable, sub)
 end
 
@@ -251,12 +261,14 @@ function unify(context::Context, t1::ProgramType, t2::ProgramType)
         msg = string("Types are not equal: ", t1, " != ", t2)
         throw(UnificationFailure(msg))
     end
+    # TODO: use multiple dispatch instead
     if isa(t1, TypeVariable)
         if occurs(t2, t1.value)
             throw(Occurs)
         end
         return extend(context, t1.value, t2)
     end
+    # TODO: use multiple dispatch instead
     if isa(t2, TypeVariable)
         if occurs(t1, t2.value)
             throw(Occurs)
