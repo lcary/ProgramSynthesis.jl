@@ -164,7 +164,7 @@ end
 struct InvalidStateType <: Exception end
 
 function add_candidates!(
-    requests::Stack{State},
+    states::Stack{State},
     grammar::Grammar,
     state::ProgramState
 )
@@ -175,7 +175,7 @@ function add_candidates!(
     end
     for c in candidates
         if valid(c, state.upper_bound)
-            push!(requests, to_application(c, state))
+            push!(states, to_application(c, state))
         end
     end
 end
@@ -186,22 +186,22 @@ function is_symmetrical(s::ApplicationState)
 end
 
 function process_program_state!(
-    requests::Stack{State},
+    states::Stack{State},
     grammar::Grammar,
     state::ProgramState
 )
     if Types.is_arrow(state.type)
-        push!(requests, convert_arrow(state))
+        push!(states, convert_arrow(state))
         return
     else
-        add_candidates!(requests, grammar, state)
+        add_candidates!(states, grammar, state)
         return
     end
 end
 
 function process_application_state!(
-    results::Channel,
-    requests::Stack{State},
+    channel::Channel,
+    states::Stack{State},
     grammar::Grammar,
     state::ApplicationState
 )
@@ -211,10 +211,10 @@ function process_application_state!(
                 if !is_symmetrical(state)
                     return
                 end
-                push!(requests, to_application(state))
+                push!(states, to_application(state))
             else
                 # TODO: verify that the program is always sent to the outside in this case in actual dreamcoder
-                put!(results, Result(1.0, Abstraction(state.func), Context()))  # TODO: use actual log_probability calculation!
+                put!(channel, Result(1.0, Abstraction(state.func), Context()))  # TODO: use actual log_probability calculation!
                 return
             end
         else
@@ -222,23 +222,23 @@ function process_application_state!(
             return
         end
     else
-        push!(requests, request_candidates(state))
+        push!(states, request_candidates(state))
     end
 end
 
 function generator(
-    results::Channel,
+    channel::Channel,
     grammar::Grammar,
     initial::ProgramState,
     debug::Bool=false
 )
-    requests = Stack{State}()
-    push!(requests, initial)
+    states = Stack{State}()
+    push!(states, initial)
 
     counter = 0
-    while !isempty(requests)
+    while !isempty(states)
         counter += 1
-        state = pop!(requests)
+        state = pop!(states)
 
         if debug
             println("state #$counter: $state")
@@ -247,9 +247,9 @@ function generator(
         if state.upper_bound < 0.0 || state.depth <= 1
             continue
         elseif isa(state, ProgramState)
-            process_program_state!(requests, grammar, state)
+            process_program_state!(states, grammar, state)
         elseif isa(state, ApplicationState)
-            process_application_state!(results, requests, grammar, state)
+            process_application_state!(channel, states, grammar, state)
         else
             throw(InvalidStateType)
         end
@@ -275,7 +275,7 @@ function generator(
         nothing,
         StateMetadata()
     )
-    return Channel((results) -> generator(results, grammar, state))
+    return Channel((channel) -> generator(channel, grammar, state, debug))
 end
 
 end

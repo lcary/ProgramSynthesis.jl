@@ -20,25 +20,20 @@ mutable struct TypeConstructor <: ProgramType
     index::Union{Int, Nothing}
 end
 
-function TypeConstructor(c::String, a::Array{ProgramType,1})
+function split_arguments(a::Array{<:ProgramType,1})::Array{<:ProgramType}
     if length(a) >= 3
-        args = [a[1], a[2:end]]
+        return [a[1], a[2:end]]
     else
-        args = a
+        return a
     end
+end
+
+function TypeConstructor(c::String, a::Array{<:ProgramType,1})
+    args = split_arguments(a)
     return TypeConstructor(c, args, nothing)
 end
 
-function TypeConstructor(c::String, a::Array{TypeConstructor,1})
-    if length(a) >= 3
-        args = [a[1], a[2:end]]
-    else
-        args = a
-    end
-    return TypeConstructor(c, args, nothing)
-end
-
-function TypeConstructor(c::String, a::Tuple{TypeConstructor,TypeConstructor})
+function TypeConstructor(c::String, a::Tuple{N,N} where N<:ProgramType)
     return TypeConstructor(c, [a[1], [a[2]]], nothing)
 end
 
@@ -61,15 +56,6 @@ mutable struct TypeVariable <: ProgramType
         end
         return new(value, true)
     end
-end
-
-function TypeConstructor(c::String, a::Array{TypeVariable,1})
-    if length(a) >= 3
-        args = [a[1], a[2:end]]
-    else
-        args = a
-    end
-    return TypeConstructor(c, args, nothing)
 end
 
 const tint = TypeConstructor("int")
