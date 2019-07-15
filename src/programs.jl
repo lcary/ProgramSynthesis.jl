@@ -11,7 +11,8 @@ export Program,
        Abstraction,
        Application,
        AbstractProgram,
-       Primitive
+       Primitive,
+       json_format
 
 abstract type AbstractProgram end
 
@@ -121,5 +122,8 @@ end
 function Base.show(io::IO, p::Application)
     print(io, "Application($(p.func), args=$(p.args))")
 end
+
+json_format(p::Program) = p.source
+json_format(p::Abstraction) = p.body
 
 end

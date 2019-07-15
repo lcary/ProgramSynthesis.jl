@@ -66,40 +66,6 @@ function Request(data::Dict{String,Any})
     )
 end
 
-# TODO: replace with shadow_enumeration eventually
-function enumeration(
-    channel::Channel,
-    grammar::Grammar,
-    context::Context,
-    env::Array{Any},  # TODO: improve type
-    type::ProgramType,
-    upper_bound::Float64,
-    lower_bound::Float64,
-    depth::Int
-)
-    if upper_bound < 0 || depth == 1
-        return
-    end
-    for p in grammar.productions
-        put!(channel, Result(0.0, p.program, context))
-    end
-end
-
-# TODO: replace with shadow_generate_results eventually
-function generate_results(
-    request::Request,
-    env::Array{Any},  # TODO: improve type
-    type::ProgramType
-)
-    grammar = request.grammar
-    context = Context()
-    upper = request.upper_bound
-    lower = request.lower_bound
-    depth = request.max_depth
-    args = (grammar, context, env, type, upper, lower, depth)
-    return Channel((channel) -> enumeration(channel, args...))
-end
-
 function json_format(data::Request, solutions::SolutionSet)::Dict{String,Any}
     response = Dict()
     for (index, problem) in enumerate(data.problems)
@@ -151,22 +117,17 @@ function run_enumeration(request::Request)::Dict{String,Any}
         && !is_explored(solutions, max_solutions)
         && budget <= request.upper_bound
     )
-        for result in generate_results(request, [], type)
-            for (index, problem) in enumerate(problems)
-                # TODO: run with program timeout
-                solve!(solutions, result, problem, index, start)
-            end
-        end
         timeout_exceeded = false
         args = (
             request.grammar, [], type, budget,
             previous_budget, request.max_depth
         )
         for result in generator(args...)
-            println("new generator:")
-            println(result)
+            for (index, problem) in enumerate(problems)
+                # TODO: run with program timeout
+                solve!(solutions, result, problem, index, start)
+            end
             if time() > start + request.program_timeout
-                println("timeout exceeded during generation.")
                 timeout_exceeded = true
                 break
             end

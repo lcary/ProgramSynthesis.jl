@@ -26,7 +26,7 @@ end
 
         @test solution.program == program
         @test priority(solution) == 2.0
-        @test json_format(solution) == expect
+        @test DreamCore.Solutions.json_format(solution) == expect
     end
     @testset "test SolutionSet" begin
         solutions = SolutionSet(1)

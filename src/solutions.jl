@@ -20,7 +20,7 @@ A program that solves a given problem within a set of problems.
 The search time is the time it took to find the program.
 """
 struct Solution
-    program::Program
+    program::AbstractProgram
     log_likelihood::Float64
     log_prior::Float64
     search_time::Float64
@@ -37,7 +37,7 @@ priority(s::Solution) = s.log_likelihood + s.log_prior
 
 function json_format(element::Solution)
     return Dict(
-        "program" => element.program.source,
+        "program" => Programs.json_format(element.program),
         "time" => element.search_time,
         "logLikelihood" => element.log_likelihood,
         "logPrior" => element.log_prior
