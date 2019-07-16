@@ -97,7 +97,7 @@ struct Candidate
     context::Context
 end
 
-function to_application(candidate::Candidate, state::ProgramState)
+function to_app_state1(candidate::Candidate, state::ProgramState)
     func_args = function_arguments(candidate.type)
     new_upper = state.upper_bound + candidate.log_probability
     new_lower = state.lower_bound + candidate.log_probability
@@ -108,25 +108,25 @@ function to_application(candidate::Candidate, state::ProgramState)
         state.metadata)
 end
 
-function request_candidates(state::ApplicationState)  # TODO: improve func type
+function to_program_state(state::ApplicationState)  # TODO: improve func type
     arg_request = apply(state.func_args[1], state.context)
     outer_args = state.func_args[2:end]
     metadata = StateMetadata(
         true, outer_args,
         state.upper_bound, state.lower_bound)
-    return ProgramState(
+    newstate = ProgramState(
         state.context, state.env, arg_request,
         state.upper_bound, 0.0, state.depth, state, metadata)
+    return newstate, outer_args
 end
 
-function to_application(state::ApplicationState)
-    new_func = Application(state.func, state.previous_state.type)
-    new_upper = state.metadata.outer_upper + 0.0  # TODO: verify if the outer log log_probability is ever non-zero
-    new_lower = state.metadata.outer_lower + 0.0  # TODO: verify if the outer log log_probability is ever non-zero
+function to_app_state2(state::ApplicationState, result::Result, args::Any)
+    new_func = Application(state.func, result.program)
+    new_upper = state.upper_bound + result.prior
+    new_lower = state.lower_bound + result.prior
     new_arg_index = state.argument_index + 1
     return ApplicationState(
-        state.context, state.env, new_func,
-        state.metadata.outer_args,
+        result.context, state.env, new_func, args,
         new_upper, new_lower, state.depth, new_arg_index,
         state, state.func, StateMetadata())  # TODO: use original_func from outer ApplicationState
 end
@@ -228,94 +228,116 @@ end
 
 struct InvalidStateType <: Exception end
 
-function add_candidates!(
-    states::Stack{State},
-    grammar::Grammar,
-    state::ProgramState
-)
-    candidates = build_candidates(grammar, state)
-    if all_invalid(candidates, state.upper_bound)
-        return
-    end
-    for c in candidates
-        if valid(c, state.upper_bound)
-            push!(states, to_application(c, state))
-        end
-    end
-end
-
 function is_symmetrical(s::ApplicationState)
     # TODO: add implementation
     return true
 end
 
-function process_program_state!(
-    states::Stack{State},
-    grammar::Grammar,
-    state::ProgramState
-)
-    if Types.is_arrow(state.type)
-        push!(states, convert_arrow(state))
-        return
-    else
-        add_candidates!(states, grammar, state)
-        return
+function debug_state(state::State, debug::Bool)
+    if debug
+        println("state: $state")
     end
 end
 
-function process_application_state!(
+banner(msg::String)::String = "=========$msg========="
+
+function debug_result(result::Result, debug::Bool, msg::String)
+    if debug
+        println(banner(msg))
+        println("result: $result")
+    end
+end
+
+function stop(state::State, debug::Bool)::Bool
+    if state.upper_bound < 0.0 || state.depth <= 1
+        if debug
+            println(banner("ENDSTATE"))
+        end
+        return true
+    else
+        return false
+    end
+end
+
+function appgenerator(
     channel::Channel,
-    states::Stack{State},
     grammar::Grammar,
-    state::ApplicationState
+    state::ApplicationState,
+    debug::Bool=false
 )
+    debug_state(state, debug)
+    if stop(state, debug)
+        return
+    end
     if state.func_args == []
         if state.lower_bound <= 0.0 && state.upper_bound > 0.0
-            if state.metadata.recurse
-                if !is_symmetrical(state)
-                    return
-                end
-                push!(states, to_application(state))
-            else
-                # TODO: verify that the program is always sent to the outside in this case in actual dreamcoder
-                put!(channel, Result(1.0, Abstraction(state.func), Context()))  # TODO: use actual log_probability calculation!
-                return
-            end
+            r = Result(0.0, Abstraction(state.func), state.context)
+            d = state.depth
+            debug_result(r, debug, "RESULT(APP CHANNEL #1)(depth=$d)")
+            put!(channel, r)
+            return
         else
             # Reject this enumerate application state
             return
         end
     else
-        push!(states, request_candidates(state))
+        s1, args = to_program_state(state)
+        g1 = Channel((c) -> generator(c, grammar, s1, debug))
+        for r1 in g1
+            if !is_symmetrical(state)
+                continue
+            end
+            s2 = to_app_state2(state, r1, args)
+            g2 = Channel((c) -> appgenerator(c, grammar, s2, debug))
+            for r2 in g2
+                l = r2.prior + r1.prior
+                r = Result(l, r2.program, r2.context)
+                d = state.depth
+                debug_result(r, debug, "RESULT(APP CHANNEL #2)(depth=$d)")
+                put!(channel, r)
+            end
+        end
     end
 end
 
 function generator(
     channel::Channel,
     grammar::Grammar,
-    initial::ProgramState,
+    state::ProgramState,
     debug::Bool=false
 )
-    states = Stack{State}()
-    push!(states, initial)
-
-    counter = 0
-    while !isempty(states)
-        counter += 1
-        state = pop!(states)
-
-        if debug
-            println("state #$counter: $state")
+    debug_state(state, debug)
+    if stop(state, debug)
+        return
+    end
+    if Types.is_arrow(state.type)
+        newstate = convert_arrow(state)
+        gen = Channel((c) -> generator(c, grammar, newstate, debug))
+        for result in gen
+            program = Abstraction(result.program)
+            r = Result(result.prior, program, result.context)
+            d = state.depth
+            debug_result(r, debug, "RESULT(PRG CHANNEL #1)(depth=$d)")
+            put!(channel, r)
         end
-
-        if state.upper_bound < 0.0 || state.depth <= 1
-            continue
-        elseif isa(state, ProgramState)
-            process_program_state!(states, grammar, state)
-        elseif isa(state, ApplicationState)
-            process_application_state!(channel, states, grammar, state)
-        else
-            throw(InvalidStateType)
+        return
+    else
+        candidates = build_candidates(grammar, state)
+        if all_invalid(candidates, state.upper_bound)
+            return
+        end
+        for candidate in candidates
+            if valid(candidate, state.upper_bound)
+                appstate = to_app_state1(candidate, state)
+                gen = Channel((c) -> appgenerator(c, grammar, appstate, debug))
+                for result in gen
+                    l = result.prior + candidate.log_probability
+                    r = Result(l, result.program, result.context)
+                    d = state.depth
+                    debug_result(r, debug, "RESULT(PRG CHANNEL #2)(depth=$d)")
+                    put!(channel, r)
+                end
+            end
         end
     end
 end

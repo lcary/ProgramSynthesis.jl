@@ -125,11 +125,11 @@ mutable struct DeBruijnIndex <: AbstractProgram
 end
 
 function Base.show(io::IO, p::Application)
-    print(io, "Application($(p.func), args=$(p.args))")
+    print(io, "($(p.func), $(p.args))")
 end
 
 function Base.show(io::IO, p::Abstraction)
-    print(io, "Abstraction($(p.body))")
+    print(io, "(lambda $(p.body))")
 end
 
 function Base.show(io::IO, p::DeBruijnIndex)

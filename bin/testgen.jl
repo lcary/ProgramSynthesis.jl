@@ -16,15 +16,17 @@ problems = map(Problem, data["tasks"])
 type = problems[1].type
 # program_timeout = 5.0
 program_timeout = 0.5
+# max_depth = 99
+max_depth = 5
 
 # warm the JIT cache
-r = generator(grammar, [], type, 3.0, 1.5, 99, false)
+r = generator(grammar, [], type, 3.0, 1.5, max_depth, false)
 take!(r)
 
 start_time = time()
 
 println("\nGenerate programs with upper=3.0, lower=1.5")
-r = generator(grammar, [], type, 3.0, 1.5, 99, false)
+r = generator(grammar, [], type, 3.0, 1.5, max_depth, false)
 for i in r
     println(string("=> ", i))
     if time() > start_time + program_timeout
@@ -34,7 +36,7 @@ for i in r
 end
 
 println("\nGenerate programs with upper=6.0, lower=4.5")
-r = generator(grammar, [], type, 6.0, 4.5, 99, true)
+r = generator(grammar, [], type, 6.0, 4.5, max_depth, false)
 for i in r
     println(string("=> ", i))
     if time() > start_time + program_timeout
