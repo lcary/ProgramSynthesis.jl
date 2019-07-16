@@ -137,14 +137,14 @@ using DreamCore.Utils: allequal
         @test c3.substitution[1][2] == tbool
     end
     @testset "test type extend" begin
-        context = Context(4, [(t1, tint)])
+        context = Context(4, [(1, tint)])
         result = extend(context, 0, t2)
         # Context(next=4, {0 ||> t2, t1 ||> int})
         @test result.next_variable == 4
         @test length(result.substitution) == 2
         @test result.substitution[1][1] == 0
         @test result.substitution[1][2] == t2
-        @test result.substitution[2][1] == t1
+        @test result.substitution[2][1] == 1
         @test result.substitution[2][2] == tint
     end
 end

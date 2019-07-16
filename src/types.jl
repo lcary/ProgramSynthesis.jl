@@ -159,7 +159,7 @@ end
 
 struct Context
     next_variable::Int
-    substitution::Array{Tuple}
+    substitution::Array{Tuple{Int,ProgramType}}
 end
 
 Context() = Context(0, [])
