@@ -243,9 +243,7 @@ function occurs(t::TypeConstructor, v::Int)
 end
 
 function extend(context::Context, j::Int, t::ProgramType)
-    T1 = Union{TypeVariable,TypeConstructor,Int}
-    T2 = Union{TypeVariable,TypeConstructor}
-    l = Array{Tuple{T1,T2}}([])  # TODO: fix type
+    l = Array{Tuple{Int,Union{TypeVariable,TypeConstructor}}}([])  # TODO: fix type
     a1 = push!(l, (j, t))
     sub = append!(a1, context.substitution)
     return Context(context.next_variable, sub)
