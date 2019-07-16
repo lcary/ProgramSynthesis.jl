@@ -100,7 +100,7 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
         )
         @test length(grammar.productions) == 1
         @test grammar.productions[1].program.source == "1"
-        result = build_candidate(grammar.productions[1], state)
+        result = build_candidate(state, grammar.productions[1])
         @test result.program.source == "1"
     end
     @testset "test build_candidate map" begin
@@ -125,7 +125,7 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
         )
         @test length(grammar.productions) == 1
         @test grammar.productions[1].program.source == "map"
-        result = build_candidate(grammar.productions[1], state)
+        result = build_candidate(state, grammar.productions[1])
         @test result.program.source == "map"
     end
     @testset "test build_candidate error1" begin
@@ -152,7 +152,7 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
         @test grammar.productions[1].program.source == "map"
         throws_error = false
         try
-            build_candidate(grammar.productions[1], state)
+            build_candidate(state, grammar.productions[1])
         catch e
             if typeof(e) <: UnificationFailure
                 throws_error = true

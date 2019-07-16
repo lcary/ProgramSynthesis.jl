@@ -32,15 +32,15 @@ for i in r
         break
     end
 end
-#
-# println("\nGenerate programs with upper=6.0, lower=4.5")
-# r = generator(grammar, [], type, 6.0, 4.5, 99, true)
-# for i in r
-#     println(string("=> ", i))
-#     if time() > start_time + program_timeout
-#         println("timeout exceeded")
-#         break
-#     end
-# end
+
+println("\nGenerate programs with upper=6.0, lower=4.5")
+r = generator(grammar, [], type, 6.0, 4.5, 99, true)
+for i in r
+    println(string("=> ", i))
+    if time() > start_time + program_timeout
+        println("timeout exceeded")
+        break
+    end
+end
 
 end

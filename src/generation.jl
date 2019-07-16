@@ -130,7 +130,13 @@ function to_application(state::ApplicationState)
         state, state.func, StateMetadata())  # TODO: use original_func from outer ApplicationState
 end
 
-function build_candidate(production::Production, state::State)::Candidate
+mutable struct VariableCandidate
+    type::ProgramType
+    index::DeBruijnIndex
+    context::Context
+end
+
+function build_candidate(state::State, production::Production)::Candidate
     request = state.type
     context = state.context
     l = production.log_probability
@@ -141,32 +147,37 @@ function build_candidate(production::Production, state::State)::Candidate
     return Candidate(l, t, p, new_context)
 end
 
+function build_candidate(state::State, t::ProgramType, i::Int)::Candidate
+    request = state.type
+    context = state.context
+    new_context = unify(context, returns(t), request)
+    t = apply(t, new_context)
+    return VariableCandidate(t, DeBruijnIndex(i), new_context)
+end
+
 function build_candidates(grammar::Grammar, state::State)::Array{Candidate}
     candidates = Array{Candidate}([])
-    variable_candidates = Array{Any}([])  # TODO: improve type
+    variables = Array{VariableCandidate}([])  # TODO: improve type
 
     for p in grammar.productions
         try
-            push!(candidates, build_candidate(p, state))
+            push!(candidates, build_candidate(state, p))
         catch e
             if typeof(e) <: UnificationFailure
                 continue
             end
-            println(p)
-            println(grammar)
-            println(state)
-            rethrow(e)
         end
     end
 
-    # for (j, t) in enumerate(state.env)
-    #     try
-    #         push!(candidates, build_candidate(p, state))
-    #     catch e
-    #         println(typeof(e) <: UnificationFailure)
-    #         continue
-    #     end
-    # end
+    for (i, t) in enumerate(state.env)
+        try
+            push!(variables, build_candidate(state, t, i))
+        catch e
+            if typeof(e) <: UnificationFailure
+                continue
+            end
+        end
+    end
 
     return candidates
 end
