@@ -141,7 +141,7 @@ function Candidate(vc::VariableCandidate, l::Float64)
     return Candidate(l, vc.type, vc.index, vc.context)
 end
 
-function Candidate(state::State, production::Production)
+function get_candidate(state::State, production::Production)
     request = state.type
     context = state.context
     l = production.log_probability
@@ -152,7 +152,7 @@ function Candidate(state::State, production::Production)
     return Candidate(l, t, p, new_context)
 end
 
-function VariableCandidate(state::State, t::ProgramType, i::Int)
+function get_variable_candidate(state::State, t::ProgramType, i::Int)
     request = state.type
     context = state.context
     new_context = unify(context, returns(t), request)
@@ -163,7 +163,7 @@ end
 struct NoCandidates <: Exception end
 
 function update_log_probability(z::Float64, c::Candidate)::Candidate
-    new_l = exp(c.log_probability - z)
+    new_l = c.log_probability - z
     return Candidate(new_l, c.type, c.program, c.context)
 end
 
@@ -180,7 +180,7 @@ function build_candidates(grammar::Grammar, state::State)::Array{Candidate}
 
     for p in grammar.productions
         try
-            push!(candidates, Candidate(state, p))
+            push!(candidates, get_candidate(state, p))
         catch e
             if typeof(e) <: UnificationFailure
                 continue
@@ -190,7 +190,7 @@ function build_candidates(grammar::Grammar, state::State)::Array{Candidate}
 
     for (i, t) in enumerate(state.env)
         try
-            push!(variable_candidates, VariableCandidate(state, t, i))
+            push!(variable_candidates, get_variable_candidate(state, t, i - 1))
         catch e
             if typeof(e) <: UnificationFailure
                 continue

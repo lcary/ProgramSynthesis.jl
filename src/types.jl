@@ -184,7 +184,7 @@ end
 function Base.show(io::IO, context::Context)
     n = context.next_variable
     pairs = [(a, apply(b, context)) for (a, b) in context.substitution]
-    substr = ["$a ||> $b" for (a, b) in pairs]
+    substr = ["t$a ||> $b" for (a, b) in pairs]
     s = join(substr, ", ")
     print(io, "Context(next=$n, {$s})")
 end

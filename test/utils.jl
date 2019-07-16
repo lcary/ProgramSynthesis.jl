@@ -20,7 +20,11 @@ using DreamCore.Utils
         @test allequal(["a", "a", "a", "a", "a", "a"])
     end
     @testset "lse" begin
-        res = lse([2.0, -2.3, -2.2, -2.32])
-        @test round(res, digits=4) == 2.0410
+        z1 = lse([2.0, -2.3, -2.2, -2.32])
+        @test round(z1, digits=4) == 2.0410
+        z2 = lse([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+        @test round(z2, digits=4) == 2.3979
+        z3 = lse([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+        @test round(z3, digits=4) == 2.1972
     end
 end
