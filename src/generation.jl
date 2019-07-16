@@ -21,6 +21,7 @@ end
 
 abstract type State end
 
+# TODO: remove
 struct StateMetadata
     recurse::Bool
     outer_args::Union{Array{ProgramType},Nothing}  # TODO: use specific type
@@ -111,7 +112,7 @@ end
 function to_program_state(state::ApplicationState)  # TODO: improve func type
     arg_request = apply(state.func_args[1], state.context)
     outer_args = state.func_args[2:end]
-    metadata = StateMetadata(
+    metadata = StateMetadata(  # TODO: remove
         true, outer_args,
         state.upper_bound, state.lower_bound)
     newstate = ProgramState(
@@ -228,8 +229,46 @@ end
 
 struct InvalidStateType <: Exception end
 
-function is_symmetrical(s::ApplicationState)
-    # TODO: add implementation
+# TODO: move to programs.ml
+tosource(p::Program)::String = p.source
+tosource(p::DeBruijnIndex)::String = string(p.i)  # TODO: check if correct
+tosource(p::Application)::String = tosource(p.func)
+tosource(p::Abstraction)::String = tosource(p.body)
+
+# TODO: unit tests
+function is_symmetrical(
+    s::ApplicationState,
+    program::AbstractProgram,
+    primitives::Dict{String,Primitive}
+)::Bool
+    argument_index = s.argument_index
+    if !isa(s.original_func, Program)
+        return true
+    end
+    orig = s.original_func.source
+    if !haskey(primitives, orig)
+        return true
+    end
+    newf = tosource(program)
+    if orig == "car"
+        return newf != "cons" && newf != "empty"
+    elseif orig == "cdr"
+        return newf != "cons" && newf != "empty"
+    elseif orig == "+"
+        return newf == "0" && (argument_index != 1 || newf != "+")
+    elseif orig == "-"
+        return argument_index != 1 || newf != "0"
+    elseif orig == "empty?"
+        return newf != "cons" && newf != "empty"
+    elseif orig == "zero?"
+        return newf != "0" && newf != "1"
+    elseif orig == "index" || orig == "map" || orig == "zip"
+        return newf != "empty"
+    elseif orig == "range"
+        return newf != "0"
+    elseif orig == "fold"
+        return argument_index != 1 || newf != "empty"
+    end
     return true
 end
 
@@ -271,7 +310,7 @@ function appgenerator(
     end
     if state.func_args == []
         if state.lower_bound <= 0.0 && state.upper_bound > 0.0
-            r = Result(0.0, Abstraction(state.func), state.context)
+            r = Result(0.0, state.func, state.context)
             d = state.depth
             debug_result(r, debug, "RESULT(APP CHANNEL #1)(depth=$d)")
             put!(channel, r)
@@ -284,7 +323,7 @@ function appgenerator(
         s1, args = to_program_state(state)
         g1 = Channel((c) -> generator(c, grammar, s1, debug))
         for r1 in g1
-            if !is_symmetrical(state)
+            if !is_symmetrical(state, r1.program, grammar.primitives)
                 continue
             end
             s2 = to_app_state2(state, r1, args)
