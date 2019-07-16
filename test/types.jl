@@ -14,7 +14,9 @@ using DreamCore.Types: function_arguments,
                        tlist,
                        tbool,
                        unify,
-                       extend
+                       extend,
+                       returns,
+                       apply
 using DreamCore.Utils: allequal
 
 @testset "types.jl" begin
@@ -115,6 +117,15 @@ using DreamCore.Utils: allequal
         # (Context(next = 2, {}), (t0 -> t1) -> list(t0) -> list(t1))
         @test r2[1].next_variable == 2
         @test r2[1].substitution == []
+
+        context = Context(1, [(0, tint)])
+        t = arrow(tint, tbool)
+        new_context, t = instantiate(t, context)
+        @test new_context.next_variable == 1
+        @test length(new_context.substitution) == 1
+        @test new_context.substitution[1][1] == 0
+        @test new_context.substitution[1][2] == tint
+        @test isequal(t, arrow(tint, tbool))
     end
     @testset "test type unification" begin
         c1 = unify(Context(), tint, tint)
@@ -135,6 +146,14 @@ using DreamCore.Utils: allequal
         @test length(c3.substitution) == 1
         @test c3.substitution[1][1] == 1
         @test c3.substitution[1][2] == tbool
+
+        c4 = unify(Context(2, [(1, tint)]), returns(t0), tint)
+        @test c4.next_variable == 2
+        @test length(c4.substitution) == 2
+        @test c4.substitution[1][1] == 0
+        @test c4.substitution[1][2] == tint
+        @test c4.substitution[2][1] == 1
+        @test c4.substitution[2][2] == tint
     end
     @testset "test type extend" begin
         context = Context(4, [(1, tint)])
@@ -146,5 +165,11 @@ using DreamCore.Utils: allequal
         @test result.substitution[1][2] == t2
         @test result.substitution[2][1] == 1
         @test result.substitution[2][2] == tint
+    end
+    @testset "test type apply" begin
+        context = Context(2, [(0, tint), (1, tint)])
+        result = apply(t0, context)
+        @test isa(result, TypeConstructor)
+        @test isequal(result, tint)
     end
 end
