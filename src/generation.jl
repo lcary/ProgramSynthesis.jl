@@ -5,6 +5,7 @@ using DataStructures
 using ..Types
 using ..Grammars
 using ..Programs
+using ..Utils
 
 export generator, Result, generator
 
@@ -89,10 +90,10 @@ function Base.show(io::IO, state::ApplicationState)
     print(io, "$cls($f, args=$a, env=$e, $c, upper=$u, lower=$l, depth=$d)")
 end
 
-mutable struct Candidate
+struct Candidate
     log_probability::Float64
     type::ProgramType
-    program::Program
+    program::AbstractProgram
     context::Context
 end
 
@@ -130,13 +131,17 @@ function to_application(state::ApplicationState)
         state, state.func, StateMetadata())  # TODO: use original_func from outer ApplicationState
 end
 
-mutable struct VariableCandidate
+struct VariableCandidate
     type::ProgramType
     index::DeBruijnIndex
     context::Context
 end
 
-function build_candidate(state::State, production::Production)::Candidate
+function Candidate(vc::VariableCandidate, l::Float64)
+    return Candidate(l, vc.type, vc.index, vc.context)
+end
+
+function Candidate(state::State, production::Production)
     request = state.type
     context = state.context
     l = production.log_probability
@@ -147,7 +152,7 @@ function build_candidate(state::State, production::Production)::Candidate
     return Candidate(l, t, p, new_context)
 end
 
-function build_candidate(state::State, t::ProgramType, i::Int)::Candidate
+function VariableCandidate(state::State, t::ProgramType, i::Int)
     request = state.type
     context = state.context
     new_context = unify(context, returns(t), request)
@@ -155,13 +160,27 @@ function build_candidate(state::State, t::ProgramType, i::Int)::Candidate
     return VariableCandidate(t, DeBruijnIndex(i), new_context)
 end
 
+struct NoCandidates <: Exception end
+
+function update_log_probability(z::Float64, c::Candidate)::Candidate
+    new_l = exp(c.log_probability - z)
+    return Candidate(new_l, c.type, c.program, c.context)
+end
+
+function final_candidates(candidates::Array{Candidate})::Array{Candidate}
+    z::Float64 = lse([c.log_probability for c in candidates])
+    f = curry(update_log_probability, z)
+    final_candidates::Array{Candidate} = map(f, candidates)
+    return final_candidates
+end
+
 function build_candidates(grammar::Grammar, state::State)::Array{Candidate}
     candidates = Array{Candidate}([])
-    variables = Array{VariableCandidate}([])  # TODO: improve type
+    variable_candidates = Array{VariableCandidate}([])
 
     for p in grammar.productions
         try
-            push!(candidates, build_candidate(state, p))
+            push!(candidates, Candidate(state, p))
         catch e
             if typeof(e) <: UnificationFailure
                 continue
@@ -171,7 +190,7 @@ function build_candidates(grammar::Grammar, state::State)::Array{Candidate}
 
     for (i, t) in enumerate(state.env)
         try
-            push!(variables, build_candidate(state, t, i))
+            push!(variable_candidates, VariableCandidate(state, t, i))
         catch e
             if typeof(e) <: UnificationFailure
                 continue
@@ -179,7 +198,19 @@ function build_candidates(grammar::Grammar, state::State)::Array{Candidate}
         end
     end
 
-    return candidates
+    # TODO: check continuationType
+
+    vl = grammar.log_variable - log(length(variable_candidates))
+    for vc in variable_candidates
+        push!(candidates, Candidate(vc, vl))
+    end
+
+    if isempty(candidates)
+        throw(NoCandidates)
+    end
+
+    return candidates  # TODO: use final_candidates after figuring out infinite loop
+    # return final_candidates(candidates)
 end
 
 function valid(candidate::Candidate, upper_bound::Float64)::Bool
