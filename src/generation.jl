@@ -210,21 +210,21 @@ function build_candidates(grammar::Grammar, state::State)::Array{Candidate}
         throw(NoCandidates)
     end
 
-    return candidates  # TODO: use final_candidates after figuring out infinite loop
-    # return final_candidates(candidates)
+    return final_candidates(candidates)
 end
 
+# TODO: rename log_probability
 function valid(candidate::Candidate, upper_bound::Float64)::Bool
     return -candidate.log_probability < upper_bound
 end
 
 function all_invalid(candidates::Array{Candidate}, upper_bound::Float64)::Bool
     for c in candidates
-        if !valid(c, upper_bound)
-            return true
+        if valid(c, upper_bound)
+            return false
         end
     end
-    return false
+    return true
 end
 
 struct InvalidStateType <: Exception end
@@ -298,6 +298,16 @@ function stop(state::State, debug::Bool)::Bool
     end
 end
 
+function debug_candidates(candidates::Array{Candidate}, debug::Bool)
+    if debug && !isempty(candidates)
+        println("candidates: [")
+        for c in candidates
+            println("    ", c, ",")
+        end
+        println("]")
+    end
+end
+
 function appgenerator(
     channel::Channel,
     grammar::Grammar,
@@ -362,6 +372,7 @@ function generator(
         return
     else
         candidates = build_candidates(grammar, state)
+        debug_candidates(candidates, debug)
         if all_invalid(candidates, state.upper_bound)
             return
         end
