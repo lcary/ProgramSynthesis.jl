@@ -26,12 +26,11 @@ export TypeConstructor,
 
 const ARROW = "->"
 
-# TODO: rename to AbstractType
 abstract type TypeField end
 
 mutable struct TypeConstructor <: TypeField
     constructor::String
-    arguments::Array{TypeField,1}  # TODO: Fix
+    arguments::Array{TypeField,1}
     index::Union{Int, Nothing}
     is_polymorphic::Bool
 end
@@ -95,7 +94,7 @@ is_arrow(t::TypeVariable)::Bool = false
 
 arrow(arg::TypeField) = arg
 
-function arrow(args...)::Any
+function arrow(args...)::TypeField
     if length(args) == 0
         return nothing
     elseif length(args) == 1

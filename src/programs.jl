@@ -35,8 +35,9 @@ function can_solve(program::AbstractProgram, problem::Problem)::Bool
 
     return true  # TODO: REMOVE AFTER COMPLETING IMPLEMENTATION
 
+    env = Array{TypeField}([])
     try
-        f = evaluate(program, [])
+        f = evaluate(program, env)
     catch
         # free variable
         return false
@@ -63,12 +64,12 @@ end
 struct Primitive <: AbstractProgram
     name::String
     type::TypeField
-    func::Any  # TODO: use Function type
+    func::Function
 end
 
 mutable struct Program <: AbstractProgram
     source::String
-    expression::Any
+    expression::Function
     type::TypeField
 end
 
@@ -99,23 +100,23 @@ function Program(name::String, primitives::Dict{String,Primitive})
 end
 
 # TODO: implement
-function evaluate(program::Program, env::Any)
+function evaluate(program::Program, env::Array{TypeField})
     return program
 end
 
 # TODO: docstring
 mutable struct Abstraction <: AbstractProgram
-    body::Any  # TODO: improve type
+    body::AbstractProgram
 end
 
-function evaluate(program::Abstraction, env::Any)
+function evaluate(program::Abstraction, env::Array{TypeField})
     return (x) -> program.body.evaluate([x] + env)
 end
 
 # TODO: docstring
 mutable struct Application <: AbstractProgram
-    func::Any  # TODO: improve type
-    args::Any  # TODO: improve type
+    func::AbstractProgram
+    args::AbstractProgram
 end
 
 mutable struct DeBruijnIndex <: AbstractProgram

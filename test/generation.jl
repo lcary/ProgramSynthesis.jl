@@ -42,7 +42,8 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
         grammar = Grammar(data["DSL"], base_primitives())
         problems = map(Problem, data["tasks"])
         type = problems[1].type
-        r = generator(grammar, [], type, 3.0, 1.5, 99)
+        env = Array{TypeField}([])
+        r = generator(grammar, env, type, 3.0, 1.5, 99)
         r1 = take!(r)
         @test isa(r1, Result)
     end
@@ -66,7 +67,8 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
         grammar = Grammar(data["DSL"], base_primitives())
         problems = map(Problem, data["tasks"])
         type = problems[1].type
-        r = generator(grammar, [], type, 6.0, 4.5, 99)
+        env = Array{TypeField}([])
+        r = generator(grammar, env, type, 6.0, 4.5, 99)
         r1 = take!(r)
         @test isa(r1, Result)
     end

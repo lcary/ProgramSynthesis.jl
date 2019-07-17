@@ -92,7 +92,7 @@ function to_app_state1(candidate::Candidate, state::ProgramState)
         new_upper, new_lower, new_depth, 0, candidate.program)
 end
 
-function to_program_state(state::ApplicationState)  # TODO: improve func type
+function to_program_state(state::ApplicationState)
     arg_request = apply(state.func_args[1], state.context)
     outer_args = state.func_args[2:end]
     newstate = ProgramState(
@@ -101,7 +101,11 @@ function to_program_state(state::ApplicationState)  # TODO: improve func type
     return newstate, outer_args
 end
 
-function to_app_state2(state::ApplicationState, result::Result, args::Any)
+function to_app_state2(
+    state::ApplicationState,
+    result::Result,
+    args::Array{TypeField}
+)
     new_func = Application(state.func, result.program)
     new_upper = state.upper_bound + result.prior
     new_lower = state.lower_bound + result.prior
@@ -374,7 +378,7 @@ end
 
 function generator(
     grammar::Grammar,
-    env::Array{Any},  # TODO: improve type
+    env::Array{TypeField},
     type::TypeField,
     upper_bound::Float64,
     lower_bound::Float64,
