@@ -16,3 +16,4 @@ Checklist
  - [ ] Parse Invented Programs (programs.jl)
  - [ ] Accept JSON stream as input
  - [ ] Add docstrings (See TODOs)
+ - [ ] Use [Timer](https://docs.julialang.org/en/v1/base/base/index.html#Base.Timer-Tuple{Function,Real}) for timeouts.
