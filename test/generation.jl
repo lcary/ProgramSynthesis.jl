@@ -107,7 +107,7 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
         ]
         grammar = Grammar(data["DSL"], base_primitives())
         state = ProgramState(
-            Context(2, [(t1, tint)]),
+            Context(2, [(1, tint)]),
             [tlist(tint)],
             tlist(t0),
             3.0,
@@ -278,7 +278,7 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
         grammar = Grammar(data["DSL"], base_primitives())
         type = tlist(t0)
         program = grammar.productions[1].program
-        c = Candidate(0.0, type, program, Context(2, [(t1, tint)]))
+        c = Candidate(0.0, type, program, Context(2, [(1, tint)]))
         new_c = update_log_probability(z, c)
         @test round(new_c.log_probability, digits=4) == -2.3979
     end
@@ -353,9 +353,9 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
         p3 = grammar.productions[3].program
         candidates = Array{Candidate}([])
 
-        c1 = Candidate(l, type, p1, Context(2, [(t1, tint)]))
-        c2 = Candidate(l, type, p2, Context(2, [(t1, tint)]))
-        c3 = Candidate(l, type, p3, Context(2, [(t1, tint)]))
+        c1 = Candidate(l, type, p1, Context(2, [(1, tint)]))
+        c2 = Candidate(l, type, p2, Context(2, [(1, tint)]))
+        c3 = Candidate(l, type, p3, Context(2, [(1, tint)]))
         push!(candidates, c1)
         push!(candidates, c2)
         push!(candidates, c3)
@@ -393,9 +393,9 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
         c = 1
         x = rand(1000)
         while c <= 999
-            c1 = Candidate(l + x[c], type, p1, Context(2, [(t1, tint)]))
-            c2 = Candidate(l + x[c + 1], type, p2, Context(2, [(t1, tint)]))
-            c3 = Candidate(l + x[c + 2], type, p3, Context(2, [(t1, tint)]))
+            c1 = Candidate(l + x[c], type, p1, Context(2, [(1, tint)]))
+            c2 = Candidate(l + x[c + 1], type, p2, Context(2, [(1, tint)]))
+            c3 = Candidate(l + x[c + 2], type, p3, Context(2, [(1, tint)]))
             push!(candidates, c1)
             push!(candidates, c2)
             push!(candidates, c3)

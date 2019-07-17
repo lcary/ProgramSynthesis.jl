@@ -31,10 +31,10 @@ function response_filename()::String
 end
 
 function write_response(data::Dict{String,Any})::String
-    stringdata = JSON.json(data)
+    indent = 2
     filename = response_filename()
     open(filename, "w") do f
-        write(f, stringdata)
+        JSON.print(f, data, indent)
     end
     return filename
 end
@@ -99,6 +99,10 @@ struct TypeMismatchError <: Exception
     msg::String
 end
 
+function hit_timeout(start::Float64, timeout::Float64)::Bool
+    return time() < start + timeout
+end
+
 function run_enumeration(request::Request)::Dict{String,Any}
     problems = request.problems
     previous_budget = request.lower_bound
@@ -112,33 +116,32 @@ function run_enumeration(request::Request)::Dict{String,Any}
     type = problems[1].type
 
     start = time()
+
     while (
-        time() < start + request.program_timeout
-        && !is_explored(solutions, max_solutions)
+        !is_explored(solutions, max_solutions)
         && budget <= request.upper_bound
     )
-        timeout_exceeded = false
         args = (
             request.grammar, [], type, budget,
             previous_budget, request.max_depth
         )
+        timeout_exceeded = false
         for result in generator(args...)
             for (index, problem) in enumerate(problems)
                 # TODO: run with program timeout
                 solve!(solutions, result, problem, index, start)
             end
-            if time() > start + request.program_timeout
+            if hit_timeout(start, request.program_timeout)
                 timeout_exceeded = true
                 break
             end
         end
-        if timeout_exceeded
+        if timeout_exceeded || hit_timeout(start, request.program_timeout)
             break
         end
         previous_budget = budget
         budget += request.budget_increment
     end
-
     return json_format(request, solutions)
 end
 

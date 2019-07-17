@@ -243,7 +243,7 @@ function occurs(t::TypeConstructor, v::Int)
 end
 
 function extend(context::Context, j::Int, t::ProgramType)
-    l = Array{Tuple{Int,Union{TypeVariable,TypeConstructor}}}([])  # TODO: fix type
+    l = Array{Tuple{Int,Union{TypeVariable,TypeConstructor}}}([])
     a1 = push!(l, (j, t))
     sub = append!(a1, context.substitution)
     return Context(context.next_variable, sub)
