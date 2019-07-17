@@ -207,11 +207,11 @@
       "maximumFrontier": 10
     }
   ],
-  "programTimeout": 0.0005,
+  "programTimeout": 1.0005,
   "nc": 1,
   "timeout": 1.0,
-  "lowerBound": 1.5,
-  "upperBound": 3.0,
+  "lowerBound": 4.5,
+  "upperBound": 6.0,
   "budgetIncrement": 1.5,
   "verbose": false,
   "shatter": 10

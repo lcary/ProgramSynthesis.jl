@@ -96,7 +96,7 @@ struct TypeMismatchError <: Exception
 end
 
 function hit_timeout(start::Float64, timeout::Float64)::Bool
-    return time() < start + timeout
+    return time() - start > timeout
 end
 
 function run_enumeration(request::Request)::Dict{String,Any}

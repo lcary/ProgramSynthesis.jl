@@ -66,7 +66,6 @@ const TEST_FILE7 = get_resource("request_enumeration_example_7.json")
     @testset "run_enumeration file5" begin
         json_data = JSON.parsefile(TEST_FILE5)
         result = run_enumeration(json_data)
-
         @test length(result) == 7
         @test haskey(result, "drop-k with k=3")
         @test haskey(result, "modulo-k with k=3")
@@ -80,26 +79,23 @@ const TEST_FILE7 = get_resource("request_enumeration_example_7.json")
     @testset "run_enumeration test length (file6)" begin
         json_data = JSON.parsefile(TEST_FILE6)
         result = run_enumeration(json_data)
-
         @test length(result) == 1
         @test haskey(result, "length-test")
-
         @test isa(result["length-test"], Array)
+        @test length(result["length-test"]) == 1
 
-        # TODO: get length working and uncomment!
-
-        # @test length(result["length-test"]) >= 1
-        #
-        # programs = result["length-test"][1]
-        # @test haskey(programs, "program")
-        # @test haskey(programs, "time")
-        # @test haskey(programs, "logLikelihood")
-        # @test haskey(programs, "logPrior")
+        program1 = result["length-test"][1]
+        @test haskey(program1, "program")
+        @test haskey(program1, "time")
+        @test haskey(program1, "logLikelihood")
+        @test haskey(program1, "logPrior")
+        @test program1["program"] == "(lambda (length \$0))"
+        @test program1["logLikelihood"] == 0.0
+        @test round(program1["logPrior"], digits=4) == -4.7958
     end
     @testset "run_enumeration test 0 (file7)" begin
         json_data = JSON.parsefile(TEST_FILE7)
         result = run_enumeration(json_data)
-
         @test length(result) == 1
         @test haskey(result, "0-test")
         @test isa(result["0-test"], Array)
@@ -110,7 +106,6 @@ const TEST_FILE7 = get_resource("request_enumeration_example_7.json")
         @test haskey(program1, "time")
         @test haskey(program1, "logLikelihood")
         @test haskey(program1, "logPrior")
-
         @test program1["program"] == "(lambda 0)"
         @test program1["logLikelihood"] == 0.0
         @test round(program1["logPrior"], digits=4) == -2.3979
