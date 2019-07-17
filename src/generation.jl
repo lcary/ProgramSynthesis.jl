@@ -23,8 +23,8 @@ abstract type State end
 
 struct ProgramState <: State
     context::Context
-    env::Array{ProgramType}
-    type::ProgramType
+    env::Array{TypeField}
+    type::TypeField
     upper_bound::Float64
     lower_bound::Float64
     depth::Int
@@ -53,9 +53,9 @@ end
 
 struct ApplicationState <: State
     context::Context
-    env::Array{ProgramType}
+    env::Array{TypeField}
     func::AbstractProgram
-    func_args::Array{ProgramType}
+    func_args::Array{TypeField}
     upper_bound::Float64
     lower_bound::Float64
     depth::Int
@@ -77,7 +77,7 @@ end
 
 struct Candidate
     log_probability::Float64
-    type::ProgramType
+    type::TypeField
     program::AbstractProgram
     context::Context
 end
@@ -113,7 +113,7 @@ function to_app_state2(state::ApplicationState, result::Result, args::Any)
 end
 
 struct VariableCandidate
-    type::ProgramType
+    type::TypeField
     index::DeBruijnIndex
     context::Context
 end
@@ -133,7 +133,7 @@ function get_candidate(state::State, production::Production)
     return Candidate(l, t, p, new_context)
 end
 
-function get_variable_candidate(state::State, t::ProgramType, i::Int)
+function get_variable_candidate(state::State, t::TypeField, i::Int)
     request = state.type
     context = state.context
     new_context = unify(context, returns(t), request)
@@ -375,7 +375,7 @@ end
 function generator(
     grammar::Grammar,
     env::Array{Any},  # TODO: improve type
-    type::ProgramType,
+    type::TypeField,
     upper_bound::Float64,
     lower_bound::Float64,
     max_depth::Int,

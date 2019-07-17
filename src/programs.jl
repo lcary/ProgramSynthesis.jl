@@ -62,18 +62,18 @@ end
 
 struct Primitive <: AbstractProgram
     name::String
-    type::ProgramType
+    type::TypeField
     func::Any  # TODO: use Function type
 end
 
 mutable struct Program <: AbstractProgram
     source::String
     expression::Any
-    type::ProgramType
+    type::TypeField
 end
 
 # TODO: implement type inference logic
-function infertype(prog::Any)::ProgramType
+function infertype(prog::Any)::TypeField
     return TypeConstructor("?", [], -1)
 end
 
