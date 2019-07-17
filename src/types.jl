@@ -4,7 +4,7 @@ using ..Utils
 
 export TypeConstructor,
        TypeVariable,
-       TypeField,
+       AbstractType,
        Context,
        apply,
        function_arguments,
@@ -26,16 +26,16 @@ export TypeConstructor,
 
 const ARROW = "->"
 
-abstract type TypeField end
+abstract type AbstractType end
 
-mutable struct TypeConstructor <: TypeField
+mutable struct TypeConstructor <: AbstractType
     constructor::String
-    arguments::Array{TypeField,1}
+    arguments::Array{AbstractType,1}
     index::Union{Int, Nothing}
     is_polymorphic::Bool
 end
 
-function split_arguments(a::Array{<:TypeField,1})::Array{<:TypeField}
+function split_arguments(a::Array{<:AbstractType,1})::Array{<:AbstractType}
     if length(a) >= 3
         return [a[1], a[2:end]]
     else
@@ -48,12 +48,12 @@ function TypeConstructor(c, args, index)
     return TypeConstructor(c, args, index, is_polymorphic)
 end
 
-function TypeConstructor(c::String, a::Array{<:TypeField,1})
+function TypeConstructor(c::String, a::Array{<:AbstractType,1})
     args = split_arguments(a)
     return TypeConstructor(c, args, nothing)
 end
 
-function TypeConstructor(c::String, a::Tuple{N,N} where N<:TypeField)
+function TypeConstructor(c::String, a::Tuple{N,N} where N<:AbstractType)
     return TypeConstructor(c, [a[1], [a[2]]], nothing)
 end
 
@@ -67,7 +67,7 @@ function TypeConstructor(data::Dict{String,Any})
     )
 end
 
-mutable struct TypeVariable <: TypeField
+mutable struct TypeVariable <: AbstractType
     value::Int
     is_polymorphic::Bool
     function TypeVariable(value)
@@ -82,7 +82,7 @@ const tint = TypeConstructor("int")
 const treal = TypeConstructor("real")
 const tbool = TypeConstructor("bool")
 const tchar = TypeConstructor("char")
-tlist(t::TypeField) = return TypeConstructor("list", [t])
+tlist(t::AbstractType) = return TypeConstructor("list", [t])
 const tstr = tlist(tchar)
 const t0 = TypeVariable(0)
 const t1 = TypeVariable(1)
@@ -92,9 +92,9 @@ const t3 = TypeVariable(3)
 is_arrow(t::TypeConstructor)::Bool = t.constructor == ARROW
 is_arrow(t::TypeVariable)::Bool = false
 
-arrow(arg::TypeField) = arg
+arrow(arg::AbstractType) = arg
 
-function arrow(args...)::TypeField
+function arrow(args...)::AbstractType
     if length(args) == 0
         return nothing
     elseif length(args) == 1
@@ -118,7 +118,7 @@ end
 
 Base.hash(t::TypeVariable, h::UInt)::UInt = hash(t.value, h)
 
-function Base.isequal(a::TypeField, b::TypeField)
+function Base.isequal(a::AbstractType, b::AbstractType)
     return Base.isequal(hash(a), hash(b))
 end
 
@@ -138,14 +138,14 @@ end
 
 tostr(t::TypeVariable) = "t$(t.value)"
 
-Base.show(io::IO, t::TypeField) = print(io, tostr(t))
+Base.show(io::IO, t::AbstractType) = print(io, tostr(t))
 
-function Base.show(io::IO, a::Array{<:TypeField})
+function Base.show(io::IO, a::Array{<:AbstractType})
     t = join([tostr(i) for i in a], ", ")
     print(io, "[$t]")
 end
 
-function function_arguments(t::TypeField)::Array{TypeField}
+function function_arguments(t::AbstractType)::Array{AbstractType}
     if is_arrow(t)
         args = Array{Union{TypeConstructor,TypeVariable}}([])  # TODO: better UnionAll syntax?
         arg1 = t.arguments[1]
@@ -159,7 +159,7 @@ end
 
 struct Context
     next_variable::Int
-    substitution::Array{Tuple{Int,TypeField}}
+    substitution::Array{Tuple{Int,AbstractType}}
 end
 
 Context() = Context(0, [])
@@ -242,14 +242,14 @@ function occurs(t::TypeConstructor, v::Int)
     return any([occurs(a, v) for a in t.arguments])
 end
 
-function extend(context::Context, j::Int, t::TypeField)
+function extend(context::Context, j::Int, t::AbstractType)
     l = Array{Tuple{Int,Union{TypeVariable,TypeConstructor}}}([])
     a1 = push!(l, (j, t))
     sub = append!(a1, context.substitution)
     return Context(context.next_variable, sub)
 end
 
-function unify(context::Context, t1::TypeField, t2::TypeField)
+function unify(context::Context, t1::AbstractType, t2::AbstractType)
     t1 = apply(t1, context)
     t2 = apply(t2, context)
     if isequal(t1, t2)

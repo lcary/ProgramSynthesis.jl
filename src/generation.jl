@@ -23,8 +23,8 @@ abstract type State end
 
 struct ProgramState <: State
     context::Context
-    env::Array{TypeField}
-    type::TypeField
+    env::Array{AbstractType}
+    type::AbstractType
     upper_bound::Float64
     lower_bound::Float64
     depth::Int
@@ -53,9 +53,9 @@ end
 
 struct ApplicationState <: State
     context::Context
-    env::Array{TypeField}
+    env::Array{AbstractType}
     func::AbstractProgram
-    func_args::Array{TypeField}
+    func_args::Array{AbstractType}
     upper_bound::Float64
     lower_bound::Float64
     depth::Int
@@ -77,7 +77,7 @@ end
 
 struct Candidate
     log_probability::Float64
-    type::TypeField
+    type::AbstractType
     program::AbstractProgram
     context::Context
 end
@@ -104,7 +104,7 @@ end
 function to_app_state2(
     state::ApplicationState,
     result::Result,
-    args::Array{TypeField}
+    args::Array{AbstractType}
 )
     new_func = Application(state.func, result.program)
     new_upper = state.upper_bound + result.prior
@@ -117,7 +117,7 @@ function to_app_state2(
 end
 
 struct VariableCandidate
-    type::TypeField
+    type::AbstractType
     index::DeBruijnIndex
     context::Context
 end
@@ -137,7 +137,7 @@ function get_candidate(state::State, production::Production)
     return Candidate(l, t, p, new_context)
 end
 
-function get_variable_candidate(state::State, t::TypeField, i::Int)
+function get_variable_candidate(state::State, t::AbstractType, i::Int)
     request = state.type
     context = state.context
     new_context = unify(context, returns(t), request)
@@ -378,8 +378,8 @@ end
 
 function generator(
     grammar::Grammar,
-    env::Array{TypeField},
-    type::TypeField,
+    env::Array{AbstractType},
+    type::AbstractType,
     upper_bound::Float64,
     lower_bound::Float64,
     max_depth::Int,

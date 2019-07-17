@@ -22,7 +22,7 @@ mutable struct Grammar
     primitives::Dict{String,Primitive}
     productions::Array{Production}
     log_variable::Float64
-    continuation_type::Union{TypeField,Nothing}
+    continuation_type::Union{AbstractType,Nothing}
 end
 
 function Grammar(data::Dict{String,Any}, primitives::Dict{String,Primitive})

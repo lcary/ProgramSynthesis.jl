@@ -35,7 +35,7 @@ function can_solve(program::AbstractProgram, problem::Problem)::Bool
 
     return true  # TODO: REMOVE AFTER COMPLETING IMPLEMENTATION
 
-    env = Array{TypeField}([])
+    env = Array{AbstractType}([])
     try
         f = evaluate(program, env)
     catch
@@ -63,18 +63,18 @@ end
 
 struct Primitive <: AbstractProgram
     name::String
-    type::TypeField
+    type::AbstractType
     func::Function
 end
 
 mutable struct Program <: AbstractProgram
     source::String
     expression::Function
-    type::TypeField
+    type::AbstractType
 end
 
 # TODO: implement type inference logic
-function infertype(prog::Any)::TypeField
+function infertype(prog::Any)::AbstractType
     return TypeConstructor("?", [], -1)
 end
 
@@ -100,7 +100,7 @@ function Program(name::String, primitives::Dict{String,Primitive})
 end
 
 # TODO: implement
-function evaluate(program::Program, env::Array{TypeField})
+function evaluate(program::Program, env::Array{AbstractType})
     return program
 end
 
@@ -109,7 +109,7 @@ mutable struct Abstraction <: AbstractProgram
     body::AbstractProgram
 end
 
-function evaluate(program::Abstraction, env::Array{TypeField})
+function evaluate(program::Abstraction, env::Array{AbstractType})
     return (x) -> program.body.evaluate([x] + env)
 end
 

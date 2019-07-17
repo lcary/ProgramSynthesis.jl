@@ -12,7 +12,7 @@ end
 
 mutable struct Problem
     name::String
-    type::TypeField
+    type::AbstractType
     examples::Array{Example}
     max_solutions::Int
 end
