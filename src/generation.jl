@@ -21,25 +21,14 @@ end
 
 abstract type State end
 
-# TODO: remove
-struct StateMetadata
-    recurse::Bool
-    outer_args::Union{Array{ProgramType},Nothing}  # TODO: use specific type
-    outer_upper::Union{Float64,Nothing}
-    outer_lower::Union{Float64,Nothing}
-end
-
-StateMetadata() = StateMetadata(false, nothing, nothing, nothing)
-
 struct ProgramState <: State
     context::Context
-    env::Any  # TODO: use specific type
+    env::Any  # TODO: use specific type (Array{ProgramType}?)
     type::ProgramType
     upper_bound::Float64
     lower_bound::Float64
     depth::Int
     previous_state::Union{State,Nothing}  # TODO: might only need previous_state's logProbability, not entire previous_state object reference
-    metadata::StateMetadata
 end
 
 function Base.show(io::IO, state::ProgramState)
@@ -62,21 +51,20 @@ function convert_arrow(state::ProgramState)::ProgramState
     lower = state.lower_bound
     return ProgramState(
         state.context, env, rhs, upper, lower,
-        state.depth, state.previous_state, state.metadata)
+        state.depth, state.previous_state)
 end
 
 struct ApplicationState <: State
     context::Context
-    env::Any  # TODO: use specific type
-    func::Any  # TODO: use specific type
+    env::Any  # TODO: use specific type (Array{ProgramType}?)
+    func::Any  # TODO: use specific type (AbstractProgram?)
     func_args::Array{ProgramType}
     upper_bound::Float64
     lower_bound::Float64
     depth::Int
     argument_index::Int
     previous_state::Union{State, Nothing}  # TODO: might only need previous_state's logProbability, not entire previous_state object reference
-    original_func::Any  # TODO: use specific type
-    metadata::StateMetadata
+    original_func::Any  # TODO: use specific type (AbstractProgram?)
 end
 
 function Base.show(io::IO, state::ApplicationState)
@@ -105,19 +93,15 @@ function to_app_state1(candidate::Candidate, state::ProgramState)
     new_depth = state.depth - 1
     return ApplicationState(
         candidate.context, state.env, candidate.program, func_args,
-        new_upper, new_lower, new_depth, 0, state, candidate.program,
-        state.metadata)
+        new_upper, new_lower, new_depth, 0, state, candidate.program)
 end
 
 function to_program_state(state::ApplicationState)  # TODO: improve func type
     arg_request = apply(state.func_args[1], state.context)
     outer_args = state.func_args[2:end]
-    metadata = StateMetadata(  # TODO: remove
-        true, outer_args,
-        state.upper_bound, state.lower_bound)
     newstate = ProgramState(
         state.context, state.env, arg_request,
-        state.upper_bound, 0.0, state.depth, state, metadata)
+        state.upper_bound, 0.0, state.depth, state)
     return newstate, outer_args
 end
 
@@ -129,7 +113,7 @@ function to_app_state2(state::ApplicationState, result::Result, args::Any)
     return ApplicationState(
         result.context, state.env, new_func, args,
         new_upper, new_lower, state.depth, new_arg_index,
-        state, state.func, StateMetadata())  # TODO: use original_func from outer ApplicationState
+        state, state.func)
 end
 
 struct VariableCandidate
@@ -408,8 +392,7 @@ function generator(
         upper_bound,
         lower_bound,
         max_depth,
-        nothing,
-        StateMetadata()
+        nothing
     )
     return Channel((channel) -> generator(channel, grammar, state, debug))
 end

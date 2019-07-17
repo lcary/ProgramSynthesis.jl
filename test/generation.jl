@@ -7,7 +7,6 @@ using DreamCore.Enumeration: Request
 using DreamCore.Generation: generator,
                             Result,
                             Candidate,
-                            StateMetadata,
                             ProgramState,
                             InvalidStateException,
                             update_log_probability,
@@ -88,8 +87,7 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
             3.0,
             1.5,
             99,
-            nothing,
-            StateMetadata()
+            nothing
         )
         @test length(grammar.productions) == 1
         @test grammar.productions[1].program.source == "1"
@@ -113,8 +111,7 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
             3.0,
             0.0,
             2,
-            nothing,
-            StateMetadata()
+            nothing
         )
         @test length(grammar.productions) == 1
         @test grammar.productions[1].program.source == "map"
@@ -138,8 +135,7 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
             3.0,
             1.5,
             99,
-            nothing,
-            StateMetadata()
+            nothing
         )
         @test length(grammar.productions) == 1
         @test grammar.productions[1].program.source == "map"
@@ -164,8 +160,7 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
             3.0,
             1.5,
             99,
-            nothing,
-            StateMetadata()
+            nothing
         )
 
         primitives = base_primitives()
@@ -252,8 +247,7 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
             3.0,
             1.5,
             99,
-            nothing,
-            StateMetadata()
+            nothing
         )
         t = tlist(tint)
         vc = get_variable_candidate(state, t, 0)
@@ -297,8 +291,7 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
             3.0,
             1.5,
             99,
-            nothing,
-            StateMetadata()
+            nothing
         )
         candidates = Array{Candidate}([])
         for p in grammar.productions

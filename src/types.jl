@@ -26,6 +26,7 @@ export TypeConstructor,
 
 const ARROW = "->"
 
+# TODO: rename to AbstractType
 abstract type ProgramType end
 
 mutable struct TypeConstructor <: ProgramType
