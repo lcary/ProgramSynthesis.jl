@@ -23,12 +23,11 @@ abstract type State end
 
 struct ProgramState <: State
     context::Context
-    env::Any  # TODO: use specific type (Array{ProgramType}?)
+    env::Array{ProgramType}
     type::ProgramType
     upper_bound::Float64
     lower_bound::Float64
     depth::Int
-    previous_state::Union{State,Nothing}  # TODO: might only need previous_state's logProbability, not entire previous_state object reference
 end
 
 function Base.show(io::IO, state::ProgramState)
@@ -49,22 +48,19 @@ function convert_arrow(state::ProgramState)::ProgramState
     env = append!(env1, state.env)
     upper = state.upper_bound
     lower = state.lower_bound
-    return ProgramState(
-        state.context, env, rhs, upper, lower,
-        state.depth, state.previous_state)
+    return ProgramState(state.context, env, rhs, upper, lower, state.depth)
 end
 
 struct ApplicationState <: State
     context::Context
-    env::Any  # TODO: use specific type (Array{ProgramType}?)
-    func::Any  # TODO: use specific type (AbstractProgram?)
+    env::Array{ProgramType}
+    func::AbstractProgram
     func_args::Array{ProgramType}
     upper_bound::Float64
     lower_bound::Float64
     depth::Int
     argument_index::Int
-    previous_state::Union{State, Nothing}  # TODO: might only need previous_state's logProbability, not entire previous_state object reference
-    original_func::Any  # TODO: use specific type (AbstractProgram?)
+    original_func::AbstractProgram
 end
 
 function Base.show(io::IO, state::ApplicationState)
@@ -93,7 +89,7 @@ function to_app_state1(candidate::Candidate, state::ProgramState)
     new_depth = state.depth - 1
     return ApplicationState(
         candidate.context, state.env, candidate.program, func_args,
-        new_upper, new_lower, new_depth, 0, state, candidate.program)
+        new_upper, new_lower, new_depth, 0, candidate.program)
 end
 
 function to_program_state(state::ApplicationState)  # TODO: improve func type
@@ -101,7 +97,7 @@ function to_program_state(state::ApplicationState)  # TODO: improve func type
     outer_args = state.func_args[2:end]
     newstate = ProgramState(
         state.context, state.env, arg_request,
-        state.upper_bound, 0.0, state.depth, state)
+        state.upper_bound, 0.0, state.depth)
     return newstate, outer_args
 end
 
@@ -113,7 +109,7 @@ function to_app_state2(state::ApplicationState, result::Result, args::Any)
     return ApplicationState(
         result.context, state.env, new_func, args,
         new_upper, new_lower, state.depth, new_arg_index,
-        state, state.func)
+        state.func)
 end
 
 struct VariableCandidate
@@ -391,8 +387,7 @@ function generator(
         type,
         upper_bound,
         lower_bound,
-        max_depth,
-        nothing
+        max_depth
     )
     return Channel((channel) -> generator(channel, grammar, state, debug))
 end

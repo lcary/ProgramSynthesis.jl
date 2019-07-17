@@ -86,8 +86,7 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
             tint,
             3.0,
             1.5,
-            99,
-            nothing
+            99
         )
         @test length(grammar.productions) == 1
         @test grammar.productions[1].program.source == "1"
@@ -110,8 +109,7 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
             tlist(t0),
             3.0,
             0.0,
-            2,
-            nothing
+            2
         )
         @test length(grammar.productions) == 1
         @test grammar.productions[1].program.source == "map"
@@ -134,8 +132,7 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
             tint,
             3.0,
             1.5,
-            99,
-            nothing
+            99
         )
         @test length(grammar.productions) == 1
         @test grammar.productions[1].program.source == "map"
@@ -159,8 +156,7 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
             tlist(tint),
             3.0,
             1.5,
-            99,
-            nothing
+            99
         )
 
         primitives = base_primitives()
@@ -246,8 +242,7 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
             tlist(tint),
             3.0,
             1.5,
-            99,
-            nothing
+            99
         )
         t = tlist(tint)
         vc = get_variable_candidate(state, t, 0)
@@ -290,8 +285,7 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
             tlist(tint),
             3.0,
             1.5,
-            99,
-            nothing
+            99
         )
         candidates = Array{Candidate}([])
         for p in grammar.productions
