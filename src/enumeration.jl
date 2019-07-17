@@ -74,10 +74,6 @@ function json_format(data::Request, solutions::SolutionSet)::Dict{String,Any}
     return response
 end
 
-function solved(log_likelihood::Float64)::Bool
-    return !isinf(log_likelihood) && !isnan(log_likelihood)
-end
-
 function solve!(
     solutions::SolutionSet,
     result::Result,
@@ -87,9 +83,9 @@ function solve!(
 )
     prior = result.prior
     program = result.program
-    log_likelihood = try_solve(program, problem)
+    success, log_likelihood = try_solve(program, problem)
     search_time = time() - start
-    if solved(log_likelihood)
+    if success
         solution = Solution(program, log_likelihood, prior, search_time)
         update_solutions!(solutions, solution, problem, index)
     end

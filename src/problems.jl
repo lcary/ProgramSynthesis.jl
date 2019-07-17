@@ -4,21 +4,18 @@ using ..Types
 
 export Problem, Example
 
-# TODO: should output support any type?
 mutable struct Example
-    inputs::Array{Any}
-    output::Union{Array{Any},Int,Bool}
+    inputs
+    output
 end
+
+Example(data) = Example(data["inputs"], data["output"])
 
 mutable struct Problem
     name::String
     type::AbstractType
     examples::Array{Example}
     max_solutions::Int
-end
-
-function Example(data::Dict{String,Any})
-    return Example(data["inputs"], data["output"])
 end
 
 function Problem(data::Dict{String,Any})

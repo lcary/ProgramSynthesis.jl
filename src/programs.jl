@@ -13,63 +13,20 @@ export Program,
        AbstractProgram,
        Primitive,
        DeBruijnIndex,
-       json_format
+       json_format,
+       evaluate
 
 abstract type AbstractProgram end
-
-function can_solve(program::AbstractProgram, example::Example)::Bool
-    try
-        for input in example.inputs
-            f = f(input)
-        end
-    catch
-        return false
-    end
-    if f != example.output
-        return false
-    end
-    return true
-end
-
-function can_solve(program::AbstractProgram, problem::Problem)::Bool
-
-    return true  # TODO: REMOVE AFTER COMPLETING IMPLEMENTATION
-
-    env = Array{AbstractType}([])
-    try
-        f = evaluate(program, env)
-    catch
-        # free variable
-        return false
-    end
-
-    for example in problem.examples
-        if !can_solve(program, example)
-            return false
-        end
-    end
-
-    return true
-end
-
-function try_solve(program::AbstractProgram, problem::Problem)::Float64
-    if can_solve(program, problem)
-        log_likelihood = 0.0
-    else
-        log_likelihood = -Inf
-    end
-    return log_likelihood
-end
 
 struct Primitive <: AbstractProgram
     name::String
     type::AbstractType
-    func::Function
+    func
 end
 
 mutable struct Program <: AbstractProgram
     source::String
-    expression::Function
+    expression
     type::AbstractType
 end
 
@@ -90,6 +47,7 @@ function parse(s::String, primitives::Dict{String,Primitive})
     throw(ParseFailure("Unable to parse Program from string ($s)."))
 end
 
+# TODO: Maybe don't convert primitives to programs? May help with comparisons.
 function Program(name::String, primitives::Dict{String,Primitive})
     expression = parse(name, primitives)
     return Program(
@@ -99,18 +57,9 @@ function Program(name::String, primitives::Dict{String,Primitive})
     )
 end
 
-# TODO: implement
-function evaluate(program::Program, env::Array{AbstractType})
-    return program
-end
-
 # TODO: docstring
 mutable struct Abstraction <: AbstractProgram
     body::AbstractProgram
-end
-
-function evaluate(program::Abstraction, env::Array{AbstractType})
-    return (x) -> program.body.evaluate([x] + env)
 end
 
 # TODO: docstring
@@ -132,5 +81,94 @@ str(p::Application)::String = "($(string(p.func)) $(string(p.args)))"
 Base.show(io::IO, p::AbstractProgram) = print(io, str(p))
 
 json_format(p::AbstractProgram)::String = str(p)
+
+evaluate(program::Program, env) = program.expression
+
+function joinenv(t, env)
+    return append!([t], env)
+end
+
+function evaluate(program::Abstraction, env)
+    f(x) = evaluate(program.body, joinenv(x, env))
+    return f
+end
+
+function is_conditional(p::Application)
+    return (!isa(p.func, Int)
+            && isa(p.func, Application)
+            && isa(p.func.func, Application)
+            && isa(p.func.func.func, Program)
+            && p.func.func.func.source == "if")
+end
+
+false_branch(p::Application) = p.args
+true_branch(p::Application) = p.func.args
+branch(p::Application) = p.func.func.args
+
+function evaluate(p::Application, env)
+    if is_conditional(p)
+        if evaluate(branch(p), env)
+            return evaluate(true_branch(p), env)
+        else
+            return evaluate(false_branch(p), env)
+        end
+    else
+        return evaluate(p.func, env)(evaluate(p.args, env))
+    end
+end
+
+evaluate(p::DeBruijnIndex, env) = env[p.i + 1]
+
+function predict(f, inputs)
+    for a in inputs
+        f = f(a)
+    end
+    return f
+end
+
+function can_solve(f::Function, example::Example)::Bool
+    try
+        prediction = predict(f, example.inputs)
+        if prediction != example.output
+            return false
+        end
+    catch
+        return false
+    end
+    return true
+end
+
+function can_solve(program::AbstractProgram, problem::Problem)::Bool
+    env = Array{AbstractType}([])
+    f = evaluate(program, env)
+    for example in problem.examples
+        if !can_solve(f, example)
+            return false
+        end
+    end
+    return true
+end
+
+function is_solved(log_likelihood::Float64)::Bool
+    return !isinf(log_likelihood) && !isnan(log_likelihood)
+end
+
+function solve_result(log_likelihood::Float64)::Tuple{Bool,Float64}
+    return is_solved(log_likelihood), log_likelihood
+end
+
+function try_solve(
+    program::AbstractProgram,
+    problem::Problem
+)::Tuple{Bool,Float64}
+    try
+        if can_solve(program, problem)
+            return solve_result(0.0)
+        end
+    catch
+        return solve_result(-Inf)
+    end
+    return solve_result(-Inf)
+end
 
 end

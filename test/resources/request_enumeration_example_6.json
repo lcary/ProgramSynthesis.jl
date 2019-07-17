@@ -1,0 +1,218 @@
+{
+  "DSL": {
+    "logVariable": 0.0,
+    "productions": [
+      {
+        "expression": "map",
+        "logProbability": 0.0
+      },
+      {
+        "expression": "unfold",
+        "logProbability": 0.0
+      },
+      {
+        "expression": "range",
+        "logProbability": 0.0
+      },
+      {
+        "expression": "index",
+        "logProbability": 0.0
+      },
+      {
+        "expression": "fold",
+        "logProbability": 0.0
+      },
+      {
+        "expression": "length",
+        "logProbability": 0.0
+      },
+      {
+        "expression": "if",
+        "logProbability": 0.0
+      },
+      {
+        "expression": "+",
+        "logProbability": 0.0
+      },
+      {
+        "expression": "-",
+        "logProbability": 0.0
+      },
+      {
+        "expression": "empty",
+        "logProbability": 0.0
+      },
+      {
+        "expression": "cons",
+        "logProbability": 0.0
+      },
+      {
+        "expression": "car",
+        "logProbability": 0.0
+      },
+      {
+        "expression": "cdr",
+        "logProbability": 0.0
+      },
+      {
+        "expression": "empty?",
+        "logProbability": 0.0
+      },
+      {
+        "expression": "0",
+        "logProbability": 0.0
+      },
+      {
+        "expression": "1",
+        "logProbability": 0.0
+      },
+      {
+        "expression": "*",
+        "logProbability": 0.0
+      },
+      {
+        "expression": "mod",
+        "logProbability": 0.0
+      },
+      {
+        "expression": "gt?",
+        "logProbability": 0.0
+      },
+      {
+        "expression": "eq?",
+        "logProbability": 0.0
+      },
+      {
+        "expression": "is-prime",
+        "logProbability": 0.0
+      },
+      {
+        "expression": "is-square",
+        "logProbability": 0.0
+      }
+    ]
+  },
+  "tasks": [
+    {
+      "examples": [
+        {
+          "inputs": [[6,1,1,6,3]],
+          "output": 5
+        },
+        {
+          "inputs": [[3]],
+          "output": 1
+        },
+        {
+          "inputs": [[6,2,0,0,3]],
+          "output": 5
+        },
+        {
+          "inputs": [[]],
+          "output": 0
+        },
+        {
+          "inputs": [[5,5,1,2,2]],
+          "output": 5
+        },
+        {
+          "inputs": [[2,5,0,6,2]],
+          "output": 5
+        },
+        {
+          "inputs": [[6,2,1,3,2]],
+          "output": 5
+        },
+        {
+          "inputs": [[2,2,1,1,1]],
+          "output": 5
+        },
+        {
+          "inputs": [[1,1,1]],
+          "output": 3
+        },
+        {
+          "inputs": [[5,3,6,0,4]],
+          "output": 5
+        },
+        {
+          "inputs": [[4,2,4,0,5]],
+          "output": 5
+        },
+        {
+          "inputs": [[4,1,4,3,2]],
+          "output": 5
+        },
+        {
+          "inputs": [[4,2,5,4,3]],
+          "output": 5
+        },
+        {
+          "inputs": [[4,6,0,6,0]],
+          "output": 5
+        },
+        {
+          "inputs": [[1,3,5,6,5]],
+          "output": 5
+        },
+        {
+          "inputs": [[1,3]],
+          "output": 2
+        },
+        {
+          "inputs": [[5,5,0,6,2]],
+          "output": 5
+        },
+        {
+          "inputs": [[2,5,0,5,0]],
+          "output": 5
+        },
+        {
+          "inputs": [[4,4,5,4,4]],
+          "output": 5
+        },
+        {
+          "inputs": [[4,4,5,4]],
+          "output": 4
+        },
+        {
+          "inputs": [[4,4,5]],
+          "output": 3
+        },
+        {
+          "inputs": [[]],
+          "output": 0
+        },
+        {
+          "inputs": [[4]],
+          "output": 1
+        },
+        {
+          "inputs": [[5]],
+          "output": 1
+        },
+        {
+          "inputs": [[]],
+          "output": 0
+        }
+      ],
+      "name": "length-test",
+      "request": {
+        "constructor": "->",
+        "arguments": [
+          {"constructor": "list", "arguments": [{"constructor": "int", "arguments": []}]},
+          {"constructor": "int", "arguments": []}
+        ]
+      },
+      "maximumFrontier": 10
+    }
+  ],
+  "programTimeout": 0.0005,
+  "nc": 1,
+  "timeout": 1.0,
+  "lowerBound": 1.5,
+  "upperBound": 3.0,
+  "budgetIncrement": 1.5,
+  "verbose": false,
+  "shatter": 10
+}
