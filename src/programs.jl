@@ -98,8 +98,6 @@ function Program(name::String, primitives::Dict{String,Primitive})
     )
 end
 
-Base.show(io::IO, p::Program) = print(io, p.source)
-
 # TODO: implement
 function evaluate(program::Program, env::Any)
     return program
@@ -124,20 +122,14 @@ mutable struct DeBruijnIndex <: AbstractProgram
     i::Int
 end
 
-function Base.show(io::IO, p::Application)
-    print(io, "Application($(p.func), args=$(p.args))")
-end
+str(p::Primitive)::String = p.name
+str(p::Program)::String = p.source
+str(p::DeBruijnIndex)::String = "\$$(p.i)"
+str(p::Abstraction)::String = "(lambda $(string(p.body)))"
+str(p::Application)::String = "($(string(p.func)) $(string(p.args)))"
 
-function Base.show(io::IO, p::Abstraction)
-    print(io, "Abstraction($(p.body))")
-end
+Base.show(io::IO, p::AbstractProgram) = print(io, str(p))
 
-function Base.show(io::IO, p::DeBruijnIndex)
-    print(io, "\$$(p.i))")
-end
-
-json_format(p::Program) = p.source
-json_format(p::Abstraction) = p.body
-json_format(p::DeBruijnIndex) = p.i
+json_format(p::AbstractProgram)::String = str(p)
 
 end
