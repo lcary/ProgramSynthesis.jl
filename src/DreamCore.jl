@@ -36,6 +36,7 @@ export run_enumeration,
        json_format,
        is_explored,
        generator,
-       base_primitives
+       base_primitives,
+       evaluate
 
 end

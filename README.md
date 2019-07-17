@@ -11,7 +11,7 @@ Checklist
  - [x] Deserialize Grammar
  - [x] Parse Primitive Programs (programs.jl)
  - [x] Implement Program Generation
- - [ ] Implement Program Evaluation
+ - [x] Implement Program Evaluation
  - [ ] Implement Type Inference
  - [ ] Parse Invented Programs (programs.jl)
  - [ ] Accept JSON stream as input
