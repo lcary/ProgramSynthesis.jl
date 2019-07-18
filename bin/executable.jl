@@ -4,7 +4,10 @@ https://github.com/JuliaLang/PackageCompiler.jl#building-an-executable
 
 To compile, clone the repo, cd into, add its deps via julia CLI and then run:
 
-    julia --project ./juliac.jl -aeq ../DreamCore.jl/bin/executable.jl --outname dreamcore
+    julia --project=~/w/mit/DreamCore.jl ./juliac.jl -aeq ../DreamCore.jl/bin/executable.jl --outname dreamcore
+
+To call the executable after building:
+
     ./builddir/dreamcore
 
 Note: the dreamcore executable comes with a dreamcore.dylib file, so both files
