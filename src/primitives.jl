@@ -95,7 +95,7 @@ function base_primitives()::Dict{String,Primitive}
         "if" => Primitive("if", arrow(tbool, t0, t0, t0), _if),
         "+" => Primitive("+", math_type, (x) -> (y) -> (x + y)),
         "-" => Primitive("-", math_type, (x) -> (y) -> (x - y)),
-        "empty" => Primitive("empty", tlist(t0), () -> []),
+        "empty" => Primitive("empty", tlist(t0), []),
         "cons" => Primitive("cons", arrow(t0, tlist(t0), tlist(t0)), _cons),
         "car" => Primitive("car", arrow(tlist(t0), t0), (x) -> x[1]),
         "cdr" => Primitive("cdr", arrow(tlist(t0), tlist(t0)), (x) -> x[2:end]),

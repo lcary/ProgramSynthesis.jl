@@ -14,7 +14,8 @@ export Program,
        Primitive,
        DeBruijnIndex,
        json_format,
-       evaluate
+       evaluate,
+       str
 
 abstract type AbstractProgram end
 
@@ -72,11 +73,15 @@ mutable struct DeBruijnIndex <: AbstractProgram
     i::Int
 end
 
-str(p::Primitive)::String = p.name
-str(p::Program)::String = p.source
-str(p::DeBruijnIndex)::String = "\$$(p.i)"
-str(p::Abstraction)::String = "(lambda $(string(p.body)))"
-str(p::Application)::String = "($(string(p.func)) $(string(p.args)))"
+str(p::Primitive, isfunc::Bool=false)::String = p.name
+str(p::Program, isfunc::Bool=false)::String = p.source
+str(p::DeBruijnIndex, isfunc::Bool=false)::String = "\$$(p.i)"
+function str(p::Application, isfunc::Bool=false)::String
+    t1 = str(p.func, true)
+    t2 = str(p.args, false)
+    return isfunc ? "$t1 $t2" : "($t1 $t2)"
+end
+str(p::Abstraction, isfunc::Bool=false)::String = "(lambda $(str(p.body)))"
 
 Base.show(io::IO, p::AbstractProgram) = print(io, str(p))
 
