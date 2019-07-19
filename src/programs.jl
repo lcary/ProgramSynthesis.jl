@@ -13,6 +13,7 @@ export Program,
        AbstractProgram,
        Primitive,
        DeBruijnIndex,
+       Invented,
        json_format,
        evaluate,
        str
@@ -51,9 +52,16 @@ mutable struct DeBruijnIndex <: AbstractProgram
     i::Int
 end
 
+# TODO: add type inference
+mutable struct Invented <: AbstractProgram
+    body::AbstractProgram
+    # type::AbstractType
+end
+
 str(p::Primitive, isfunc::Bool=false)::String = p.name
 str(p::Program, isfunc::Bool=false)::String = p.source
 str(p::DeBruijnIndex, isfunc::Bool=false)::String = "\$$(p.i)"
+str(p::Invented, isfunc::Bool=false)::String = "#$(str(p.body))"
 function str(p::Application, isfunc::Bool=false)::String
     t1 = str(p.func, true)
     t2 = str(p.args, false)
@@ -76,6 +84,7 @@ function evaluate(program::Abstraction, env)
     return f
 end
 
+# TODO: add unit test
 function is_conditional(p::Application)
     return (!isa(p.func, Int)
             && isa(p.func, Application)
@@ -101,6 +110,7 @@ function evaluate(p::Application, env)
 end
 
 evaluate(p::DeBruijnIndex, env) = env[p.i + 1]
+evaluate(p::Invented, env) = p.body.evaluate([])
 
 function predict(f, inputs)
     for a in inputs

@@ -7,6 +7,7 @@ using DreamCore.Parsers: parse_s_expression,
 using DreamCore.Programs: DeBruijnIndex,
                           Abstraction,
                           Application,
+                          Invented,
                           str
 
 @testset "parsers.jl" begin
@@ -53,11 +54,19 @@ using DreamCore.Programs: DeBruijnIndex,
         @test str(p) == pstr
         @test isa(p, Abstraction)
 
-        # TODO: implement parsing invented programs
-        # p = parse_program("(lambda (+ 1 #(* 8 1)))", prim)
-        # @test isa(p, Abstraction)
-        # p = parse_program("(lambda (+ 1 #(* 8 map)))", prim)
-        # @test isa(p, Abstraction)
+        pstr = raw"(lambda (+ 1 #(* 8 1)))"
+        p = parse_program(pstr, prim)
+        @test str(p) == pstr
+        @test isa(p, Abstraction)
+        @test isa(p.body, Application)
+        @test isa(p.body.args, Invented)
+
+        pstr = raw"(lambda (+ 1 #(* 8 map)))"
+        p = parse_program(pstr, prim)
+        @test str(p) == pstr
+        @test isa(p, Abstraction)
+        @test isa(p.body, Application)
+        @test isa(p.body.args, Invented)
     end
     @testset "parse program error" begin
         error_raised = false

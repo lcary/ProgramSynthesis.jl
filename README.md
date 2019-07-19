@@ -13,7 +13,7 @@ Checklist
  - [x] Implement Program Generation
  - [x] Implement Program Evaluation
  - [x] Implement Program Parsing for complex programs (abstraction, application)
- - [ ] Implement Program Parsing for other program types (invented, fragment?)
+ - [x] Implement Program Parsing for other program types (invented)
  - [ ] Implement Type Inference
  - [ ] Accept JSON stream as input
  - [ ] Add docstrings (See TODOs)

@@ -63,13 +63,12 @@ function parse_program(s::String, primitives::Dict{String,Primitive})
     s = parse_s_expression(s)
     function p(e)
         if isa(e, Array)
-            # TODO: implement invented
-            # if e[1] == "#"
-            #     if length(e) != 2
-            #         throw(ParseFailure("Invented program $e must have 2 parts"))
-            #     end
-            #     return Invented(p(e[2]))
-            # end
+            if e[1] == '#'
+                if length(e) != 2
+                    throw(ParseFailure("Invented program $e must have 2 parts"))
+                end
+                return Invented(p(e[2]))
+            end
             if e[1] == "lambda"
                 if length(e) != 2
                     throw(ParseFailure("Abstraction $e must have 2 parts"))
