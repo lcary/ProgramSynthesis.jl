@@ -8,6 +8,10 @@ struct ParseFailure <: Exception
     msg::String
 end
 
+struct ParseSExprFailure <: Exception
+    msg::String
+end
+
 function parse_s_expression(s::String)
     s = strip(s)
     function p(n)
@@ -15,7 +19,7 @@ function parse_s_expression(s::String)
             n += 1
         end
         if n == length(s) + 1
-            throw(ParseFailure("Failed to parse S-expr: $s"))
+            throw(ParseSExprFailure("Failed to parse string: $s"))
         end
         if s[n] == '#'
             e, n = p(n + 1)
@@ -31,7 +35,7 @@ function parse_s_expression(s::String)
                     n += 1
                 end
                 if n == length(s) + 1
-                    throw(ParseFailure("Failed to parse S-expr: $s"))
+                    throw(ParseSExprFailure("Failed to parse string: $s"))
                 end
                 if s[n] == ')'
                     n += 1
@@ -52,7 +56,7 @@ function parse_s_expression(s::String)
     if n == length(s) + 1
         return e
     end
-    throw(ParseFailure("Failed to parse S-expr: $s"))
+    throw(ParseSExprFailure("Failed to parse string: $s"))
 end
 
 function parse_program(s::String, primitives::Dict{String,Primitive})
