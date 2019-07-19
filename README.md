@@ -12,7 +12,7 @@ Checklist
  - [x] Parse Primitive Programs
  - [x] Implement Program Generation
  - [x] Implement Program Evaluation
- - [ ] Implement Program Parsing for complex programs (abstraction, application)
+ - [x] Implement Program Parsing for complex programs (abstraction, application)
  - [ ] Implement Program Parsing for other program types (invented, fragment?)
  - [ ] Implement Type Inference
  - [ ] Accept JSON stream as input
