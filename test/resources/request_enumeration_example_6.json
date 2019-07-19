@@ -207,7 +207,7 @@
       "maximumFrontier": 10
     }
   ],
-  "programTimeout": 1.0005,
+  "programTimeout": 0.0005,
   "nc": 1,
   "timeout": 1.0,
   "lowerBound": 4.5,

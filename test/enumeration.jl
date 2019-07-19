@@ -25,7 +25,7 @@ const TEST_FILE7 = get_resource("request_enumeration_example_7.json")
         @test length(enum_data.problems[1].examples) == 15
         @test length(enum_data.problems[1].examples[1].inputs) == 1
         @test length(enum_data.problems[1].examples[1].output) == 7
-        @test enum_data.program_timeout == 0.0005
+        @test enum_data.timeout == 1.0
         @test enum_data.max_parameters == 99
         @test enum_data.lower_bound == 0.0
         @test enum_data.upper_bound == 1.5
@@ -41,7 +41,7 @@ const TEST_FILE7 = get_resource("request_enumeration_example_7.json")
         @test length(enum_data.problems[1].examples) == 15
         @test length(enum_data.problems[1].examples[1].inputs) == 1
         @test enum_data.problems[1].examples[1].output == 15
-        @test enum_data.program_timeout == 0.0005
+        @test enum_data.timeout == 1.0
         @test enum_data.max_parameters == 99
         @test enum_data.lower_bound == 0.0
         @test enum_data.upper_bound == 1.5
@@ -57,7 +57,7 @@ const TEST_FILE7 = get_resource("request_enumeration_example_7.json")
         @test length(enum_data.problems[1].examples) == 15
         @test length(enum_data.problems[1].examples[1].inputs) == 1
         @test enum_data.problems[1].examples[1].output == true
-        @test enum_data.program_timeout == 0.0005
+        @test enum_data.timeout == 1.0
         @test enum_data.max_parameters == 99
         @test enum_data.lower_bound == 0.0
         @test enum_data.upper_bound == 1.5

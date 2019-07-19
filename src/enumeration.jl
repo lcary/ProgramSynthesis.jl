@@ -42,7 +42,7 @@ end
 struct Request
     problems::Array{Problem}
     grammar::Grammar
-    program_timeout::Float64
+    timeout::Float64
     verbose::Bool
     lower_bound::Float64
     upper_bound::Float64
@@ -56,7 +56,7 @@ function Request(data::Dict{String,Any})
     return Request(
         map(Problem, data["tasks"]),
         Grammar(data["DSL"], primitives),
-        data["programTimeout"],
+        data["timeout"],
         data["verbose"],
         data["lowerBound"],
         data["upperBound"],
@@ -128,12 +128,12 @@ function run_enumeration(request::Request)::Dict{String,Any}
                 # TODO: run with program timeout
                 solve!(solutions, result, problem, index, start)
             end
-            if hit_timeout(start, request.program_timeout)
+            if hit_timeout(start, request.timeout)
                 timeout_exceeded = true
                 break
             end
         end
-        if timeout_exceeded || hit_timeout(start, request.program_timeout)
+        if timeout_exceeded || hit_timeout(start, request.timeout)
             break
         end
         previous_budget = budget
