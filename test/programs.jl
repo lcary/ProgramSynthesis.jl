@@ -2,6 +2,7 @@ using Test
 using JSON
 
 using DreamCore
+using DreamCore.Parsers: parse_program
 using DreamCore.Programs: evaluate,
                           DeBruijnIndex,
                           try_solve,
@@ -12,21 +13,9 @@ using DreamCore.Problems: Problem
 using DreamCore.Primitives: base_primitives
 using DreamCore.Types: arrow, t0, t1, tlist
 
-fakeparse(x) = true  # TODO: test with actual program functions!
-
 @testset "programs.jl" begin
-    @testset "fakeparse program strings" begin
-        @test fakeparse("(+ 1)")
-        @test fakeparse("(\$0 \$1)")
-        @test fakeparse("(+ 1 \$0 \$2)")
-        @test fakeparse("(map (+ 1) \$0 \$1)")
-        @test fakeparse("(map (+ 1) (\$0 (+ 1) (- 1) (+ -)) \$1)")
-        @test fakeparse("(lambda \$0)")
-        @test fakeparse("(lambda (+ 1 #(* 8 1)))")
-        @test fakeparse("(lambda (+ 1 #(* 8 map)))")
-    end
     @testset "parse primitive programs" begin
-        p = Program("map", base_primitives())
+        p = parse_program("map", base_primitives())
         @test isequal(p.type, arrow(arrow(t0, t1), tlist(t0), tlist(t1)))
         @test p.source == "map"
         f = (x) -> (x + x)
@@ -36,12 +25,12 @@ fakeparse(x) = true  # TODO: test with actual program functions!
     @testset "evaluate primitive programs" begin
         primitives = base_primitives()
 
-        p1 = Program("+", primitives)
+        p1 = parse_program("+", primitives)
         f1 = evaluate(p1, [])
         @test f1(3)(4) == 7
         @test f1(-123)(555) == 432
 
-        p2 = Program("length", primitives)
+        p2 = parse_program("length", primitives)
         f2 = evaluate(p2, [])
         @test f2([1,2,3]) == 3
         @test f2([]) == 0
@@ -52,10 +41,10 @@ fakeparse(x) = true  # TODO: test with actual program functions!
         p1 = Abstraction(
             Application(
                 Application(
-                    Program("cons", primitives),
+                    parse_program("cons", primitives),
                     Application(
-                        Program("length", primitives),
-                        Program("empty", primitives)
+                        parse_program("length", primitives),
+                        parse_program("empty", primitives)
                     )
                 ),
                 DeBruijnIndex(0)
@@ -63,7 +52,7 @@ fakeparse(x) = true  # TODO: test with actual program functions!
         )
         @test str(p1) == "(lambda (cons (length empty) \$0))"
 
-        cdr = Program("cdr", primitives)
+        cdr = parse_program("cdr", primitives)
         p2 = Abstraction(
             Application(
                 cdr, Application(
@@ -75,10 +64,10 @@ fakeparse(x) = true  # TODO: test with actual program functions!
 
         p3 = Abstraction(
             Application(
-                Program("car", primitives),
+                parse_program("car", primitives),
                 Application(
                     Application(
-                        Program("map", primitives),
+                        parse_program("map", primitives),
                         Abstraction(DeBruijnIndex(1))
                     ),
                     DeBruijnIndex(0)
@@ -90,11 +79,11 @@ fakeparse(x) = true  # TODO: test with actual program functions!
         p4 = Abstraction(
             Application(
                 Application(
-                    Program("cons", primitives),
-                    Program("1", primitives),
+                    parse_program("cons", primitives),
+                    parse_program("1", primitives),
                 ),
                 Application(
-                    Program("cdr", primitives),
+                    parse_program("cdr", primitives),
                     DeBruijnIndex(0)
                 )
             )
@@ -104,10 +93,10 @@ fakeparse(x) = true  # TODO: test with actual program functions!
         p5 = Abstraction(
             Application(
                 Application(
-                    Program("cons", primitives),
+                    parse_program("cons", primitives),
                     Application(
-                        Program("length", primitives),
-                        Program("empty", primitives)
+                        parse_program("length", primitives),
+                        parse_program("empty", primitives)
                     )
                 ),
                 DeBruijnIndex(0)
@@ -118,7 +107,7 @@ fakeparse(x) = true  # TODO: test with actual program functions!
     @testset "try_solve length problem with length" begin
         primitives = base_primitives()
 
-        len = Program("length", primitives)
+        len = parse_program("length", primitives)
         program  = Abstraction(Application(len, DeBruijnIndex(0)))
 
         data = Dict(
@@ -152,7 +141,7 @@ fakeparse(x) = true  # TODO: test with actual program functions!
     @testset "try_solve non-length problem with length" begin
         primitives = base_primitives()
 
-        len = Program("length", primitives)
+        len = parse_program("length", primitives)
         program  = Abstraction(Application(len, DeBruijnIndex(0)))
 
         data = Dict(
@@ -182,7 +171,7 @@ fakeparse(x) = true  # TODO: test with actual program functions!
     @testset "try_solve 0 problem with 0" begin
         primitives = base_primitives()
 
-        program = Abstraction(Program("0", primitives))
+        program = Abstraction(parse_program("0", primitives))
 
         data = Dict(
             "name" => "0-test",
@@ -293,10 +282,10 @@ fakeparse(x) = true  # TODO: test with actual program functions!
         program = Abstraction(
             Application(
                 Application(
-                    Program("cons", primitives),
+                    parse_program("cons", primitives),
                     Application(
-                        Program("length", primitives),
-                        Program("empty", primitives)
+                        parse_program("length", primitives),
+                        parse_program("empty", primitives)
                     )
                 ),
                 DeBruijnIndex(0)
@@ -388,7 +377,7 @@ fakeparse(x) = true  # TODO: test with actual program functions!
 
         primitives = base_primitives()
 
-        cdr = Program("cdr", primitives)
+        cdr = parse_program("cdr", primitives)
         program = Abstraction(
             Application(
                 cdr, Application(
@@ -485,10 +474,10 @@ fakeparse(x) = true  # TODO: test with actual program functions!
         program = Abstraction(
             Application(
                 Application(
-                    Program("cons", primitives),
+                    parse_program("cons", primitives),
                     Application(
-                        Program("length", primitives),
-                        Program("empty", primitives)
+                        parse_program("length", primitives),
+                        parse_program("empty", primitives)
                     )
                 ),
                 DeBruijnIndex(0)

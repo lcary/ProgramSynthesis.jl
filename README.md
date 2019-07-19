@@ -12,9 +12,12 @@ Checklist
  - [x] Parse Primitive Programs
  - [x] Implement Program Generation
  - [x] Implement Program Evaluation
+ - [x] Implement Program Parsing for complex programs (abstraction, application)
+ - [ ] Implement Program Parsing for other program types (invented, fragment?)
  - [ ] Implement Type Inference
- - [ ] Implement Program Parsing for Invented/Complex programs
  - [ ] Accept JSON stream as input
  - [ ] Add docstrings (See TODOs)
  - [ ] Use [Timer](https://docs.julialang.org/en/v1/base/base/index.html#Base.Timer-Tuple{Function,Real}) for timeouts.
  - [ ] Multicore Enumeration
+ - [ ] Add package documentation
+ - [ ] Make repo public / upload to julia pkgs

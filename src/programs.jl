@@ -36,28 +36,6 @@ function infertype(prog::Any)::AbstractType
     return TypeConstructor("?", [], -1)
 end
 
-struct ParseFailure <: Exception
-    msg::String
-end
-
-# TODO: Support invented, abstraction, application, index, and fragment programs
-function parse(s::String, primitives::Dict{String,Primitive})
-    if haskey(primitives, s)
-        return primitives[s]
-    end
-    throw(ParseFailure("Unable to parse Program from string ($s)."))
-end
-
-# TODO: Maybe don't convert primitives to programs? May help with comparisons.
-function Program(name::String, primitives::Dict{String,Primitive})
-    expression = parse(name, primitives)
-    return Program(
-        name,
-        expression.func,
-        expression.type
-    )
-end
-
 # TODO: docstring
 mutable struct Abstraction <: AbstractProgram
     body::AbstractProgram

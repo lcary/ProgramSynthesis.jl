@@ -4,6 +4,7 @@ include("utils.jl")
 include("types.jl")
 include("problems.jl")
 include("programs.jl")
+include("parsers.jl")
 include("grammars.jl")
 include("solutions.jl")
 include("primitives.jl")
@@ -15,6 +16,7 @@ using .Types
 using .Problems
 using .Programs
 using .Primitives
+using .Parsers
 using .Grammars
 using .Solutions
 using .Generation
@@ -37,6 +39,7 @@ export run_enumeration,
        is_explored,
        generator,
        base_primitives,
-       evaluate
+       evaluate,
+       parse_program
 
 end

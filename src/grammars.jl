@@ -1,6 +1,7 @@
 module Grammars
 
 using ..Programs
+using ..Parsers
 using ..Types
 using ..Utils
 
@@ -12,10 +13,8 @@ mutable struct Production
 end
 
 function Production(data::Dict{String,Any}, primitives::Dict{String,Primitive})
-    return Production(
-        Program(data["expression"], primitives),
-        data["logProbability"]
-    )
+    program = parse_program(data["expression"], primitives)
+    return Production(program, data["logProbability"])
 end
 
 mutable struct Grammar
