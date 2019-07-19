@@ -55,6 +55,8 @@ const PRIMES = [
 
 struct NotImplementedError <: Exception end
 
+# TODO: add basic unit tests for each primitive functionality
+# TODO: verify for each primitive function that original data is unchanged
 function base_primitives()::Dict{String,Primitive}
 
     index_type = arrow(tint, tlist(t0), t0)
@@ -70,7 +72,7 @@ function base_primitives()::Dict{String,Primitive}
     _range = (n) -> Array(range(1, length=n))
     _fold = (n) -> throw(NotImplementedError)
     _if = (c) -> (x) -> (y) -> c ? x : y
-    _cons = (x) -> (y) -> prepend!(y, x)
+    _cons = (x) -> (y) -> vcat(x, y)
     _is_empty = (x) -> x == []
     _is_prime = (n) -> n in PRIMES
     _is_square = (n) -> round(sqrt(n)) ^ 2 == n

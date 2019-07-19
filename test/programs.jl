@@ -72,6 +72,48 @@ fakeparse(x) = true  # TODO: test with actual program functions!
             )
         )
         @test str(p2) == "(lambda (cdr (cdr (cdr \$0))))"
+
+        p3 = Abstraction(
+            Application(
+                Program("car", primitives),
+                Application(
+                    Application(
+                        Program("map", primitives),
+                        Abstraction(DeBruijnIndex(1))
+                    ),
+                    DeBruijnIndex(0)
+                )
+            )
+        )
+        @test str(p3) == "(lambda (car (map (lambda \$1) \$0)))"
+
+        p4 = Abstraction(
+            Application(
+                Application(
+                    Program("cons", primitives),
+                    Program("1", primitives),
+                ),
+                Application(
+                    Program("cdr", primitives),
+                    DeBruijnIndex(0)
+                )
+            )
+        )
+        @test str(p4) == "(lambda (cons 1 (cdr \$0)))"
+
+        p5 = Abstraction(
+            Application(
+                Application(
+                    Program("cons", primitives),
+                    Application(
+                        Program("length", primitives),
+                        Program("empty", primitives)
+                    )
+                ),
+                DeBruijnIndex(0)
+            )
+        )
+        @test str(p5) == "(lambda (cons (length empty) \$0))"
     end
     @testset "try_solve length problem with length" begin
         primitives = base_primitives()
@@ -357,5 +399,107 @@ fakeparse(x) = true  # TODO: test with actual program functions!
         success, log_likelihood = try_solve(program, problem)
         @test success
         @test log_likelihood == 0.0
+    end
+    @testset "solve failure should not change data" begin
+        data = Dict(
+            "name" => "drop-k with k=3",
+            "request" => Dict(
+                "constructor" => "->",
+                "arguments" => [
+                    Dict("constructor" => "list", "arguments" => [
+                        Dict("constructor" => "int", "arguments" => [])
+                    ]),
+                    Dict("constructor" => "list", "arguments" => [
+                        Dict("constructor" => "int", "arguments" => [])
+                    ])
+                ]
+            ),
+            "maximumFrontier" => 10,
+            "examples" => [
+                Dict(
+                  "inputs" => [[16,3,9,1,7,12,5,12,4,14]],
+                  "output" => [1,7,12,5,12,4,14]
+                ),
+                Dict(
+                  "inputs" => [[10,6,5,4,15,11,8,8]],
+                  "output" => [4,15,11,8,8]
+                ),
+                Dict(
+                  "inputs" => [[13,0,5,14,1,12,1,12,5,4]],
+                  "output" => [14,1,12,1,12,5,4]
+                ),
+                Dict(
+                  "inputs" => [[10,15,13,9,13,15,7,12,3,14]],
+                  "output" => [9,13,15,7,12,3,14]
+                ),
+                Dict(
+                  "inputs" => [[4,1,11,2,3,15,2,0,12]],
+                  "output" => [2,3,15,2,0,12]
+                ),
+                Dict(
+                  "inputs" => [[1,5,8,16,15,10,14,11]],
+                  "output" => [16,15,10,14,11]
+                ),
+                Dict(
+                  "inputs" => [[11,12,13,4,0,13,6,9,1,9]],
+                  "output" => [4,0,13,6,9,1,9]
+                ),
+                Dict(
+                  "inputs" => [[8,5,1,4,15,4,9,11,1]],
+                  "output" => [4,15,4,9,11,1]
+                ),
+                Dict(
+                  "inputs" => [[9,15,11,10,4,13]],
+                  "output" => [10,4,13]
+                ),
+                Dict(
+                  "inputs" => [[7,11,12,8,15,1,9,2]],
+                  "output" => [8,15,1,9,2]
+                ),
+                Dict(
+                  "inputs" => [[9,0,5,8,5,8,13]],
+                  "output" => [8,5,8,13]
+                ),
+                Dict(
+                  "inputs" => [[2,5,14,8,8]],
+                  "output" => [8,8]
+                ),
+                Dict(
+                  "inputs" => [[14,0,7,11,10,0,5,2]],
+                  "output" => [11,10,0,5,2]
+                ),
+                Dict(
+                  "inputs" => [[16,9,15,4]],
+                  "output" => [4]
+                ),
+                Dict(
+                  "inputs" => [[14,16,4,13,11,6,13,16,1,5]],
+                  "output" => [13,11,6,13,16,1,5]
+                )
+            ]
+        )
+        problem = Problem(data)
+
+        primitives = base_primitives()
+
+        program = Abstraction(
+            Application(
+                Application(
+                    Program("cons", primitives),
+                    Application(
+                        Program("length", primitives),
+                        Program("empty", primitives)
+                    )
+                ),
+                DeBruijnIndex(0)
+            )
+        )
+        @test data["examples"][1]["inputs"] == [[16,3,9,1,7,12,5,12,4,14]]
+        @test data["examples"][1]["output"] == [1,7,12,5,12,4,14]
+        success, log_likelihood = try_solve(program, problem)
+        @test !success
+        @test log_likelihood == -Inf
+        @test data["examples"][1]["inputs"] == [[16,3,9,1,7,12,5,12,4,14]]
+        @test data["examples"][1]["output"] == [1,7,12,5,12,4,14]
     end
 end
