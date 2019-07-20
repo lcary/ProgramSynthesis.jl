@@ -1,17 +1,18 @@
 performance optimization
 ========================
 
-6 seconds in julia, 1s in ocaml:
+6 seconds in julia, <1s in ocaml (see julia_v_ocaml_speedtest2.txt):
 
 ❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID26993_20190719_T155300.json
-=> Result(-4.795790545596741, (lambda (length empty)), Context(next=2, {t0 ||> t1}))
-=> Result(-4.795790545596741, (lambda (length $0)), Context(next=1, {t0 ||> int}))
-=> Result(-4.795790545596741, (lambda (car $0)), Context(next=1, {t0 ||> int}))
-/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID18013_20190720_T192910.json
 
->120 seconds (aborted) in julia, 8s in ocaml:
+12 seconds in julia, <1s in ocaml (see julia_v_ocaml_speedtest2.txt):
+
+❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID27008_20190719_T155300.json
+
+>180 seconds (aborted) in julia, <2s in ocaml (see julia_v_ocaml_speedtest2.txt):
+
+❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID27034_20190719_T155304.json
+
+>120 seconds (aborted) in julia, 8s in ocaml (see julia_v_ocaml_speedtest2.txt):
 
 ❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID27039_20190719_T155306.json
-=> Result(-15.254541571329428, (lambda (map (lambda (index (length empty) $1)) $0)), Context(next=5, {t0 ||> int, t3 ||> t4, t2 ||> int, t1 ||> int}))
-=> Result(-15.947688751889373, (lambda (map (lambda (index (length $1) $1)) $0)), Context(next=4, {t0 ||> int, t3 ||> int, t2 ||> int, t1 ||> int}))
-=> Result(-15.947688751889373, (lambda (map (lambda (index (car $1) $1)) $0)), Context(next=4, {t0 ||> int, t3 ||> int, t2 ||> int, t1 ||> int}))
