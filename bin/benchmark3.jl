@@ -1,23 +1,27 @@
+# Benchmarks the performance of build_candidates
+
 using Statistics
 using JSON
 using BenchmarkTools
 
 using DreamCore
-using DreamCore.Types: Context
-using DreamCore.Types: ProgramState
+using DreamCore.Types: Context, AbstractType
+using DreamCore.Generation: ProgramState, build_candidates
 
 f = "../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID26993_20190719_T155300.json"
 
 data = JSON.parsefile(f)
 grammar = Grammar(data["DSL"], base_primitives())
+problems = map(Problem, data["tasks"])
 
+env = Array{AbstractType}([])
 state = ProgramState(
     Context(),
     env,
-    type,
-    upper_bound,
-    lower_bound,
-    max_depth
+    problems[1].type,
+    4.5,
+    6.0,
+    99
 )
 
 # compile

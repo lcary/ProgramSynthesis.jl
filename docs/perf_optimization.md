@@ -156,3 +156,60 @@ before any optimizations:
 381.788591 seconds (1.93 G allocations: 104.542 GiB, 3.36% gc time)
 /Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID19906_20190720_T195112.json
 ```
+
+benchmark3.jl
+-------------
+
+Benchmarks the performance of build_candidates.
+
+```
+julia --project bin/benchmark3.jl
+BenchmarkTools.Trial
+  params: BenchmarkTools.Parameters
+    seconds: Float64 5.0
+    samples: Int64 10000
+    evals: Int64 1
+    overhead: Float64 0.0
+    gctrial: Bool true
+    gcsample: Bool false
+    time_tolerance: Float64 0.05
+    memory_tolerance: Float64 0.01
+  times: Array{Float64}((6280,)) [741792.0, 741936.0, 742018.0, 742038.0, 742101.0, 742228.0, 742269.0, 742534.0, 742637.0, 742656.0  …  3.27623e6, 3.33293e6, 3.35902e6, 3.35956e6, 3.50051e6, 3.51292e6, 3.5164e6, 3.54105e6, 9.71048e6, 3.71e7]
+  gctimes: Array{Float64}((6280,)) [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0  …  2.35429e6, 2.56008e6, 2.5792e6, 2.57218e6, 2.71629e6, 2.67197e6, 2.72993e6, 0.0, 8.8163e6, 3.62721e7]
+  memory: Int64 109808
+  allocs: Int64 1942
+minimum:
+TrialEstimate(741.792 μs)
+median:
+TrialEstimate(750.213 μs)
+mean:
+TrialEstimate(794.527 μs)
+maximum:
+TrialEstimate(37.100 ms)
+```
+After 01b5ca3965de8feecb447602c156c61d264ad2ce:
+```
+❯ julia --project bin/benchmark3.jl
+BenchmarkTools.Trial
+  params: BenchmarkTools.Parameters
+    seconds: Float64 5.0
+    samples: Int64 10000
+    evals: Int64 1
+    overhead: Float64 0.0
+    gctrial: Bool true
+    gcsample: Bool false
+    time_tolerance: Float64 0.05
+    memory_tolerance: Float64 0.01
+  times: Array{Float64}((10000,)) [145130.0, 145772.0, 146169.0, 146224.0, 146230.0, 146312.0, 146338.0, 146361.0, 146384.0, 146391.0  …  2.75971e6, 2.77252e6, 2.82006e6, 2.92564e6, 2.95226e6, 2.97624e6, 3.17119e6, 3.23846e6, 9.30012e6, 3.63502e7]
+  gctimes: Array{Float64}((10000,)) [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0  …  2.55102e6, 2.62034e6, 2.58522e6, 2.72215e6, 2.76736e6, 2.78584e6, 2.99101e6, 3.02673e6, 9.09118e6, 3.60922e7]
+  memory: Int64 109520
+  allocs: Int64 1924
+minimum:
+TrialEstimate(145.130 μs)
+median:
+TrialEstimate(151.544 μs)
+mean:
+TrialEstimate(175.081 μs)
+maximum:
+TrialEstimate(36.350 ms)
+```
