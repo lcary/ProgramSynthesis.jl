@@ -227,10 +227,6 @@ end
 returns(t::TypeVariable) = t
 returns(t::TypeConstructor) = is_arrow(t) ? returns(t.arguments[2]) : t
 
-struct UnificationFailure <: Exception
-    msg
-end
-
 struct Occurs <: Exception end  # TODO: docstring
 
 occurs(t::TypeVariable, v::Int) = t.value == v
@@ -241,6 +237,8 @@ function occurs(t::TypeConstructor, v::Int)
     end
     return any([occurs(a, v) for a in t.arguments])
 end
+
+const UnificationFailure = -Inf
 
 function extend(context::Context, j::Int, t::AbstractType)
     l = Array{Tuple{Int,Union{TypeVariable,TypeConstructor}}}([])
@@ -257,7 +255,7 @@ function unify(context::Context, t1::AbstractType, t2::AbstractType)
     end
     if !t1.is_polymorphic && !t2.is_polymorphic
         msg = string("Types are not equal: ", t1, " != ", t2)
-        throw(UnificationFailure(msg))
+        return UnificationFailure
     end
     # TODO: use multiple dispatch instead
     if isa(t1, TypeVariable)
@@ -275,7 +273,7 @@ function unify(context::Context, t1::AbstractType, t2::AbstractType)
     end
     if t1.constructor != t2.constructor
         msg = string("Types are not equal: ", t1, " != ", t2)
-        throw(UnificationFailure(msg))
+        return UnificationFailure
     end
     k = context
     for (x, y) in zip(t2.arguments, t1.arguments)

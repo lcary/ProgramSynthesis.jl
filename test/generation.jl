@@ -138,17 +138,8 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
         )
         @test length(grammar.productions) == 1
         @test grammar.productions[1].program.source == "map"
-        throws_error = false
-        try
-            get_candidate(state, grammar.productions[1])
-        catch e
-            if typeof(e) <: UnificationFailure
-                throws_error = true
-            else
-                rethrow(e)
-            end
-        end
-        @test throws_error
+        r = get_candidate(state, grammar.productions[1])
+        @test r == UnificationFailure
     end
     @testset "test get_candidate contexts" begin
         data = JSON.parsefile(TEST_FILE2)

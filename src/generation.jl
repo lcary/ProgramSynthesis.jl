@@ -133,6 +133,9 @@ function get_candidate(state::State, production::Production)
     p = production.program
     new_context, t = instantiate(p.type, context)
     new_context = unify(new_context, returns(t), request)
+    if new_context == UnificationFailure
+        return UnificationFailure
+    end
     t = apply(t, new_context)
     return Candidate(l, t, p, new_context)
 end
@@ -141,6 +144,9 @@ function get_variable_candidate(state::State, t::AbstractType, i::Int)
     request = state.type
     context = state.context
     new_context = unify(context, returns(t), request)
+    if new_context == UnificationFailure
+        return UnificationFailure
+    end
     t = apply(t, new_context)
     return VariableCandidate(t, DeBruijnIndex(i), new_context)
 end
@@ -165,7 +171,11 @@ function build_candidates(grammar::Grammar, state::State)::Array{Candidate}
 
     for p in grammar.productions
         try
-            push!(candidates, get_candidate(state, p))
+            r = get_candidate(state, p)
+            if r == UnificationFailure
+                continue
+            end
+            push!(candidates, r)
         catch e
             if typeof(e) <: UnificationFailure
                 continue
@@ -175,7 +185,11 @@ function build_candidates(grammar::Grammar, state::State)::Array{Candidate}
 
     for (i, t) in enumerate(state.env)
         try
-            push!(variable_candidates, get_variable_candidate(state, t, i - 1))
+            r = get_variable_candidate(state, t, i - 1)
+            if r == UnificationFailure
+                continue
+            end
+            push!(variable_candidates, r)
         catch e
             if typeof(e) <: UnificationFailure
                 continue
