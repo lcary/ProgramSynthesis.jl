@@ -38,7 +38,6 @@ struct Program
     name::Union{Nothing,String}
     type::Union{Nothing,TypeField}
     func::Union{Nothing,Any}
-    body::Union{Nothing,Program}
     args::Union{Nothing,Program}
     i::Union{Nothing,Int}
     ptype::PROGRAMTYPE
@@ -46,34 +45,31 @@ end
 
 # TODO: reorder args to be (name, type, func)
 function Program(name::String, func, type::TypeField)::Program
-    return Program(name, type, func, nothing, nothing, nothing, PROGRAM)
+    return Program(name, type, func, nothing, nothing, PROGRAM)
 end
 
 function Primitive(name::String, type::TypeField, func)::Program
-    return Program(name, type, func, nothing, nothing, nothing, PRIMITIVE)
+    return Program(name, type, func, nothing, nothing, PRIMITIVE)
 end
 
 # TODO: docstring
 function Abstraction(body::Program)::Program
-    return Program(
-        nothing, nothing, nothing, body, nothing, nothing, ABSTRACTION)
+    return Program(nothing, nothing, body, nothing, nothing, ABSTRACTION)
 end
 
 # TODO: docstring
 function Application(func::Program, args::Program)::Program
-    return Program(nothing, nothing, func, nothing, args, nothing, APPLICATION)
+    return Program(nothing, nothing, func, args, nothing, APPLICATION)
 end
 
 # TODO: docstring
 function DeBruijnIndex(i::Int)::Program
-    return Program(
-        nothing, nothing, nothing, nothing, nothing, i, INDEX)
+    return Program(nothing, nothing, nothing, nothing, i, INDEX)
 end
 
 # TODO: add type inference ( # type::TypeField )
 function Invented(body::Program)::Program
-    return Program(
-        nothing, nothing, nothing, body, nothing, nothing, INVENTED)
+    return Program(nothing, nothing, body, nothing, nothing, INVENTED)
 end
 
 function str(p::Program, isfunc::Bool=false)::String
@@ -92,7 +88,7 @@ function str(p::Program, isfunc::Bool=false)::String
 end
 
 index_str(p::Program, isfunc::Bool=false)::String = "\$$(p.i)"
-invented_str(p::Program, isfunc::Bool=false)::String = "#$(str(p.body))"
+invented_str(p::Program, isfunc::Bool=false)::String = "#$(str(p.func))"
 
 function application_str(p::Program, isfunc::Bool=false)::String
     t1 = str(p.func, true)
@@ -101,7 +97,7 @@ function application_str(p::Program, isfunc::Bool=false)::String
 end
 
 function abstraction_str(p::Program, isfunc::Bool=false)::String
-    return "(lambda $(str(p.body)))"
+    return "(lambda $(str(p.func)))"
 end
 
 Base.show(io::IO, p::Program) = print(io, str(p))
@@ -111,7 +107,7 @@ json_format(p::Program)::String = str(p)
 function getname(p::Program)::String
     t = p.ptype
     if t == ABSTRACTION
-        return getname(p.body)
+        return getname(p.func)
     elseif t == APPLICATION
         return getname(p.func)
     # TODO: what about invented?
@@ -140,7 +136,7 @@ function evaluate(p::Program, env)
 end
 
 function evaluate_abstraction(program::Program, env)
-    f(x) = evaluate(program.body, joinenv(x, env))
+    f(x) = evaluate(program.func, joinenv(x, env))
     return f
 end
 
@@ -157,7 +153,7 @@ function evaluate_application(p::Program, env)
 end
 
 evaluate_index(p::Program, env) = env[p.i + 1]
-evaluate_invented(p::Program, env) = p.body.evaluate([])
+evaluate_invented(p::Program, env) = p.func.evaluate([])
 
 function joinenv(t, env)
     return append!([t], env)

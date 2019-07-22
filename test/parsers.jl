@@ -70,15 +70,15 @@ using DreamCore.Programs: DeBruijnIndex,
         p = parse_program(pstr, prim)
         @test str(p) == pstr
         @test p.ptype == ABSTRACTION
-        @test p.body.ptype == APPLICATION
-        @test p.body.args.ptype == INVENTED
+        @test p.func.ptype == APPLICATION
+        @test p.func.args.ptype == INVENTED
 
         pstr = raw"(lambda (+ 1 #(* 8 map)))"
         p = parse_program(pstr, prim)
         @test str(p) == pstr
         @test p.ptype == ABSTRACTION
-        @test p.body.ptype == APPLICATION
-        @test p.body.args.ptype == INVENTED
+        @test p.func.ptype == APPLICATION
+        @test p.func.args.ptype == INVENTED
     end
     @testset "parse program error" begin
         error_raised = false
