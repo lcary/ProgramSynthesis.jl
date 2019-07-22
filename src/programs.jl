@@ -35,41 +35,41 @@ export Program,
 end
 
 struct Program
-    name::Union{Nothing,String}
-    type::Union{Nothing,TypeField}
-    func::Union{Nothing,Any}
-    args::Union{Nothing,Program}
-    i::Union{Nothing,Int}
+    name::String
+    type::Union{TypeField,Nothing}
+    func::Any
+    args::Union{Program,Nothing}
+    i::Int
     ptype::PROGRAMTYPE
 end
 
 # TODO: reorder args to be (name, type, func)
 function Program(name::String, func, type::TypeField)::Program
-    return Program(name, type, func, nothing, nothing, PROGRAM)
+    return Program(name, type, func, nothing, -1, PROGRAM)
 end
 
 function Primitive(name::String, type::TypeField, func)::Program
-    return Program(name, type, func, nothing, nothing, PRIMITIVE)
+    return Program(name, type, func, nothing, -1, PRIMITIVE)
 end
 
 # TODO: docstring
 function Abstraction(body::Program)::Program
-    return Program(nothing, nothing, body, nothing, nothing, ABSTRACTION)
+    return Program("", nothing, body, nothing, -1, ABSTRACTION)
 end
 
 # TODO: docstring
 function Application(func::Program, args::Program)::Program
-    return Program(nothing, nothing, func, args, nothing, APPLICATION)
+    return Program("", nothing, func, args, -1, APPLICATION)
 end
 
 # TODO: docstring
 function DeBruijnIndex(i::Int)::Program
-    return Program(nothing, nothing, nothing, nothing, i, INDEX)
+    return Program("", nothing, nothing, nothing, i, INDEX)
 end
 
 # TODO: add type inference ( # type::TypeField )
 function Invented(body::Program)::Program
-    return Program(nothing, nothing, body, nothing, nothing, INVENTED)
+    return Program("", nothing, body, nothing, -1, INVENTED)
 end
 
 function str(p::Program, isfunc::Bool=false)::String
