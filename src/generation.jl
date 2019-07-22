@@ -79,8 +79,8 @@ end
 function build_candidates(
         grammar::Grammar, request::TypeField, context::Context,
         env::Array{TypeField,1})::Array{Candidate,1}
-    candidates = Array{Candidate,1}([])
-    variable_candidates = Array{VariableCandidate,1}([])
+    candidates = Array{Candidate,1}()
+    variable_candidates = Array{VariableCandidate,1}()
 
     for p in grammar.productions
         r = get_candidate(request, context, p)
@@ -177,6 +177,7 @@ function generator(
         grammar::Grammar, env::Array{TypeField,1},
         type::TypeField, upper_bound::Float64,
         lower_bound::Float64, max_depth::Int)
+    results = Array{Result,1}()
     return Channel((channel) -> generator(
         channel, grammar, Context(), env,
         type, upper_bound, lower_bound, max_depth))
@@ -210,7 +211,8 @@ function process_arrow(
         lower_bound::Float64, depth::Int)
     lhs = type.arguments[1]
     rhs = type.arguments[2]
-    new_env = Array{TypeField,1}([lhs])  # TODO: better UnionAll syntax?
+    new_env = Array{TypeField,1}()
+    push!(new_env, lhs)
     append!(new_env, env)
 
     gen = Channel((c) -> generator(
