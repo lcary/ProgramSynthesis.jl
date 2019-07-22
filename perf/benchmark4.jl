@@ -3,7 +3,7 @@ using BenchmarkTools
 using JSON
 
 using DreamCore
-using DreamCore.Types: Context, AbstractType
+using DreamCore.Types: Context, TypeField
 using DreamCore.Generation: ProgramState, build_candidates
 
 using DreamCore
@@ -17,11 +17,11 @@ problems = map(Problem, data["tasks"])
 type = problems[1].type
 
 # precompile
-env = Array{AbstractType}([])
+env = Array{TypeField}([])
 gen = generator(grammar, env, type, 10.5, 9.0, 99, false)
 [i for i in gen]
 
-env = Array{AbstractType}([])
+env = Array{TypeField}([])
 gen = generator(grammar, env, type, 10.5, 9.0, 99, false)
 t = @benchmark [i for i in gen]
 
