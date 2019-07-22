@@ -19,7 +19,7 @@ export TypeField,
        instantiate,
        returns,
        unify,
-       UnificationFailure,
+       UNIFICATION_FAILURE,
        extend
 
 const ARROW = "->"
@@ -270,7 +270,7 @@ function occurs(t::TypeField, v::Int)::Bool
     return any([occurs(a, v) for a in t.arguments])
 end
 
-const UnificationFailure = -Inf
+const UNIFICATION_FAILURE = -Inf
 
 function extend(context::Context, j::Int, t::TypeField)
     l = Array{Tuple{Int,TypeField},1}([])
@@ -289,25 +289,25 @@ function unify(
     end
     if !t1.is_polymorphic && !t2.is_polymorphic
         msg = string("Types are not equal: ", t1, " != ", t2)
-        return UnificationFailure
+        return UNIFICATION_FAILURE
     end
     # TODO: add unit test for occurs
     if t1.type == variable
         if occurs(t2, t1.value)
-            return UnificationFailure
+            return UNIFICATION_FAILURE
         end
         return extend(context, t1.value, t2)
     end
     # TODO: add unit test for occurs
     if t2.type == variable
         if occurs(t1, t2.value)
-            return UnificationFailure
+            return UNIFICATION_FAILURE
         end
         return extend(context, t2.value, t1)
     end
     if t1.constructor != t2.constructor
         msg = string("Types are not equal: ", t1, " != ", t2)
-        return UnificationFailure
+        return UNIFICATION_FAILURE
     end
     k = context
     for (x, y) in zip(t2.arguments, t1.arguments)

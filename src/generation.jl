@@ -43,8 +43,8 @@ function get_candidate(
     p = production.program
     new_context, t = instantiate(p.type, context)
     new_context = unify(new_context, returns(t), request)
-    if new_context == UnificationFailure
-        return UnificationFailure
+    if new_context == UNIFICATION_FAILURE
+        return UNIFICATION_FAILURE
     end
     t = apply(t, new_context)
     return Candidate(l, t, p, new_context)
@@ -54,8 +54,8 @@ function get_variable_candidate(
         request::TypeField, context::Context, t::TypeField,
         i::Int)::Union{VariableCandidate,Float64}
     new_context = unify(context, returns(t), request)
-    if new_context == UnificationFailure
-        return UnificationFailure
+    if new_context == UNIFICATION_FAILURE
+        return UNIFICATION_FAILURE
     end
     t = apply(t, new_context)
     return VariableCandidate(t, DeBruijnIndex(i), new_context)
@@ -84,7 +84,7 @@ function build_candidates(
 
     for p in grammar.productions
         r = get_candidate(request, context, p)
-        if r == UnificationFailure
+        if r == UNIFICATION_FAILURE
             continue
         end
         push!(candidates, r)
@@ -92,7 +92,7 @@ function build_candidates(
 
     for (i, t) in enumerate(env)
         r = get_variable_candidate(request, context, t, i - 1)
-        if r == UnificationFailure
+        if r == UNIFICATION_FAILURE
             continue
         end
         push!(variable_candidates, r)

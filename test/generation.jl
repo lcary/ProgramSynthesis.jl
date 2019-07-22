@@ -13,7 +13,7 @@ using DreamCore.Generation: generator,
                             get_candidate,
                             get_variable_candidate,
                             update_log_probability
-using DreamCore.Types: tlist, tint, t0, t1, UnificationFailure
+using DreamCore.Types: tlist, tint, t0, t1, UNIFICATION_FAILURE
 using DreamCore.Utils: lse
 
 get_resource(filename) = abspath(@__DIR__, "resources", filename)
@@ -121,7 +121,7 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
         @test length(grammar.productions) == 1
         @test grammar.productions[1].program.name == "map"
         r = get_candidate(request, context, grammar.productions[1])
-        @test r == UnificationFailure
+        @test r == UNIFICATION_FAILURE
     end
     @testset "test get_candidate contexts" begin
         data = JSON.parsefile(TEST_FILE2)
