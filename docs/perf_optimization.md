@@ -92,6 +92,21 @@ after 9149c967743168e6dd61b9cadc497c179d4e14c7:
   ^@time run_enumeration(request_message_file)
 /Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID15725_20190722_T112136.json
 ```
+after fda2757a72796255bbd660e65d54d837d4bc26be:
+```
+❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID26993_20190719_T155300.json
+  3.298817 seconds (8.63 M allocations: 430.709 MiB, 4.89% gc time)
+  ^@time run_enumeration(request_message_file)
+/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID37805_20190722_T165710.json
+```
+after 0faaf18d14eed9f6bc40e9993cbb8e3017355ed1:
+```
+❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID26993_20190719_T155300.json
+  0.254832 seconds (658.38 k allocations: 34.181 MiB, 2.57% gc time)
+  3.502173 seconds (8.18 M allocations: 407.674 MiB, 5.59% gc time)
+  ^@time run_enumeration(request_message_file)
+/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID39083_20190722_T170829.json
+```
 
 ocaml_request_enumeration_PID27008_20190719_T155300
 ---------------------------------------------------
@@ -149,6 +164,14 @@ after 9149c967743168e6dd61b9cadc497c179d4e14c7:
   ^@time run_enumeration(request_message_file)
 /Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID15338_20190722_T112005.json
 ```
+after 0faaf18d14eed9f6bc40e9993cbb8e3017355ed1:
+```
+❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID27008_20190719_T155300.json
+  1.666996 seconds (18.33 M allocations: 976.201 MiB, 7.72% gc time)
+  4.545484 seconds (25.30 M allocations: 1.290 GiB, 6.27% gc time)
+  ^@time run_enumeration(request_message_file)
+/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID38888_20190722_T170737.json
+```
 
 ocaml_request_enumeration_PID27034_20190719_T155304
 ---------------------------------------------------
@@ -189,6 +212,23 @@ after 9149c967743168e6dd61b9cadc497c179d4e14c7:
   ^@time run_enumeration(request_message_file)
 /Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID15336_20190722_T112156.json
 ```
+most recently at a72b4d7c1b7c355eb8dd1111678af9f6b10f1ce2:
+```
+julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID27034_20190719_T155304.json
+150.205627 seconds (1.47 G allocations: 79.570 GiB, 8.62% gc time)
+  ^@time for result in generator(args...)
+152.595186 seconds (1.47 G allocations: 79.857 GiB, 8.57% gc time)
+  ^@time run_enumeration(request_message_file)
+/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID29151_20190722_T141453.json
+```
+after 0faaf18d14eed9f6bc40e9993cbb8e3017355ed1:
+```
+❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID27034_20190719_T155304.json
+ 85.489968 seconds (1.34 G allocations: 70.032 GiB, 10.63% gc time)
+ 88.531716 seconds (1.35 G allocations: 70.389 GiB, 10.48% gc time)
+  ^@time run_enumeration(request_message_file)
+/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID39135_20190722_T171028.json
+```
 
 response_enumeration_PID19906_20190720_T195112
 ----------------------------------------------
@@ -219,7 +259,15 @@ after a75313dee15506a24bb9937e8de5fc4d67a042f7:
   ^@time run_enumeration(request_message_file)
 /Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID9697_20190722_T095946.json
 ```
-why the regression in G allocations despite speedup?
+after 0faaf18d14eed9f6bc40e9993cbb8e3017355ed1:
+```
+❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID27039_20190719_T155306.json
+
+269.430770 seconds (4.29 G allocations: 223.980 GiB, 9.90% gc time)
+272.325908 seconds (4.29 G allocations: 224.318 GiB, 9.85% gc time)
+  ^@time run_enumeration(request_message_file)
+/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID39518_20190722_T171755.json
+```
 
 benchmark1.jl
 -------------
@@ -326,6 +374,32 @@ mean:
 TrialEstimate(16.171 ms)
 maximum:
 TrialEstimate(53.191 ms)
+```
+after 0faaf18d14eed9f6bc40e9993cbb8e3017355ed1:
+```
+❯ julia --project perf/benchmark1.jl
+BenchmarkTools.Trial
+  params: BenchmarkTools.Parameters
+    seconds: Float64 5.0
+    samples: Int64 10000
+    evals: Int64 1
+    overhead: Float64 0.0
+    gctrial: Bool true
+    gcsample: Bool false
+    time_tolerance: Float64 0.05
+    memory_tolerance: Float64 0.01
+  times: Array{Float64}((503,)) [8.25534e6, 8.38645e6, 8.39378e6, 8.40202e6, 8.42088e6, 8.4505e6, 8.48834e6, 8.49027e6, 8.51445e6, 8.51785e6  …  1.34385e7, 1.4229e7, 1.4263e7, 1.5724e7, 1.59111e7, 1.659e7, 1.69689e7, 1.7345e7, 1.94011e7, 6.78902e7]
+  gctimes: Array{Float64}((503,)) [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0  …  3.22832e6, 2.09411e6, 3.04813e6, 0.0, 0.0, 3.38247e6, 0.0, 2.98226e6, 9.81956e6, 5.66769e7]
+  memory: Int64 7249936
+  allocs: Int64 128189
+minimum:
+TrialEstimate(8.255 ms)
+median:
+TrialEstimate(9.486 ms)
+mean:
+TrialEstimate(9.943 ms)
+maximum:
+TrialEstimate(67.890 ms)
 ```
 
 benchmark2.jl
@@ -434,6 +508,32 @@ mean:
 TrialEstimate(1.788 s)
 maximum:
 TrialEstimate(1.797 s)
+```
+after 0faaf18d14eed9f6bc40e9993cbb8e3017355ed1:
+```
+❯ julia --project perf/benchmark2.jl
+BenchmarkTools.Trial
+  params: BenchmarkTools.Parameters
+    seconds: Float64 5.0
+    samples: Int64 10000
+    evals: Int64 1
+    overhead: Float64 0.0
+    gctrial: Bool true
+    gcsample: Bool false
+    time_tolerance: Float64 0.05
+    memory_tolerance: Float64 0.01
+  times: Array{Float64}((6,)) [9.84376e8, 9.8656e8, 9.93808e8, 9.94041e8, 9.99038e8, 1.02602e9]
+  gctimes: Array{Float64}((6,)) [6.18547e7, 5.81042e7, 6.77323e7, 6.61274e7, 6.67962e7, 9.28976e7]
+  memory: Int64 923454496
+  allocs: Int64 16443463
+minimum:
+TrialEstimate(984.376 ms)
+median:
+TrialEstimate(993.925 ms)
+mean:
+TrialEstimate(997.307 ms)
+maximum:
+TrialEstimate(1.026 s)
 ```
 
 benchmark3.jl
@@ -569,4 +669,30 @@ mean:
 TrialEstimate(95.167 μs)
 maximum:
 TrialEstimate(32.063 ms)
+```
+after 0faaf18d14eed9f6bc40e9993cbb8e3017355ed1:
+```
+❯ julia --project perf/benchmark3.jl
+BenchmarkTools.Trial
+  params: BenchmarkTools.Parameters
+    seconds: Float64 5.0
+    samples: Int64 10000
+    evals: Int64 1
+    overhead: Float64 0.0
+    gctrial: Bool true
+    gcsample: Bool false
+    time_tolerance: Float64 0.05
+    memory_tolerance: Float64 0.01
+  times: Array{Float64}((10000,)) [74376.0, 74401.0, 74571.0, 74588.0, 74589.0, 74607.0, 74607.0, 74622.0, 74638.0, 74638.0  …  1.16037e6, 1.16178e6, 1.17493e6, 1.19103e6, 1.21929e6, 1.24762e6, 1.26971e6, 1.31794e6, 9.57012e6, 3.39677e7]
+  gctimes: Array{Float64}((10000,)) [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0  …  1.05559e6, 1.06312e6, 1.0586e6, 1.10284e6, 1.0561e6, 1.15895e6, 1.18823e6, 1.22476e6, 9.47856e6, 3.38761e7]
+  memory: Int64 70832
+  allocs: Int64 1277
+minimum:
+TrialEstimate(74.376 μs)
+median:
+TrialEstimate(79.960 μs)
+mean:
+TrialEstimate(91.298 μs)
+maximum:
+TrialEstimate(33.968 ms)
 ```
