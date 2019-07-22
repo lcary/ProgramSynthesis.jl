@@ -43,7 +43,7 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
         type = problems[1].type
         env = Array{TypeField}([])
         r = generator(grammar, env, type, 3.0, 1.5, 99)
-        r1 = take!(r)
+        r1 = r[1]
         @test isa(r1, Result)
     end
     @testset "run program generation file2 bounds2" begin
@@ -68,7 +68,7 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
         type = problems[1].type
         env = Array{TypeField}([])
         r = generator(grammar, env, type, 6.0, 4.5, 99)
-        r1 = take!(r)
+        r1 = r[1]
         @test isa(r1, Result)
     end
     @testset "test get_candidate 1" begin
