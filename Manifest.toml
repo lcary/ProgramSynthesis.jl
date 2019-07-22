@@ -27,6 +27,12 @@ git-tree-sha1 = "5d55b9486590fdda5905c275bb21ce1f0754020f"
 uuid = "e1450e63-4bb3-523b-b2a4-4ffa8c0fd77d"
 version = "1.0.0"
 
+[[CSTParser]]
+deps = ["Tokenize"]
+git-tree-sha1 = "0ff80f68f55fcde2ed98d7b24d7abaf20727f3f8"
+uuid = "00ebfdb7-1f24-5e51-bd34-a7502290713f"
+version = "0.6.1"
+
 [[Cairo]]
 deps = ["BinDeps", "Colors", "Compat", "Graphics", "Homebrew", "Libdl", "Pkg", "WinRPM"]
 git-tree-sha1 = "e577cb41e7e2641f4b97f1b6dbcb9a69c9288330"
@@ -157,6 +163,12 @@ uuid = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 [[Logging]]
 uuid = "56ddb016-857b-54e1-b83d-db4d58db5568"
 
+[[MacroTools]]
+deps = ["CSTParser", "Compat", "DataStructures", "Test", "Tokenize"]
+git-tree-sha1 = "d6e9dedb8c92c3465575442da456aec15a89ff76"
+uuid = "1914dd2f-81c6-5fcd-8719-6d5c9610ff09"
+version = "0.5.1"
+
 [[Markdown]]
 deps = ["Base64"]
 uuid = "d6f4376e-aef5-505a-96c1-9c027394607a"
@@ -214,6 +226,12 @@ git-tree-sha1 = "7b1d07f411bc8ddb7977ec7f377b97b158514fe0"
 uuid = "189a3867-3050-52da-a836-e630ba90ab69"
 version = "0.2.0"
 
+[[ResumableFunctions]]
+deps = ["MacroTools", "Test"]
+git-tree-sha1 = "0dee5d8f4d748272fbee9b3710ba9c5558c22ac1"
+uuid = "c5292f4c-5179-55e1-98c5-05642aab7184"
+version = "0.4.2"
+
 [[RoundingIntegers]]
 deps = ["Test"]
 git-tree-sha1 = "293ba0ab32218b9ffd596040224228def84f8da0"
@@ -244,6 +262,11 @@ uuid = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 [[Test]]
 deps = ["Distributed", "InteractiveUtils", "Logging", "Random"]
 uuid = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[[Tokenize]]
+git-tree-sha1 = "c8a8b00ae44a94950814ff77850470711a360225"
+uuid = "0796e94c-ce3b-5d07-9a54-7f471281c624"
+version = "0.5.5"
 
 [[URIParser]]
 deps = ["Test", "Unicode"]

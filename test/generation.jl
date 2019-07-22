@@ -15,6 +15,7 @@ using DreamCore.Generation: generator,
                             update_log_probability
 using DreamCore.Types: tlist, tint, t0, t1, UNIFICATION_FAILURE
 using DreamCore.Utils: lse
+using Base.Iterators
 
 get_resource(filename) = abspath(@__DIR__, "resources", filename)
 
@@ -43,7 +44,7 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
         type = problems[1].type
         env = Array{TypeField}([])
         r = generator(grammar, env, type, 3.0, 1.5, 99)
-        r1 = r[1]
+        r1 = collect(Iterators.take(r, 1))[1]
         @test isa(r1, Result)
     end
     @testset "run program generation file2 bounds2" begin
@@ -68,7 +69,7 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
         type = problems[1].type
         env = Array{TypeField}([])
         r = generator(grammar, env, type, 6.0, 4.5, 99)
-        r1 = r[1]
+        r1 = collect(Iterators.take(r, 1))[1]
         @test isa(r1, Result)
     end
     @testset "test get_candidate 1" begin
