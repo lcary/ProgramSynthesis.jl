@@ -170,31 +170,19 @@ function build_candidates(grammar::Grammar, state::State)::Array{Candidate}
     variable_candidates = Array{VariableCandidate}([])
 
     for p in grammar.productions
-        try
-            r = get_candidate(state, p)
-            if r == UnificationFailure
-                continue
-            end
-            push!(candidates, r)
-        catch e
-            if typeof(e) <: UnificationFailure
-                continue
-            end
+        r = get_candidate(state, p)
+        if r == UnificationFailure
+            continue
         end
+        push!(candidates, r)
     end
 
     for (i, t) in enumerate(state.env)
-        try
-            r = get_variable_candidate(state, t, i - 1)
-            if r == UnificationFailure
-                continue
-            end
-            push!(variable_candidates, r)
-        catch e
-            if typeof(e) <: UnificationFailure
-                continue
-            end
+        r = get_variable_candidate(state, t, i - 1)
+        if r == UnificationFailure
+            continue
         end
+        push!(variable_candidates, r)
     end
 
     # TODO: check continuationType
