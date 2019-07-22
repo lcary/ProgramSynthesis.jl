@@ -19,9 +19,5 @@ type = problems[1].type
 
 # precompile
 env = Array{TypeField}([])
-gen = generator(grammar, env, type, 10.5, 9.0, 99, false)
+gen = generator(grammar, env, type, 10.5, 9.0, 99)
 @trace [i for i in gen]
-
-# env = Array{TypeField}([])
-# gen = generator(grammar, env, type, 10.5, 9.0, 99, false)
-# @time [i for i in gen]
