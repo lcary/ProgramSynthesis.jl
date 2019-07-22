@@ -279,7 +279,9 @@ function extend(context::Context, j::Int, t::TypeField)
     return Context(context.next_variable, sub)
 end
 
-function unify(context::Context, t1::TypeField, t2::TypeField)
+function unify(
+        context::Context, t1::TypeField,
+        t2::TypeField)::Union{Float64, Context}
     t1 = apply(t1, context)
     t2 = apply(t2, context)
     if isequal(t1, t2)

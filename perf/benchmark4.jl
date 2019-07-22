@@ -4,7 +4,7 @@ using JSON
 
 using DreamCore
 using DreamCore.Types: Context, TypeField
-using DreamCore.Generation: ProgramState, build_candidates
+using DreamCore.Generation: build_candidates
 
 using DreamCore
 
@@ -15,14 +15,13 @@ primitives = base_primitives()
 grammar = Grammar(data["DSL"], primitives)
 problems = map(Problem, data["tasks"])
 type = problems[1].type
+env = Array{TypeField}([])
 
 # precompile
-env = Array{TypeField}([])
-gen = generator(grammar, env, type, 10.5, 9.0, 99, false)
+gen = generator(grammar, env, type, 10.5, 9.0, 99)
 [i for i in gen]
 
-env = Array{TypeField}([])
-gen = generator(grammar, env, type, 10.5, 9.0, 99, false)
+gen = generator(grammar, env, type, 10.5, 9.0, 99)
 t = @benchmark [i for i in gen]
 
 dump(t)
