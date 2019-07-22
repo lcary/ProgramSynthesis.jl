@@ -22,19 +22,19 @@ abstract type AbstractProgram end
 
 struct Primitive <: AbstractProgram
     name::String
-    type::AbstractType
+    type::TypeField
     func
 end
 
 mutable struct Program <: AbstractProgram
     source::String
     expression
-    type::AbstractType
+    type::TypeField
 end
 
 # TODO: implement type inference logic
-function infertype(prog::Any)::AbstractType
-    return TypeConstructor("?", [], -1)
+function infertype(prog::Any)::TypeField
+    return TypeField("?", [], -1)
 end
 
 # TODO: docstring
@@ -55,7 +55,7 @@ end
 # TODO: add type inference
 mutable struct Invented <: AbstractProgram
     body::AbstractProgram
-    # type::AbstractType
+    # type::TypeField
 end
 
 str(p::Primitive, isfunc::Bool=false)::String = p.name
@@ -132,7 +132,7 @@ function can_solve(f::Function, example::Example)::Bool
 end
 
 function can_solve(program::AbstractProgram, problem::Problem)::Bool
-    env = Array{AbstractType,1}([])
+    env = Array{TypeField,1}([])
     f = evaluate(program, env)
     for example in problem.examples
         if !can_solve(f, example)

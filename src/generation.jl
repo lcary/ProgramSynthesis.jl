@@ -23,8 +23,8 @@ abstract type State end
 
 struct ProgramState <: State
     context::Context
-    env::Array{AbstractType,1}
-    type::AbstractType
+    env::Array{TypeField,1}
+    type::TypeField
     upper_bound::Float64
     lower_bound::Float64
     depth::Int
@@ -44,7 +44,7 @@ end
 function convert_arrow(state::ProgramState)::ProgramState
     lhs = state.type.arguments[1]
     rhs = state.type.arguments[2]
-    env1 = Array{Union{TypeConstructor,TypeVariable},1}([lhs])  # TODO: better UnionAll syntax?
+    env1 = Array{TypeField,1}([lhs])  # TODO: better UnionAll syntax?
     env = append!(env1, state.env)
     upper = state.upper_bound
     lower = state.lower_bound
@@ -53,9 +53,9 @@ end
 
 struct ApplicationState <: State
     context::Context
-    env::Array{AbstractType,1}
+    env::Array{TypeField,1}
     func::AbstractProgram
-    func_args::Array{AbstractType,1}
+    func_args::Array{TypeField,1}
     upper_bound::Float64
     lower_bound::Float64
     depth::Int
@@ -77,7 +77,7 @@ end
 
 struct Candidate
     log_probability::Float64
-    type::AbstractType
+    type::TypeField
     program::AbstractProgram
     context::Context
 end
@@ -104,7 +104,7 @@ end
 function to_app_state2(
     state::ApplicationState,
     result::Result,
-    args::Array{AbstractType,1}
+    args::Array{TypeField,1}
 )
     new_func = Application(state.func, result.program)
     new_upper = state.upper_bound + result.prior
@@ -117,7 +117,7 @@ function to_app_state2(
 end
 
 struct VariableCandidate
-    type::AbstractType
+    type::TypeField
     index::DeBruijnIndex
     context::Context
 end
@@ -140,7 +140,7 @@ function get_candidate(state::State, production::Production)
     return Candidate(l, t, p, new_context)
 end
 
-function get_variable_candidate(state::State, t::AbstractType, i::Int)
+function get_variable_candidate(state::State, t::TypeField, i::Int)
     request = state.type
     context = state.context
     new_context = unify(context, returns(t), request)
@@ -380,8 +380,8 @@ end
 
 function generator(
     grammar::Grammar,
-    env::Array{AbstractType,1},
-    type::AbstractType,
+    env::Array{TypeField,1},
+    type::TypeField,
     upper_bound::Float64,
     lower_bound::Float64,
     max_depth::Int,

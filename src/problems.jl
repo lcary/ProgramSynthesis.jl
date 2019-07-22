@@ -13,7 +13,7 @@ Example(data) = Example(data["inputs"], data["output"])
 
 mutable struct Problem
     name::String
-    type::AbstractType
+    type::TypeField
     examples::Array{Example,1}
     max_solutions::Int
 end
@@ -21,7 +21,7 @@ end
 function Problem(data::Dict{String,Any})
     return Problem(
         data["name"],
-        TypeConstructor(data["request"]),
+        TypeField(data["request"]),
         map(Example, data["examples"]),
         data["maximumFrontier"]
     )

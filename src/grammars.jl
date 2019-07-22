@@ -21,7 +21,7 @@ mutable struct Grammar
     primitives::Dict{String,Primitive}
     productions::Array{Production,1}
     log_variable::Float64
-    continuation_type::Union{AbstractType,Nothing}
+    continuation_type::Union{TypeField,Nothing}
 end
 
 function Grammar(data::Dict{String,Any}, primitives::Dict{String,Primitive})
