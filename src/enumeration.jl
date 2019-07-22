@@ -113,6 +113,8 @@ function run_enumeration(request::Request)::Dict{String,Any}
 
     start = time()
 
+    timingdict = Dict{String,Tuple{Float64, Int}}()
+
     while (
         !is_explored(solutions, max_solutions)
         && budget <= request.upper_bound
@@ -120,10 +122,11 @@ function run_enumeration(request::Request)::Dict{String,Any}
         env = Array{TypeField,1}([])
         args = (
             request.grammar, env, type, budget,
-            previous_budget, request.max_depth
+            previous_budget, request.max_depth,
+            timingdict
         )
         timeout_exceeded = false
-        for result in generator(args...)
+        @time for result in generator(args...)
             for (index, problem) in enumerate(problems)
                 # TODO: run with program timeout
                 solve!(solutions, result, problem, index, start)
@@ -138,6 +141,15 @@ function run_enumeration(request::Request)::Dict{String,Any}
         end
         previous_budget = budget
         budget += request.budget_increment
+    end
+    for v in sort(collect(timingdict), by=x->x[2][1])
+        println("{")
+        println("  total:  ", round(v[2][1], digits=6), " seconds")
+        println("  ncalls: ", v[2][2])
+        avgperf = round(v[2][1] / v[2][2], digits=6)
+        println("  avg:    ", avgperf, " seconds")
+        println("  func:   ", v[1])
+        println("}")
     end
     return json_format(request, solutions)
 end

@@ -78,39 +78,45 @@ end
 
 function build_candidates(
         grammar::Grammar, request::TypeField, context::Context,
-        env::Array{TypeField,1})::Array{Candidate,1}
+        env::Array{TypeField,1}, timingdict)::Array{Candidate,1}
     candidates = Array{Candidate,1}([])
     variable_candidates = Array{VariableCandidate,1}([])
 
-    for p in grammar.productions
+    e = @elapsed for p in grammar.productions
         r = get_candidate(request, context, p)
         if r == UNIFICATION_FAILURE
             continue
         end
         push!(candidates, r)
     end
+    setelapsed(timingdict, e, "build_candidates(): for p in grammar.productions...")
 
-    for (i, t) in enumerate(env)
+    e = @elapsed for (i, t) in enumerate(env)
         r = get_variable_candidate(request, context, t, i - 1)
         if r == UNIFICATION_FAILURE
             continue
         end
         push!(variable_candidates, r)
     end
+    setelapsed(timingdict, e, "build_candidates(): for (i, t) in enumerate(env)...")
 
     # TODO: check continuationType
 
     vl = grammar.log_variable - log(length(variable_candidates))
-    for vc in variable_candidates
+    e = @elapsed for vc in variable_candidates
         push!(candidates, Candidate(vc, vl))
     end
     variable_candidates = nothing
+    setelapsed(timingdict, e, "build_candidates(): for vc in variable_candidates...")
 
     if isempty(candidates)
         throw(NoCandidates)
     end
 
-    return final_candidates(candidates)
+    e = @elapsed r = final_candidates(candidates)
+    setelapsed(timingdict, e, "build_candidates(): final_candidates(candidates)")
+
+    return r
 end
 
 # TODO: rename log_probability
@@ -119,9 +125,12 @@ function valid(candidate::Candidate, upper_bound::Float64)::Bool
 end
 
 function all_invalid(
-        candidates::Array{Candidate,1}, upper_bound::Float64)::Bool
+        candidates::Array{Candidate,1}, upper_bound::Float64,
+        timingdict)::Bool
     for c in candidates
-        if valid(c, upper_bound)
+        e = @elapsed v = valid(c, upper_bound)
+        setelapsed(timingdict, e, "all_invalid(): valid(c, upper_bound)")
+        if v
             return false
         end
     end
@@ -176,29 +185,42 @@ end
 function generator(
         grammar::Grammar, env::Array{TypeField,1},
         type::TypeField, upper_bound::Float64,
-        lower_bound::Float64, max_depth::Int)
+        lower_bound::Float64, max_depth::Int,
+        timingdict::Dict{String,Tuple{Float64, Int}})
+    # e = @elapsed x = 1 + 2
+    # timingdict["1+2"] = e
     return Channel((channel) -> generator(
         channel, grammar, Context(), env,
-        type, upper_bound, lower_bound, max_depth))
+        type, upper_bound, lower_bound, max_depth,
+        timingdict))
 end
 
 function generator(
         channel::Channel, grammar::Grammar,
         context::Context, env::Array{TypeField,1},
         type::TypeField, upper_bound::Float64,
-        lower_bound::Float64, depth::Int)
-    if stop(upper_bound, depth)
+        lower_bound::Float64, depth::Int,
+        timingdict)
+    e = @elapsed should_stop = stop(upper_bound, depth)
+    setelapsed(timingdict, e, "stop(upper_bound, depth)")
+    if should_stop
         return
     end
-    if Types.is_arrow(type)
-        process_arrow(
+    e = @elapsed is_arr = Types.is_arrow(type)
+    setelapsed(timingdict, e, "Types.is_arrow(type)")
+    if is_arr
+        e = @elapsed process_arrow(
             channel, grammar, context, env,
-            type, upper_bound, lower_bound, depth)
+            type, upper_bound, lower_bound, depth,
+            timingdict)
+        setelapsed(timingdict, e, "process_arrow")
         return
     else
-        process_candidates(
+        e = @elapsed process_candidates(
             channel, grammar, context, env,
-            type, upper_bound, lower_bound, depth)
+            type, upper_bound, lower_bound, depth,
+            timingdict)
+        setelapsed(timingdict, e, "process_candidates")
         return
     end
 end
@@ -207,38 +229,49 @@ function process_arrow(
         channel::Channel, grammar::Grammar,
         context::Context, env::Array{TypeField,1},
         type::TypeField, upper_bound::Float64,
-        lower_bound::Float64, depth::Int)
+        lower_bound::Float64, depth::Int,
+        timingdict)
     lhs = type.arguments[1]
     rhs = type.arguments[2]
-    new_env = Array{TypeField,1}([lhs])  # TODO: better UnionAll syntax?
-    append!(new_env, env)
+    e = @elapsed new_env = Array{TypeField,1}([lhs])
+    setelapsed(timingdict, e, "process_arrow(): new_env = Array{TypeField,1}([lhs])")
+    e = @elapsed append!(new_env, env)
+    setelapsed(timingdict, e, "process_arrow(): append!(new_env, env)")
 
     gen = Channel((c) -> generator(
         c, grammar, context, new_env,
-        rhs, upper_bound, lower_bound, depth))
+        rhs, upper_bound, lower_bound, depth,
+        timingdict))
 
-    for result in gen
+    e = @elapsed for result in gen
         program = Abstraction(result.program)
         r = Result(result.prior, program, result.context)
         put!(channel, r)
     end
+    setelapsed(timingdict, e, "process_arrow(): for result in gen...")
 end
 
 function process_candidates(
         channel::Channel, grammar::Grammar,
         context::Context, env::Array{TypeField,1},
         type::TypeField, upper_bound::Float64,
-        lower_bound::Float64, depth::Int)
-    candidates = build_candidates(grammar, type, context, env)
+        lower_bound::Float64, depth::Int,
+        timingdict)
+    e = @elapsed candidates = build_candidates(grammar, type, context, env, timingdict)
+    setelapsed(timingdict, e, "build_candidates")
 
-    if all_invalid(candidates, upper_bound)
+    if all_invalid(candidates, upper_bound, timingdict)
         return
     end
     for candidate in candidates
-        if valid(candidate, upper_bound)
-            process_candidate(
+        e = @elapsed v = valid(candidate, upper_bound)
+        setelapsed(timingdict, e, "valid(candidate, upper_bound)")
+        if v
+            e = @elapsed process_candidate(
                 channel, grammar, context, env,
-                type, upper_bound, lower_bound, depth, candidate)
+                type, upper_bound, lower_bound, depth, candidate,
+                timingdict)
+            setelapsed(timingdict, e, "process_candidate")
         end
     end
 end
@@ -248,17 +281,19 @@ function process_candidate(
         context::Context, env::Array{TypeField,1},
         type::TypeField, upper_bound::Float64,
         lower_bound::Float64, depth::Int,
-        candidate::Candidate)
-    func_args = function_arguments(candidate.type)
+        candidate::Candidate, timingdict)
+    e = @elapsed func_args = function_arguments(candidate.type)
+    setelapsed(timingdict, e, "function_arguments")
     new_upper = upper_bound + candidate.log_probability
     new_lower = lower_bound + candidate.log_probability
     new_depth = depth - 1
     arg_index = 0
 
-    gen = Channel((c) -> appgenerator(
+    e = @elapsed gen = Channel((c) -> appgenerator(
         c, grammar, candidate.context, env,
         candidate.program, func_args, new_upper, new_lower,
-        new_depth, arg_index, candidate.program))
+        new_depth, arg_index, candidate.program, timingdict))
+    setelapsed(timingdict, e, "process_candidate(): Channel((c) -> appgenerator(...)")
 
     for result in gen
         l = result.prior + candidate.log_probability
@@ -273,23 +308,29 @@ function appgenerator(
         func::Program, func_args::Array{TypeField,1},
         upper_bound::Float64, lower_bound::Float64,
         depth::Int, argument_index::Int,
-        original_func::Program)
-    if stop(upper_bound, depth)
+        original_func::Program, timingdict)
+    e = @elapsed should_stop = stop(upper_bound, depth)
+    setelapsed(timingdict, e, "stop(upper_bound, depth)")
+    if should_stop
         return
     end
     if func_args == []
-        if lower_bound <= 0.0 && upper_bound > 0.0
-            put!(channel, Result(0.0, func, context))
+        e = @elapsed b = lower_bound <= 0.0 && upper_bound > 0.0
+        setelapsed(timingdict, e, "lower_bound <= 0.0 && upper_bound > 0.0")
+        if b
+            e = @elapsed put!(channel, Result(0.0, func, context))
+            setelapsed(timingdict, e, "put!(channel, Result(0.0, func, context))")
             return
         else
             # Reject this enumerate application state
             return
         end
     else
-        recurse_generator(
+        e = @elapsed recurse_generator(
             channel, grammar, context, env,
             func, func_args, upper_bound, lower_bound,
-            depth, argument_index, original_func)
+            depth, argument_index, original_func, timingdict)
+        setelapsed(timingdict, e, "recurse_generator")
     end
 end
 
@@ -299,19 +340,21 @@ function recurse_generator(
         func::Program, func_args::Array{TypeField,1},
         upper_bound::Float64, lower_bound::Float64,
         depth::Int, argument_index::Int,
-        original_func::Program)
+        original_func::Program, timingdict)
     arg_request = apply(func_args[1], context)
     outer_args = func_args[2:end]
 
-    gen = Channel((c) -> generator(
+    e = @elapsed gen = Channel((c) -> generator(
         c, grammar, context, env,
-        arg_request, upper_bound, 0.0, depth))
+        arg_request, upper_bound, 0.0, depth, timingdict))
+    setelapsed(timingdict, e, "recurse_generator(): Channel((c) -> generator(...)")
 
     for result in gen
-        recurse_appgenerator(
+        e = @elapsed recurse_appgenerator(
             channel, grammar, context, env, func,
             func_args, upper_bound, lower_bound, depth, argument_index,
-            original_func, outer_args, result)
+            original_func, outer_args, result, timingdict)
+        setelapsed(timingdict, e, "recurse_appgenerator")
     end
 end
 
@@ -322,27 +365,44 @@ function recurse_appgenerator(
         upper_bound::Float64, lower_bound::Float64,
         depth::Int, argument_index::Int,
         original_func::Program, outer_args::Array{TypeField,1},
-        prev_result::Result)
-    if !is_symmetrical(
+        prev_result::Result, timingdict)
+    e = @elapsed s = !is_symmetrical(
             argument_index, original_func,
             prev_result.program, grammar.primitives)
+    setelapsed(timingdict, e, "!is_symmetrical(...)")
+    if s
         return
     end
 
-    new_func = Application(func, prev_result.program)
+    e = @elapsed new_func = Application(func, prev_result.program)
+    setelapsed(timingdict, e, "Application")
     new_upper = upper_bound + prev_result.prior
     new_lower = lower_bound + prev_result.prior
     new_arg_index = argument_index + 1
 
-    gen = Channel((c) -> appgenerator(
+    e = @elapsed gen = Channel((c) -> appgenerator(
         c, grammar, prev_result.context, env,
         new_func, outer_args, new_upper, new_lower,
-        depth, new_arg_index, func))
+        depth, new_arg_index, func, timingdict))
+    setelapsed(timingdict, e, "recurse_appgenerator(): Channel((c) -> appgenerator(...)")
 
-    for new_result in gen
-        l = new_result.prior + prev_result.prior
-        r = Result(l, new_result.program, new_result.context)
+    e = @elapsed for new_result in gen
+        e = @elapsed l = new_result.prior + prev_result.prior
+        setelapsed(timingdict, e, "recurse_appgenerator(): new_result.prior + prev_result.prior")
+        e = @elapsed r = Result(l, new_result.program, new_result.context)
+        setelapsed(timingdict, e, "recurse_appgenerator(): Result(l, new_result.program, new_result.context)")
         put!(channel, r)
+    end
+    setelapsed(timingdict, e, "recurse_appgenerator(): for new_result in gen")
+end
+
+function setelapsed(timingdict::Dict{String,Tuple{Float64, Int}}, e::Float64, k::String)
+    if haskey(timingdict, k)
+        v = timingdict[k]
+        new_v = (v[1] + e, v[2] + 1)
+        timingdict[k] = new_v
+    else
+        timingdict[k] = (e, 1)
     end
 end
 
