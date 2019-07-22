@@ -56,7 +56,7 @@ in a complete list of problems.
 mutable struct SolutionSet
     lookup::Dict{String,Solution}
     counter::Int
-    best_solutions::Array{PriorityQueue{String,Float64}}
+    best_solutions::Array{PriorityQueue{String,Float64},1}
 
     function SolutionSet(n::Int)
         best_solutions = [PriorityQueue{String,Float64}() for i in 1:n]
@@ -96,7 +96,7 @@ function prune!(solutions::SolutionSet, index::Int, max_solutions::Int)
     end
 end
 
-function is_explored(solutions::SolutionSet, max_solutions::Array{Int})::Bool
+function is_explored(solutions::SolutionSet, max_solutions::Array{Int,1})::Bool
     pairs = zip(solutions.best_solutions, max_solutions)
     return all(length(h) >= max_solns for (h, max_solns) in pairs)
 end

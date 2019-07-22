@@ -69,7 +69,7 @@ function base_primitives()::Dict{String,Primitive}
     comparison_type = arrow(tint, tint, tbool)
 
     _unfold = (n) -> throw(NotImplementedError)
-    _range = (n) -> Array(range(1, length=n))
+    _range = (n) -> Array{Int,1}(range(1, length=n))
     _fold = (n) -> throw(NotImplementedError)
     _if = (c) -> (x) -> (y) -> c ? x : y
     _cons = (x) -> (y) -> vcat(x, y)

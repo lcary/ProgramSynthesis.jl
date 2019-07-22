@@ -140,14 +140,14 @@ tostr(t::TypeVariable) = "t$(t.value)"
 
 Base.show(io::IO, t::AbstractType) = print(io, tostr(t))
 
-function Base.show(io::IO, a::Array{<:AbstractType})
+function Base.show(io::IO, a::Array{<:AbstractType,1})
     t = join([tostr(i) for i in a], ", ")
     print(io, "[$t]")
 end
 
-function function_arguments(t::AbstractType)::Array{AbstractType}
+function function_arguments(t::AbstractType)::Array{AbstractType,1}
     if is_arrow(t)
-        args = Array{Union{TypeConstructor,TypeVariable}}([])  # TODO: better UnionAll syntax?
+        args = Array{Union{TypeConstructor,TypeVariable},1}([])  # TODO: better UnionAll syntax?
         arg1 = t.arguments[1]
         arg2 = function_arguments(t.arguments[2])
         push!(args, arg1)
@@ -159,7 +159,7 @@ end
 
 struct Context
     next_variable::Int
-    substitution::Array{Tuple{Int,AbstractType}}
+    substitution::Array{Tuple{Int,AbstractType},1}
 end
 
 Context() = Context(0, [])
@@ -193,10 +193,10 @@ function instantiate(
     type::TypeVariable,
     context::Context,
     bindings::Dict{String,TypeVariable}
-)
+)::Tuple{Context,TypeVariable}
     key = string(type)
     if haskey(bindings, key)
-        return (context, bindings[key])
+        return context, bindings[key]
     end
     new_type = TypeVariable(context.next_variable)
     bindings[key] = new_type
@@ -208,11 +208,11 @@ function instantiate(
     type::TypeConstructor,
     context::Context,
     bindings::Dict{String,TypeVariable}
-)
+)::Tuple{Context,TypeConstructor}
     if !type.is_polymorphic
         return context, type
     end
-    new_args = Array{Union{TypeConstructor,TypeVariable}}([])
+    new_args = Array{Union{TypeConstructor,TypeVariable},1}([])
     for a in type.arguments
         context, new_type = instantiate(a, context, bindings)
         push!(new_args, new_type)
@@ -220,7 +220,10 @@ function instantiate(
     return context, TypeConstructor(type.constructor, new_args)
 end
 
-function instantiate(type::TypeConstructor, context::Context)
+function instantiate(
+    type::TypeConstructor,
+    context::Context
+)::Tuple{Context,TypeConstructor}
     return instantiate(type, context, Dict{String,TypeVariable}())
 end
 
@@ -241,7 +244,7 @@ end
 const UnificationFailure = -Inf
 
 function extend(context::Context, j::Int, t::AbstractType)
-    l = Array{Tuple{Int,Union{TypeVariable,TypeConstructor}}}([])
+    l = Array{Tuple{Int,Union{TypeVariable,TypeConstructor}},1}([])
     a1 = push!(l, (j, t))
     sub = append!(a1, context.substitution)
     return Context(context.next_variable, sub)

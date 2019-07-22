@@ -132,7 +132,7 @@ function can_solve(f::Function, example::Example)::Bool
 end
 
 function can_solve(program::AbstractProgram, problem::Problem)::Bool
-    env = Array{AbstractType}([])
+    env = Array{AbstractType,1}([])
     f = evaluate(program, env)
     for example in problem.examples
         if !can_solve(f, example)

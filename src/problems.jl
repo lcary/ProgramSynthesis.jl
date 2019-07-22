@@ -14,7 +14,7 @@ Example(data) = Example(data["inputs"], data["output"])
 mutable struct Problem
     name::String
     type::AbstractType
-    examples::Array{Example}
+    examples::Array{Example,1}
     max_solutions::Int
 end
 

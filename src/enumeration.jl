@@ -40,7 +40,7 @@ function write_response(data::Dict{String,Any})::String
 end
 
 struct Request
-    problems::Array{Problem}
+    problems::Array{Problem,1}
     grammar::Grammar
     timeout::Float64
     verbose::Bool
@@ -117,7 +117,7 @@ function run_enumeration(request::Request)::Dict{String,Any}
         !is_explored(solutions, max_solutions)
         && budget <= request.upper_bound
     )
-        env = Array{AbstractType}([])
+        env = Array{AbstractType,1}([])
         args = (
             request.grammar, env, type, budget,
             previous_budget, request.max_depth

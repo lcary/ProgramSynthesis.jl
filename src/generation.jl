@@ -23,7 +23,7 @@ abstract type State end
 
 struct ProgramState <: State
     context::Context
-    env::Array{AbstractType}
+    env::Array{AbstractType,1}
     type::AbstractType
     upper_bound::Float64
     lower_bound::Float64
@@ -44,7 +44,7 @@ end
 function convert_arrow(state::ProgramState)::ProgramState
     lhs = state.type.arguments[1]
     rhs = state.type.arguments[2]
-    env1 = Array{Union{TypeConstructor,TypeVariable}}([lhs])  # TODO: better UnionAll syntax?
+    env1 = Array{Union{TypeConstructor,TypeVariable},1}([lhs])  # TODO: better UnionAll syntax?
     env = append!(env1, state.env)
     upper = state.upper_bound
     lower = state.lower_bound
@@ -53,9 +53,9 @@ end
 
 struct ApplicationState <: State
     context::Context
-    env::Array{AbstractType}
+    env::Array{AbstractType,1}
     func::AbstractProgram
-    func_args::Array{AbstractType}
+    func_args::Array{AbstractType,1}
     upper_bound::Float64
     lower_bound::Float64
     depth::Int
@@ -104,7 +104,7 @@ end
 function to_app_state2(
     state::ApplicationState,
     result::Result,
-    args::Array{AbstractType}
+    args::Array{AbstractType,1}
 )
     new_func = Application(state.func, result.program)
     new_upper = state.upper_bound + result.prior
@@ -158,16 +158,16 @@ function update_log_probability(z::Float64, c::Candidate)::Candidate
     return Candidate(new_l, c.type, c.program, c.context)
 end
 
-function final_candidates(candidates::Array{Candidate})::Array{Candidate}
+function final_candidates(candidates::Array{Candidate,1})::Array{Candidate,1}
     z::Float64 = lse([c.log_probability for c in candidates])
     f = curry(update_log_probability, z)
-    final_candidates::Array{Candidate} = map(f, candidates)
+    final_candidates::Array{Candidate,1} = map(f, candidates)
     return final_candidates
 end
 
-function build_candidates(grammar::Grammar, state::State)::Array{Candidate}
-    candidates = Array{Candidate}([])
-    variable_candidates = Array{VariableCandidate}([])
+function build_candidates(grammar::Grammar, state::State)::Array{Candidate,1}
+    candidates = Array{Candidate,1}([])
+    variable_candidates = Array{VariableCandidate,1}([])
 
     for p in grammar.productions
         r = get_candidate(state, p)
@@ -204,7 +204,7 @@ function valid(candidate::Candidate, upper_bound::Float64)::Bool
     return -candidate.log_probability < upper_bound
 end
 
-function all_invalid(candidates::Array{Candidate}, upper_bound::Float64)::Bool
+function all_invalid(candidates::Array{Candidate,1}, upper_bound::Float64)::Bool
     for c in candidates
         if valid(c, upper_bound)
             return false
@@ -284,7 +284,7 @@ function stop(state::State, debug::Bool)::Bool
     end
 end
 
-function debug_candidates(candidates::Array{Candidate}, debug::Bool)
+function debug_candidates(candidates::Array{Candidate,1}, debug::Bool)
     if debug && !isempty(candidates)
         println("candidates: [")
         for c in candidates
@@ -380,7 +380,7 @@ end
 
 function generator(
     grammar::Grammar,
-    env::Array{AbstractType},
+    env::Array{AbstractType,1},
     type::AbstractType,
     upper_bound::Float64,
     lower_bound::Float64,
