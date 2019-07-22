@@ -262,6 +262,14 @@ after a75313dee15506a24bb9937e8de5fc4d67a042f7:
   ^@time run_enumeration(request_message_file)
 /Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID9596_20190722_T094758.json
 ```
+```
+❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID27039_20190719_T155306.json
+356.781747 seconds (3.97 G allocations: 214.368 GiB, 9.03% gc time)
+  ^@time for result in generator(args...)
+358.796908 seconds (3.97 G allocations: 214.634 GiB, 9.01% gc time)
+  ^@time run_enumeration(request_message_file)
+/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID9697_20190722_T095946.json
+```
 why the regression in G allocations despite speedup?
 
 benchmark3.jl
