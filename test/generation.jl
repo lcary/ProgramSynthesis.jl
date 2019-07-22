@@ -7,7 +7,6 @@ using DreamCore.Enumeration: Request
 using DreamCore.Generation: generator,
                             Result,
                             Candidate,
-                            ProgramState,
                             InvalidStateException,
                             update_log_probability,
                             final_candidates,
@@ -82,17 +81,11 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
             )
         ]
         grammar = Grammar(data["DSL"], base_primitives())
-        state = ProgramState(
-            Context(),
-            [tlist(tint)],
-            tint,
-            3.0,
-            1.5,
-            99
-        )
+        request = tint
+        context = Context()
         @test length(grammar.productions) == 1
         @test grammar.productions[1].program.name == "1"
-        result = get_candidate(state, grammar.productions[1])
+        result = get_candidate(request, context, grammar.productions[1])
         @test result.program.name == "1"
     end
     @testset "test get_candidate map" begin
@@ -105,17 +98,12 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
             )
         ]
         grammar = Grammar(data["DSL"], base_primitives())
-        state = ProgramState(
-            Context(2, [(1, tint)]),
-            [tlist(tint)],
-            tlist(t0),
-            3.0,
-            0.0,
-            2
-        )
+        request = tlist(t0)
+        context = Context(2, [(1, tint)])
+
         @test length(grammar.productions) == 1
         @test grammar.productions[1].program.name == "map"
-        result = get_candidate(state, grammar.productions[1])
+        result = get_candidate(request, context, grammar.productions[1])
         @test result.program.name == "map"
     end
     @testset "test get_candidate error1" begin
@@ -128,29 +116,17 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
             )
         ]
         grammar = Grammar(data["DSL"], base_primitives())
-        state = ProgramState(
-            Context(),
-            [tlist(tint)],
-            tint,
-            3.0,
-            1.5,
-            99
-        )
+        context = Context()
+        request = tint
         @test length(grammar.productions) == 1
         @test grammar.productions[1].program.name == "map"
-        r = get_candidate(state, grammar.productions[1])
+        r = get_candidate(request, context, grammar.productions[1])
         @test r == UnificationFailure
     end
     @testset "test get_candidate contexts" begin
         data = JSON.parsefile(TEST_FILE2)
-        state = ProgramState(
-            Context(),
-            [tlist(tint)],
-            tlist(tint),
-            3.0,
-            1.5,
-            99
-        )
+        request = tlist(tint)
+        context = Context()
 
         primitives = base_primitives()
         getproduction(e) = Dict("expression" => e, "logProbability" => 0.0)
@@ -161,84 +137,79 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
         end
 
         g = getgrammar!(data, "map")
-        c = get_candidate(state, g.productions[1])
+        c = get_candidate(request, context, g.productions[1])
         @test c.context.next_variable == 2
         @test length(c.context.substitution) == 1
         @test c.context.substitution[1][1] == 1
         @test isequal(c.context.substitution[1][2], tint)
 
         g = getgrammar!(data, "unfold")
-        c = get_candidate(state, g.productions[1])
+        c = get_candidate(request, context, g.productions[1])
         @test c.context.next_variable == 2
         @test length(c.context.substitution) == 1
         @test c.context.substitution[1][1] == 1
         @test isequal(c.context.substitution[1][2], tint)
 
         g = getgrammar!(data, "range")
-        c = get_candidate(state, g.productions[1])
+        c = get_candidate(request, context, g.productions[1])
         @test c.context.next_variable == 0
         @test length(c.context.substitution) == 0
 
         g = getgrammar!(data, "index")
-        c = get_candidate(state, g.productions[1])
+        c = get_candidate(request, context, g.productions[1])
         @test c.context.next_variable == 1
         @test length(c.context.substitution) == 1
         @test c.context.substitution[1][1] == 0
         @test isequal(c.context.substitution[1][2], tlist(tint))
 
         g = getgrammar!(data, "fold")
-        c = get_candidate(state, g.productions[1])
+        c = get_candidate(request, context, g.productions[1])
         @test c.context.next_variable == 2
         @test length(c.context.substitution) == 1
         @test c.context.substitution[1][1] == 1
         @test isequal(c.context.substitution[1][2], tlist(tint))
 
         g = getgrammar!(data, "if")
-        c = get_candidate(state, g.productions[1])
+        c = get_candidate(request, context, g.productions[1])
         @test c.context.next_variable == 1
         @test length(c.context.substitution) == 1
         @test c.context.substitution[1][1] == 0
         @test isequal(c.context.substitution[1][2], tlist(tint))
 
         g = getgrammar!(data, "empty")
-        c = get_candidate(state, g.productions[1])
+        c = get_candidate(request, context, g.productions[1])
         @test c.context.next_variable == 1
         @test length(c.context.substitution) == 1
         @test c.context.substitution[1][1] == 0
         @test isequal(c.context.substitution[1][2], tint)
 
         g = getgrammar!(data, "cons")
-        c = get_candidate(state, g.productions[1])
+        c = get_candidate(request, context, g.productions[1])
         @test c.context.next_variable == 1
         @test length(c.context.substitution) == 1
         @test c.context.substitution[1][1] == 0
         @test isequal(c.context.substitution[1][2], tint)
 
         g = getgrammar!(data, "car")
-        c = get_candidate(state, g.productions[1])
+        c = get_candidate(request, context, g.productions[1])
         @test c.context.next_variable == 1
         @test length(c.context.substitution) == 1
         @test c.context.substitution[1][1] == 0
         @test isequal(c.context.substitution[1][2], tlist(tint))
 
         g = getgrammar!(data, "cdr")
-        c = get_candidate(state, g.productions[1])
+        c = get_candidate(request, context, g.productions[1])
         @test c.context.next_variable == 1
         @test length(c.context.substitution) == 1
         @test c.context.substitution[1][1] == 0
         @test isequal(c.context.substitution[1][2], tint)
     end
     @testset "test get_variable_candidate" begin
-        state = ProgramState(
-            Context(),
-            [tlist(tint)],
-            tlist(tint),
-            3.0,
-            1.5,
-            99
-        )
+        request = tlist(tint)
+        context = Context()
+
         t = tlist(tint)
-        vc = get_variable_candidate(state, t, 0)
+        vc = get_variable_candidate(request, context, t, 0)
 
         @test isequal(vc.type, tlist(tint))
         @test vc.index.i == 0
@@ -272,26 +243,20 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
         getproduction(f) = Dict("expression" => f, "logProbability" => 0.0)
         data["DSL"]["productions"] = map(getproduction, funcs)
         grammar = Grammar(data["DSL"], base_primitives())
-        state = ProgramState(
-            Context(),
-            [tlist(tint)],
-            tlist(tint),
-            3.0,
-            1.5,
-            99
-        )
+        request = tlist(tint)
+        context = Context()
+
         candidates = Array{Candidate}([])
         for p in grammar.productions
-            c = get_candidate(state, p)
+            c = get_candidate(request, context, p)
             @test c.log_probability == 0.0
             push!(candidates, c)
         end
 
         @test length(candidates) == 10
 
-        t = state.env[1]
-        @test isequal(t, tlist(tint))
-        vc = get_variable_candidate(state, t, 0)
+        t = tlist(tint)
+        vc = get_variable_candidate(request, context, t, 0)
         vl = grammar.log_variable - log(length([vc]))
         @test vl == 0.0
         push!(candidates, Candidate(vc, vl))
