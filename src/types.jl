@@ -260,8 +260,6 @@ function returns(t::TypeField)::TypeField
     return t
 end
 
-struct Occurs <: Exception end  # TODO: docstring
-
 function occurs(t::TypeField, v::Int)::Bool
     if t.type == variable
         return t.value == v
@@ -291,15 +289,17 @@ function unify(context::Context, t1::TypeField, t2::TypeField)
         msg = string("Types are not equal: ", t1, " != ", t2)
         return UnificationFailure
     end
+    # TODO: add unit test for occurs
     if t1.type == variable
         if occurs(t2, t1.value)
-            throw(Occurs)
+            return UnificationFailure
         end
         return extend(context, t1.value, t2)
     end
+    # TODO: add unit test for occurs
     if t2.type == variable
         if occurs(t1, t2.value)
-            throw(Occurs)
+            return UnificationFailure
         end
         return extend(context, t2.value, t1)
     end
