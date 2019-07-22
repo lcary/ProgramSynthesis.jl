@@ -59,7 +59,7 @@ function parse_s_expression(s::String)
     throw(ParseSExprFailure("Failed to parse string: $s"))
 end
 
-function parse_program(s::String, primitives::Dict{String,Primitive})
+function parse_program(s::String, primitives::Dict{String,Program})
     s = parse_s_expression(s)
     function p(e)
         if isa(e, Array)
@@ -85,13 +85,7 @@ function parse_program(s::String, primitives::Dict{String,Primitive})
             return DeBruijnIndex(parse(Int, e[2:end]))
         end
         if haskey(primitives, e)
-            prim = primitives[e]
-            # TODO: Maybe don't convert primitives to programs?
-            return Program(
-                e,
-                prim.func,
-                prim.type
-            )
+            return primitives[e]
         end
         throw(ParseFailure("Unable to parse Program from string ($s)."))
     end

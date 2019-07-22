@@ -20,7 +20,7 @@ A program that solves a given problem within a set of problems.
 The search time is the time it took to find the program.
 """
 struct Solution
-    program::AbstractProgram
+    program::Program
     log_likelihood::Float64
     log_prior::Float64
     search_time::Float64

@@ -8,7 +8,19 @@ using DreamCore.Programs: DeBruijnIndex,
                           Abstraction,
                           Application,
                           Invented,
-                          str
+                          str,
+                          Primitive,
+                          Abstraction,
+                          Application,
+                          DeBruijnIndex,
+                          Invented,
+                          PROGRAMTYPE,
+                          PROGRAM,
+                          PRIMITIVE,
+                          ABSTRACTION,
+                          APPLICATION,
+                          INDEX,
+                          INVENTED
 
 @testset "parsers.jl" begin
     @testset "parse program strings" begin
@@ -17,56 +29,56 @@ using DreamCore.Programs: DeBruijnIndex,
         pstr = "+"
         p = parse_program(pstr, prim)
         @test str(p) == pstr
-        @test isa(p, Program)
+        @test p.ptype == PRIMITIVE
 
         pstr = "(+ 1)"
         p = parse_program(pstr, prim)
         @test str(p) == pstr
-        @test isa(p, Application)
+        @test p.ptype == APPLICATION
 
         pstr = raw"$1"
         p = parse_program(pstr, prim)
         @test str(p) == pstr
-        @test isa(p, DeBruijnIndex)
+        @test p.ptype == INDEX
 
         pstr = raw"($0 $1)"
         p = parse_program(pstr, prim)
         @test str(p) == pstr
-        @test isa(p, Application)
+        @test p.ptype == APPLICATION
 
         pstr = raw"(+ 1 $0 $2)"
         p = parse_program(pstr, prim)
         @test str(p) == pstr
-        @test isa(p, Application)
+        @test p.ptype == APPLICATION
 
         pstr = raw"(map (+ 1) $0 $1)"
         p = parse_program(pstr, prim)
         @test str(p) == pstr
-        @test isa(p, Application)
+        @test p.ptype == APPLICATION
 
         pstr = raw"(map (+ 1) ($0 (+ 1) (- 1) (+ -)) $1)"
         p = parse_program(pstr, prim)
         @test str(p) == pstr
-        @test isa(p, Application)
+        @test p.ptype == APPLICATION
 
         pstr = raw"(lambda $0)"
         p = parse_program(pstr, prim)
         @test str(p) == pstr
-        @test isa(p, Abstraction)
+        @test p.ptype == ABSTRACTION
 
         pstr = raw"(lambda (+ 1 #(* 8 1)))"
         p = parse_program(pstr, prim)
         @test str(p) == pstr
-        @test isa(p, Abstraction)
-        @test isa(p.body, Application)
-        @test isa(p.body.args, Invented)
+        @test p.ptype == ABSTRACTION
+        @test p.body.ptype == APPLICATION
+        @test p.body.args.ptype == INVENTED
 
         pstr = raw"(lambda (+ 1 #(* 8 map)))"
         p = parse_program(pstr, prim)
         @test str(p) == pstr
-        @test isa(p, Abstraction)
-        @test isa(p.body, Application)
-        @test isa(p.body.args, Invented)
+        @test p.ptype == ABSTRACTION
+        @test p.body.ptype == APPLICATION
+        @test p.body.args.ptype == INVENTED
     end
     @testset "parse program error" begin
         error_raised = false

@@ -11,7 +11,7 @@ export generator, Result, generator
 
 struct Result
     prior::Float64
-    program::AbstractProgram
+    program::Program
     context::Context
 end
 
@@ -54,13 +54,13 @@ end
 struct ApplicationState <: State
     context::Context
     env::Array{TypeField,1}
-    func::AbstractProgram
+    func::Program
     func_args::Array{TypeField,1}
     upper_bound::Float64
     lower_bound::Float64
     depth::Int
     argument_index::Int
-    original_func::AbstractProgram
+    original_func::Program
 end
 
 function Base.show(io::IO, state::ApplicationState)
@@ -78,7 +78,7 @@ end
 struct Candidate
     log_probability::Float64
     type::TypeField
-    program::AbstractProgram
+    program::Program
     context::Context
 end
 
@@ -118,7 +118,7 @@ end
 
 struct VariableCandidate
     type::TypeField
-    index::DeBruijnIndex
+    index::Program
     context::Context
 end
 
@@ -215,27 +215,21 @@ end
 
 struct InvalidStateType <: Exception end
 
-# TODO: move to programs.ml
-tosource(p::Program)::String = p.source
-tosource(p::DeBruijnIndex)::String = string(p.i)  # TODO: check if correct
-tosource(p::Application)::String = tosource(p.func)
-tosource(p::Abstraction)::String = tosource(p.body)
-
 # TODO: unit tests
 function is_symmetrical(
     s::ApplicationState,
-    program::AbstractProgram,
-    primitives::Dict{String,Primitive}
+    program::Program,
+    primitives::Dict{String,Program}
 )::Bool
     argument_index = s.argument_index
-    if !isa(s.original_func, Program)
+    if s.original_func.ptype != PRIMITIVE
         return true
     end
-    orig = s.original_func.source
+    orig = s.original_func.name
     if !haskey(primitives, orig)
         return true
     end
-    newf = tosource(program)
+    newf = getname(program)
     if orig == "car"
         return newf != "cons" && newf != "empty"
     elseif orig == "cdr"
@@ -317,12 +311,14 @@ function appgenerator(
         end
     else
         s1, args = to_program_state(state)
+        # TODO: add type to channel
         g1 = Channel((c) -> generator(c, grammar, s1, debug))
         for r1 in g1
             if !is_symmetrical(state, r1.program, grammar.primitives)
                 continue
             end
             s2 = to_app_state2(state, r1, args)
+            # TODO: add type to channel
             g2 = Channel((c) -> appgenerator(c, grammar, s2, debug))
             for r2 in g2
                 l = r2.prior + r1.prior
@@ -347,6 +343,7 @@ function generator(
     end
     if Types.is_arrow(state.type)
         newstate = convert_arrow(state)
+        # TODO: add type to channel
         gen = Channel((c) -> generator(c, grammar, newstate, debug))
         for result in gen
             program = Abstraction(result.program)
@@ -365,6 +362,7 @@ function generator(
         for candidate in candidates
             if valid(candidate, state.upper_bound)
                 appstate = to_app_state1(candidate, state)
+                # TODO: add type to channel
                 gen = Channel((c) -> appgenerator(c, grammar, appstate, debug))
                 for result in gen
                     l = result.prior + candidate.log_probability
@@ -395,6 +393,7 @@ function generator(
         lower_bound,
         max_depth
     )
+    # TODO: add type to channel
     return Channel((channel) -> generator(channel, grammar, state, debug))
 end
 

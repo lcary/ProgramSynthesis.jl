@@ -57,7 +57,7 @@ struct NotImplementedError <: Exception end
 
 # TODO: add basic unit tests for each primitive functionality
 # TODO: verify for each primitive function that original data is unchanged
-function base_primitives()::Dict{String,Primitive}
+function base_primitives()::Dict{String,Program}
 
     index_type = arrow(tint, tlist(t0), t0)
     length_type =  arrow(tlist(t0), tint)

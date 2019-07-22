@@ -91,9 +91,9 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
             99
         )
         @test length(grammar.productions) == 1
-        @test grammar.productions[1].program.source == "1"
+        @test grammar.productions[1].program.name == "1"
         result = get_candidate(state, grammar.productions[1])
-        @test result.program.source == "1"
+        @test result.program.name == "1"
     end
     @testset "test get_candidate map" begin
         data = JSON.parsefile(TEST_FILE2)
@@ -114,9 +114,9 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
             2
         )
         @test length(grammar.productions) == 1
-        @test grammar.productions[1].program.source == "map"
+        @test grammar.productions[1].program.name == "map"
         result = get_candidate(state, grammar.productions[1])
-        @test result.program.source == "map"
+        @test result.program.name == "map"
     end
     @testset "test get_candidate error1" begin
         data = JSON.parsefile(TEST_FILE2)
@@ -137,7 +137,7 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
             99
         )
         @test length(grammar.productions) == 1
-        @test grammar.productions[1].program.source == "map"
+        @test grammar.productions[1].program.name == "map"
         r = get_candidate(state, grammar.productions[1])
         @test r == UnificationFailure
     end
