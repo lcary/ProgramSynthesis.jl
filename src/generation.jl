@@ -178,13 +178,14 @@ function generator(
         type::TypeField, upper_bound::Float64,
         lower_bound::Float64, max_depth::Int)
     results = Array{Result,1}()
-    return Channel((channel) -> generator(
-        channel, grammar, Context(), env,
-        type, upper_bound, lower_bound, max_depth))
+    generator(
+        results, grammar, Context(), env,
+        type, upper_bound, lower_bound, max_depth)
+    return results
 end
 
 function generator(
-        channel::Channel, grammar::Grammar,
+        results::Array{Result,1}, grammar::Grammar,
         context::Context, env::Array{TypeField,1},
         type::TypeField, upper_bound::Float64,
         lower_bound::Float64, depth::Int)
@@ -193,19 +194,19 @@ function generator(
     end
     if Types.is_arrow(type)
         process_arrow(
-            channel, grammar, context, env,
+            results, grammar, context, env,
             type, upper_bound, lower_bound, depth)
         return
     else
         process_candidates(
-            channel, grammar, context, env,
+            results, grammar, context, env,
             type, upper_bound, lower_bound, depth)
         return
     end
 end
 
 function process_arrow(
-        channel::Channel, grammar::Grammar,
+        results::Array{Result,1}, grammar::Grammar,
         context::Context, env::Array{TypeField,1},
         type::TypeField, upper_bound::Float64,
         lower_bound::Float64, depth::Int)
@@ -215,19 +216,22 @@ function process_arrow(
     push!(new_env, lhs)
     append!(new_env, env)
 
-    gen = Channel((c) -> generator(
-        c, grammar, context, new_env,
-        rhs, upper_bound, lower_bound, depth))
+    subresults = Array{Result,1}()
+    generator(
+        subresults, grammar, context, new_env,
+        rhs, upper_bound, lower_bound, depth)
 
-    for result in gen
+    for result in subresults
         program = Abstraction(result.program)
         r = Result(result.prior, program, result.context)
-        put!(channel, r)
+        push!(results, r)
     end
+
+    subresults = nothing
 end
 
 function process_candidates(
-        channel::Channel, grammar::Grammar,
+        results::Array{Result,1}, grammar::Grammar,
         context::Context, env::Array{TypeField,1},
         type::TypeField, upper_bound::Float64,
         lower_bound::Float64, depth::Int)
@@ -239,14 +243,14 @@ function process_candidates(
     for candidate in candidates
         if valid(candidate, upper_bound)
             process_candidate(
-                channel, grammar, context, env,
+                results, grammar, context, env,
                 type, upper_bound, lower_bound, depth, candidate)
         end
     end
 end
 
 function process_candidate(
-        channel::Channel, grammar::Grammar,
+        results::Array{Result,1}, grammar::Grammar,
         context::Context, env::Array{TypeField,1},
         type::TypeField, upper_bound::Float64,
         lower_bound::Float64, depth::Int,
@@ -257,20 +261,23 @@ function process_candidate(
     new_depth = depth - 1
     arg_index = 0
 
-    gen = Channel((c) -> appgenerator(
-        c, grammar, candidate.context, env,
+    subresults = Array{Result,1}()
+    appgenerator(
+        subresults, grammar, candidate.context, env,
         candidate.program, func_args, new_upper, new_lower,
-        new_depth, arg_index, candidate.program))
+        new_depth, arg_index, candidate.program)
 
-    for result in gen
+    for result in subresults
         l = result.prior + candidate.log_probability
         r = Result(l, result.program, result.context)
-        put!(channel, r)
+        push!(results, r)
     end
+
+    subresults = nothing
 end
 
 function appgenerator(
-        channel::Channel, grammar::Grammar,
+        results::Array{Result,1}, grammar::Grammar,
         context::Context, env::Array{TypeField,1},
         func::Program, func_args::Array{TypeField,1},
         upper_bound::Float64, lower_bound::Float64,
@@ -281,7 +288,7 @@ function appgenerator(
     end
     if func_args == []
         if lower_bound <= 0.0 && upper_bound > 0.0
-            put!(channel, Result(0.0, func, context))
+            push!(results, Result(0.0, func, context))
             return
         else
             # Reject this enumerate application state
@@ -289,14 +296,14 @@ function appgenerator(
         end
     else
         recurse_generator(
-            channel, grammar, context, env,
+            results, grammar, context, env,
             func, func_args, upper_bound, lower_bound,
             depth, argument_index, original_func)
     end
 end
 
 function recurse_generator(
-        channel::Channel, grammar::Grammar,
+        results::Array{Result,1}, grammar::Grammar,
         context::Context, env::Array{TypeField,1},
         func::Program, func_args::Array{TypeField,1},
         upper_bound::Float64, lower_bound::Float64,
@@ -305,20 +312,23 @@ function recurse_generator(
     arg_request = apply(func_args[1], context)
     outer_args = func_args[2:end]
 
-    gen = Channel((c) -> generator(
-        c, grammar, context, env,
-        arg_request, upper_bound, 0.0, depth))
+    subresults = Array{Result,1}()
+    generator(
+        subresults, grammar, context, env,
+        arg_request, upper_bound, 0.0, depth)
 
-    for result in gen
+    for result in subresults
         recurse_appgenerator(
-            channel, grammar, context, env, func,
+            results, grammar, context, env, func,
             func_args, upper_bound, lower_bound, depth, argument_index,
             original_func, outer_args, result)
     end
+
+    subresults = nothing
 end
 
 function recurse_appgenerator(
-        channel::Channel, grammar::Grammar,
+        results::Array{Result,1}, grammar::Grammar,
         context::Context, env::Array{TypeField,1},
         func::Program, func_args::Array{TypeField,1},
         upper_bound::Float64, lower_bound::Float64,
@@ -336,16 +346,19 @@ function recurse_appgenerator(
     new_lower = lower_bound + prev_result.prior
     new_arg_index = argument_index + 1
 
-    gen = Channel((c) -> appgenerator(
-        c, grammar, prev_result.context, env,
+    subresults = Array{Result,1}()
+    appgenerator(
+        subresults, grammar, prev_result.context, env,
         new_func, outer_args, new_upper, new_lower,
-        depth, new_arg_index, func))
+        depth, new_arg_index, func)
 
-    for new_result in gen
+    for new_result in subresults
         l = new_result.prior + prev_result.prior
         r = Result(l, new_result.program, new_result.context)
-        put!(channel, r)
+        push!(results, r)
     end
+
+    subresults = nothing
 end
 
 end
