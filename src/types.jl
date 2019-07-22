@@ -57,7 +57,7 @@ function TypeField(c::String, a::Tuple{TypeField,TypeField})
     return TypeField(c, [a[1], [a[2]]], nothing)
 end
 
-TypeField(c::String) = TypeField(c, Array{TypeField,1}([]))
+TypeField(c::String) = TypeField(c, Array{TypeField,1}())
 
 function TypeField(data::Dict{String,Any})
     return TypeField(
@@ -68,7 +68,8 @@ function TypeField(data::Dict{String,Any})
 end
 
 function TypeField(val::Int)
-    return TypeField(nothing, [], nothing, true, variable, val)
+    args = Array{TypeField,1}()
+    return TypeField(nothing, args, nothing, true, variable, val)
 end
 
 const tint = TypeField("int")
@@ -158,14 +159,14 @@ end
 
 function function_arguments(t::TypeField)::Array{TypeField,1}
     if is_arrow(t)
-        args = Array{TypeField,1}([])
+        args = Array{TypeField,1}()
         arg1 = t.arguments[1]
         arg2 = function_arguments(t.arguments[2])
         push!(args, arg1)
         append!(args, arg2)
         return args
     end
-    return []
+    return Array{TypeField,1}()
 end
 
 struct Context
@@ -173,7 +174,7 @@ struct Context
     substitution::Array{Tuple{Int,TypeField},1}
 end
 
-Context() = Context(0, [])
+Context() = Context(0, Array{Tuple{Int,TypeField},1}())
 
 function apply(t::TypeField, context::Context)::TypeField
     if t.type == constructor
@@ -230,7 +231,7 @@ function constructor_instantiate(
     if !type.is_polymorphic
         return context, type
     end
-    new_args = Array{TypeField,1}([])
+    new_args = Array{TypeField,1}()
     for a in type.arguments
         if a.type == constructor
             context, new_type = constructor_instantiate(a, context, bindings)
@@ -273,7 +274,7 @@ end
 const UNIFICATION_FAILURE = -Inf
 
 function extend(context::Context, j::Int, t::TypeField)
-    l = Array{Tuple{Int,TypeField},1}([])
+    l = Array{Tuple{Int,TypeField},1}()
     a1 = push!(l, (j, t))
     sub = append!(a1, context.substitution)
     return Context(context.next_variable, sub)

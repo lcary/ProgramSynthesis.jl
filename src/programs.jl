@@ -194,7 +194,7 @@ function can_solve(f::Function, example::Example)::Bool
 end
 
 function can_solve(program::Program, problem::Problem)::Bool
-    env = Array{TypeField,1}([])
+    env = Array{TypeField,1}()
     f = evaluate(program, env)
     for example in problem.examples
         if !can_solve(f, example)
