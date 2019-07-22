@@ -2,7 +2,7 @@
 
 using Statistics
 using JSON
-using BenchmarkTools
+using Traceur
 
 using DreamCore
 using DreamCore.Types: Context, AbstractType
@@ -19,23 +19,10 @@ state = ProgramState(
     Context(),
     env,
     problems[1].type,
-    4.5,
-    6.0,
+    10.5,
+    9.0,
     99
 )
 
 # compile
-build_candidates(grammar, state)
-
-t = @benchmark build_candidates(grammar, state)
-
-dump(t)
-
-println("minimum:")
-println(minimum(t))
-println("median:")
-println(median(t))
-println("mean:")
-println(mean(t))
-println("maximum:")
-println(maximum(t))
+@trace build_candidates(grammar, state)

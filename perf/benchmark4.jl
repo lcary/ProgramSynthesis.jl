@@ -1,5 +1,5 @@
 using Statistics
-using Profile
+using BenchmarkTools
 using JSON
 
 using DreamCore
@@ -21,14 +21,17 @@ env = Array{AbstractType}([])
 gen = generator(grammar, env, type, 10.5, 9.0, 99, false)
 [i for i in gen]
 
-Profile.clear()  # in case we have any previous profiling data
 env = Array{AbstractType}([])
 gen = generator(grammar, env, type, 10.5, 9.0, 99, false)
-@profile [i for i in gen]
+t = @benchmark [i for i in gen]
 
-out = "messages/prof.txt"
-open(out, "w") do s
-    Profile.print(IOContext(s, :displaysize => (24, 500), :format => :flat))
-end
+dump(t)
 
-println("wrote: ", out)
+println("minimum:")
+println(minimum(t))
+println("median:")
+println(median(t))
+println("mean:")
+println(mean(t))
+println("maximum:")
+println(maximum(t))
