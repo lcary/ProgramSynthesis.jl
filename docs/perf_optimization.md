@@ -71,6 +71,31 @@ after d75133b4ec47360e41690b173d4ac4959d8369f5, T1 and T2:
 0.950576 seconds (1.81 M allocations: 94.059 MiB, 2.40% gc time)
 3.384675 seconds (8.03 M allocations: 404.340 MiB, 4.34% gc time)
 ```
+after fa4fa5c713463bf395af2b034031aefd816ae24e, T1 and T2:
+```
+0.883232 seconds (1.75 M allocations: 90.767 MiB, 2.65% gc time)
+3.257085 seconds (7.99 M allocations: 401.812 MiB, 4.81% gc time)
+```
+5d6f56238f9399a566cb5051775e7bb55a785283:
+```
+0.884871 seconds (1.65 M allocations: 86.247 MiB, 1.99% gc time)
+3.396977 seconds (7.83 M allocations: 393.275 MiB, 4.63% gc time)
+```
+f8dd50783c7151f7ba0edadfc5a47fbfc81b7373:
+```
+2.057143 seconds (13.19 M allocations: 736.446 MiB, 5.53% gc time)
+4.225431 seconds (18.66 M allocations: 1008.039 MiB, 5.73% gc time)
+```
+f8dd50783c7151f7ba0edadfc5a47fbfc81b7373:
+```
+0.955808 seconds (1.65 M allocations: 86.247 MiB, 1.96% gc time)
+3.451366 seconds (7.66 M allocations: 385.078 MiB, 4.40% gc time)
+```
+3fd03844c32bc6ade16e0899c58cdcf9e4ca1788:
+```
+0.915033 seconds (1.59 M allocations: 83.689 MiB, 2.18% gc time)
+3.359585 seconds (7.61 M allocations: 382.513 MiB, 4.64% gc time)
+```
 
 ocaml_request_enumeration_PID27008_20190719_T155300
 ---------------------------------------------------
@@ -131,6 +156,21 @@ after d75133b4ec47360e41690b173d4ac4959d8369f5, T1 and T2:
 2.523960 seconds (18.80 M allocations: 1014.093 MiB, 5.69% gc time)
 4.825156 seconds (24.48 M allocations: 1.267 GiB, 5.59% gc time)
 ```
+after fa4fa5c713463bf395af2b034031aefd816ae24e, T1 and T2:
+```
+2.545248 seconds (18.62 M allocations: 988.995 MiB, 6.37% gc time)
+4.824482 seconds (24.31 M allocations: 1.243 GiB, 6.01% gc time)
+```
+5d6f56238f9399a566cb5051775e7bb55a785283:
+```
+2.091745 seconds (13.19 M allocations: 736.446 MiB, 5.80% gc time)
+4.389511 seconds (18.83 M allocations: 1016.255 MiB, 5.70% gc time)
+```
+3fd03844c32bc6ade16e0899c58cdcf9e4ca1788:
+```
+2.059342 seconds (12.12 M allocations: 710.540 MiB, 5.05% gc time)
+4.152643 seconds (17.58 M allocations: 982.066 MiB, 5.87% gc time)
+```
 
 ocaml_request_enumeration_PID27034_20190719_T155304
 ---------------------------------------------------
@@ -174,6 +214,11 @@ after 0faaf18d14eed9f6bc40e9993cbb8e3017355ed1, T1 and T2:
 after a3d18f79b5dbaee4c750e2f74a49cac73992213b, T2:
 ```
 94.948203 seconds (1.30 G allocations: 69.455 GiB, 9.47% gc time)
+```
+5d6f56238f9399a566cb5051775e7bb55a785283:
+```
+67.508311 seconds (857.13 M allocations: 47.663 GiB, 10.67% gc time)
+69.862533 seconds (863.17 M allocations: 47.956 GiB, 10.52% gc time)
 ```
 
 ocaml_request_enumeration_PID27039_20190719_T155306
@@ -766,4 +811,30 @@ mean:
 TrialEstimate(86.374 μs)
 maximum:
 TrialEstimate(38.529 ms)
+```
+after d75133b4ec47360e41690b173d4ac4959d8369f5:
+```
+julia --project perf/benchmark3.jl
+BenchmarkTools.Trial
+  params: BenchmarkTools.Parameters
+    seconds: Float64 5.0
+    samples: Int64 10000
+    evals: Int64 1
+    overhead: Float64 0.0
+    gctrial: Bool true
+    gcsample: Bool false
+    time_tolerance: Float64 0.05
+    memory_tolerance: Float64 0.01
+  times: Array{Float64}((10000,)) [70728.0, 70826.0, 70848.0, 70912.0, 70917.0, 70940.0, 70949.0, 70952.0, 70954.0, 70967.0  …  2.24451e6, 2.24488e6, 2.27858e6, 2.31584e6, 2.36273e6, 2.39236e6, 2.39674e6, 2.58679e6, 9.8318e6, 3.76713e7]
+  gctimes: Array{Float64}((10000,)) [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0  …  2.157e6, 2.15715e6, 2.19331e6, 2.23097e6, 2.27487e6, 2.28157e6, 2.29825e6, 2.49989e6, 9.7291e6, 3.7557e7]
+  memory: Int64 69808
+  allocs: Int64 1250
+minimum:
+TrialEstimate(70.728 μs)
+median:
+TrialEstimate(72.507 μs)
+mean:
+TrialEstimate(86.604 μs)
+maximum:
+TrialEstimate(37.671 ms)
 ```
