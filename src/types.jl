@@ -234,10 +234,13 @@ function variable_instantiate(
     return new_context, new_type
 end
 
-function fill_constructor_args!(
+function constructor_instantiate(
         type::TypeField, context::Context,
-        bindings::Dict{String,TypeField},
-        args::Array{TypeField,1})
+        bindings::Dict{String,TypeField})::Tuple{Context,TypeField}
+    if !type.is_polymorphic
+        return context, type
+    end
+    args = Array{TypeField,1}(undef, length(type.arguments))
     for (index, a) in enumerate(type.arguments)
         if a.type == constructor
             context, t = constructor_instantiate(a, context, bindings)
@@ -246,16 +249,6 @@ function fill_constructor_args!(
         end
         args[index] = t
     end
-end
-
-function constructor_instantiate(
-        type::TypeField, context::Context,
-        bindings::Dict{String,TypeField})::Tuple{Context,TypeField}
-    if !type.is_polymorphic
-        return context, type
-    end
-    args = Array{TypeField,1}(undef, length(type.arguments))
-    fill_constructor_args!(type, context, bindings, args)
     return context, TypeField(type.constructor, args)
 end
 
