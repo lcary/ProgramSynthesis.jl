@@ -289,9 +289,7 @@ function extend(context::Context, j::Int, t::TypeField)
     len = length(context.substitution) + 1
     arr = Array{Tuple{Int,TypeField},1}(undef, len)
     arr[1] = (j, t)
-    for (index, s) in enumerate(context.substitution)
-        arr[index + 1] = s
-    end
+    arr[2:end] = context.substitution
     return Context(context.next_variable, arr)
 end
 
