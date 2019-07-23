@@ -255,6 +255,11 @@ after a3d18f79b5dbaee4c750e2f74a49cac73992213b, T2:
 67.508311 seconds (857.13 M allocations: 47.663 GiB, 10.67% gc time)
 69.862533 seconds (863.17 M allocations: 47.956 GiB, 10.52% gc time)
 ```
+4c5fc4e565e567e9daf3462b46763e572871a937:
+```
+40.011345 seconds (528.86 M allocations: 36.493 GiB, 11.73% gc time)
+42.227773 seconds (534.73 M allocations: 36.778 GiB, 11.45% gc time)
+```
 
 ocaml_request_enumeration_PID27039_20190719_T155306
 ---------------------------------------------------
@@ -288,6 +293,11 @@ after a3d18f79b5dbaee4c750e2f74a49cac73992213b, T1 and T2:
 ```
 289.711500 seconds (4.14 G allocations: 220.997 GiB, 11.64% gc time)
 291.897993 seconds (4.15 G allocations: 221.266 GiB, 11.60% gc time)
+```
+4c5fc4e565e567e9daf3462b46763e572871a937:
+```
+124.018097 seconds (1.68 G allocations: 115.929 GiB, 13.25% gc time)
+126.080682 seconds (1.68 G allocations: 116.194 GiB, 13.13% gc time)
 ```
 
 benchmark1.jl
