@@ -222,10 +222,8 @@ function Base.show(io::IO, context::Context)
 end
 
 function variable_instantiate(
-    type::TypeField,
-    context::Context,
-    bindings::Dict{String,TypeField}
-)::Tuple{Context,TypeField}
+        type::TypeField, context::Context,
+        bindings::Dict{String,TypeField})::Tuple{Context,TypeField}
     key = string(type.value)
     if haskey(bindings, key)
         return context, bindings[key]
@@ -236,15 +234,10 @@ function variable_instantiate(
     return new_context, new_type
 end
 
-function constructor_instantiate(
-    type::TypeField,
-    context::Context,
-    bindings::Dict{String,TypeField}
-)::Tuple{Context,TypeField}
-    if !type.is_polymorphic
-        return context, type
-    end
-    args = Array{TypeField,1}(undef, length(type.arguments))
+function fill_constructor_args!(
+        type::TypeField, context::Context,
+        bindings::Dict{String,TypeField},
+        args::Array{TypeField,1})
     for (index, a) in enumerate(type.arguments)
         if a.type == constructor
             context, t = constructor_instantiate(a, context, bindings)
@@ -253,13 +246,21 @@ function constructor_instantiate(
         end
         args[index] = t
     end
+end
+
+function constructor_instantiate(
+        type::TypeField, context::Context,
+        bindings::Dict{String,TypeField})::Tuple{Context,TypeField}
+    if !type.is_polymorphic
+        return context, type
+    end
+    args = Array{TypeField,1}(undef, length(type.arguments))
+    fill_constructor_args!(type, context, bindings, args)
     return context, TypeField(type.constructor, args)
 end
 
 function instantiate(
-    t::TypeField,
-    context::Context
-)::Tuple{Context,TypeField}
+        t::TypeField, context::Context)::Tuple{Context,TypeField}
     args = (t, context, Dict{String,TypeField}())
     if t.type == constructor
         return constructor_instantiate(args...)
