@@ -286,10 +286,13 @@ end
 const UNIFICATION_FAILURE = -Inf
 
 function extend(context::Context, j::Int, t::TypeField)
-    l = Array{Tuple{Int,TypeField},1}()
-    a1 = push!(l, (j, t))
-    sub = append!(a1, context.substitution)
-    return Context(context.next_variable, sub)
+    len = length(context.substitution) + 1
+    arr = Array{Tuple{Int,TypeField},1}(undef, len)
+    arr[1] = (j, t)
+    for (index, s) in enumerate(context.substitution)
+        arr[index + 1] = s
+    end
+    return Context(context.next_variable, arr)
 end
 
 function unify(
