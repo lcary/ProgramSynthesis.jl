@@ -24,6 +24,7 @@ export TypeField,
 
 const ARROW = "->"
 
+# TODO: all caps enums
 @enum TYPE constructor=1 variable=2
 
 struct TypeField
