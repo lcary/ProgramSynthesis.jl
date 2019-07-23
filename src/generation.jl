@@ -1,6 +1,7 @@
 module Generation
 
 using DataStructures
+using ResumableFunctions
 
 using ..Types
 using ..Grammars
@@ -219,30 +220,35 @@ function stop(upper_bound::Float64, depth::Int)::Bool
     end
 end
 
-function generator(
+@resumable function generator(
         grammar::Grammar, env::Array{TypeField,1},
         type::TypeField, upper_bound::Float64,
         lower_bound::Float64, max_depth::Int)
-    return Channel((channel) -> generator(
-        channel, grammar, Context(), env,
-        type, upper_bound, lower_bound, max_depth))
+    for r in generator(
+        grammar, Context(), env,
+        type, upper_bound, lower_bound, max_depth)
+        @yield r
+    end
 end
 
-function generator(
-        channel::Channel,
+@resumable function generator(
         grammar::Grammar,
         context::Context, env::Array{TypeField,1},
         type::TypeField, upper_bound::Float64,
         lower_bound::Float64, depth::Int)
     if !stop(upper_bound, depth)
         if Types.is_arrow(type)
-            process_arrow(
-                channel, grammar, context, env,
-                type, upper_bound, lower_bound, depth)
+            for r in process_arrow(
+                    grammar, context, env,
+                    type, upper_bound, lower_bound, depth)
+                @yield r
+            end
         else
-            process_candidates(
-                channel, grammar, context, env,
-                type, upper_bound, lower_bound, depth)
+            for r in process_candidates(
+                    grammar, context, env,
+                    type, upper_bound, lower_bound, depth)
+                @yield r
+            end
         end
     end
 end
@@ -258,32 +264,32 @@ function abstract_result(r::Result)::Result
     return Result(r.prior, Abstraction(r.program), r.context)
 end
 
-function process_arrow(
-        channel::Channel,
+@resumable function process_arrow(
         grammar::Grammar,
         context::Context, env::Array{TypeField,1},
         type::TypeField, upper_bound::Float64,
         lower_bound::Float64, depth::Int)
     env = get_new_env(type.arguments[1], env)
-    gen = Channel((c) -> generator(
-        c, grammar, context, env,
-        type.arguments[2], upper_bound, lower_bound, depth))
+    gen = generator(
+        grammar, context, env,
+        type.arguments[2], upper_bound, lower_bound, depth)
     for result in gen
-        put!(channel, abstract_result(result))
+        @yield abstract_result(result)
     end
 end
 
-function process_candidates(
-        channel::Channel,
+@resumable function process_candidates(
         grammar::Grammar,
         context::Context, env::Array{TypeField,1},
         type::TypeField, upper_bound::Float64,
         lower_bound::Float64, depth::Int)
     for candidate in build_candidates(grammar, type, context, env)
         if valid(candidate, upper_bound)
-            process_candidate(
-                channel, grammar, context, env,
-                type, upper_bound, lower_bound, depth, candidate)
+            for r in process_candidate(
+                    grammar, context, env,
+                    type, upper_bound, lower_bound, depth, candidate)
+                @yield r
+            end
         end
     end
 end
@@ -293,8 +299,7 @@ function candidate_result(r::Result, c::Candidate)::Result
     return Result(l, r.program, r.context)
 end
 
-function process_candidate(
-        channel::Channel,
+@resumable function process_candidate(
         grammar::Grammar,
         context::Context, env::Array{TypeField,1},
         type::TypeField, upper_bound::Float64,
@@ -306,12 +311,12 @@ function process_candidate(
     new_depth = depth - 1
     arg_index = 0
 
-    gen = Channel((c) -> appgenerator(
-        c, grammar, candidate.context, env,
+    gen = appgenerator(
+        grammar, candidate.context, env,
         candidate.program, func_args, new_upper, new_lower,
-        new_depth, arg_index, candidate.program))
+        new_depth, arg_index, candidate.program)
     for result in gen
-        put!(channel, candidate_result(result, candidate))
+        @yield candidate_result(result, candidate)
     end
 end
 
@@ -323,8 +328,7 @@ function bounds_check(lower_bound::Float64, upper_bound::Float64)
     return lower_bound <= 0.0 && upper_bound > 0.0
 end
 
-function appgenerator(
-        channel::Channel,
+@resumable function appgenerator(
         grammar::Grammar,
         context::Context, env::Array{TypeField,1},
         func::Program, func_args::Array{TypeField,1},
@@ -334,19 +338,20 @@ function appgenerator(
     if !stop(upper_bound, depth)
         if isempty(func_args)
             if bounds_check(lower_bound, upper_bound)
-                put!(channel, end_result(func, context))
+                @yield end_result(func, context)
             end
         else
-            recurse_generator(
-                channel, grammar, context, env,
-                func, func_args, upper_bound, lower_bound,
-                depth, argument_index, original_func)
+            for r in recurse_generator(
+                    grammar, context, env,
+                    func, func_args, upper_bound, lower_bound,
+                    depth, argument_index, original_func)
+                @yield r
+            end
         end
     end
 end
 
-function recurse_generator(
-        channel::Channel,
+@resumable function recurse_generator(
         grammar::Grammar,
         context::Context, env::Array{TypeField,1},
         func::Program, func_args::Array{TypeField,1},
@@ -356,14 +361,16 @@ function recurse_generator(
     arg_request = apply(func_args[1], context)
     outer_args = func_args[2:end]
 
-    gen = Channel((c) -> generator(
-        c, grammar, context, env,
-        arg_request, upper_bound, 0.0, depth))
+    gen = generator(
+        grammar, context, env,
+        arg_request, upper_bound, 0.0, depth)
     for result in gen
-        recurse_appgenerator(
-            channel, grammar, context, env, func,
-            func_args, upper_bound, lower_bound, depth, argument_index,
-            original_func, outer_args, result)
+        for r in recurse_appgenerator(
+                grammar, context, env, func,
+                func_args, upper_bound, lower_bound, depth, argument_index,
+                original_func, outer_args, result)
+            @yield r
+        end
     end
 end
 
@@ -372,8 +379,7 @@ function combined_result(prev_result::Result, new_result::Result)::Result
     return Result(l, new_result.program, new_result.context)
 end
 
-function recurse_appgenerator(
-        channel::Channel,
+@resumable function recurse_appgenerator(
         grammar::Grammar,
         context::Context, env::Array{TypeField,1},
         func::Program, func_args::Array{TypeField,1},
@@ -389,12 +395,12 @@ function recurse_appgenerator(
         new_lower = lower_bound + prev_result.prior
         new_arg_index = argument_index + 1
 
-        gen = Channel((c) -> appgenerator(
-            c, grammar, prev_result.context, env,
+        gen = appgenerator(
+            grammar, prev_result.context, env,
             new_func, outer_args, new_upper, new_lower,
-            depth, new_arg_index, func))
+            depth, new_arg_index, func)
         for new_result in gen
-            put!(channel, combined_result(prev_result, new_result))
+            @yield combined_result(prev_result, new_result)
         end
     end
 end
