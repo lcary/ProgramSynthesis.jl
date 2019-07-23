@@ -243,16 +243,16 @@ function constructor_instantiate(
     if !type.is_polymorphic
         return context, type
     end
-    new_args = Array{TypeField,1}()
-    for a in type.arguments
+    args = Array{TypeField,1}(undef, length(type.arguments))
+    for (index, a) in enumerate(type.arguments)
         if a.type == constructor
-            context, new_type = constructor_instantiate(a, context, bindings)
+            context, t = constructor_instantiate(a, context, bindings)
         else
-            context, new_type = variable_instantiate(a, context, bindings)
+            context, t = variable_instantiate(a, context, bindings)
         end
-        push!(new_args, new_type)
+        args[index] = t
     end
-    return context, TypeField(type.constructor, new_args)
+    return context, TypeField(type.constructor, args)
 end
 
 function instantiate(
