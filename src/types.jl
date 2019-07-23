@@ -44,7 +44,7 @@ function split_arguments(a::Array{TypeField,1})::Array{TypeField}
 end
 
 function TypeField(c, args, index)
-    is_polymorphic = any([i.is_polymorphic for i in args])
+    is_polymorphic = any(i.is_polymorphic for i in args)
     return TypeField(c, args, index, is_polymorphic, constructor, -1)
 end
 
@@ -208,7 +208,7 @@ function variable_instantiate(
     context::Context,
     bindings::Dict{String,TypeField}
 )::Tuple{Context,TypeField}
-    key = string(type)
+    key = string(type.value)
     if haskey(bindings, key)
         return context, bindings[key]
     end
@@ -263,7 +263,7 @@ function occurs(t::TypeField, v::Int)::Bool
     if !t.is_polymorphic
         return false
     end
-    return any([occurs(a, v) for a in t.arguments])
+    return any(occurs(a, v) for a in t.arguments)
 end
 
 const UNIFICATION_FAILURE = -Inf
