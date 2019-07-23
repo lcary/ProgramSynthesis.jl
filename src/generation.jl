@@ -153,38 +153,62 @@ end
 struct InvalidStateType <: Exception end
 
 # TODO: unit tests
-function is_symmetrical(
+function violates_symmetry(
         argument_index::Int, original_func::Program, program::Program,
         primitives::Dict{String,Program})::Bool
-    argument_index = argument_index
     if original_func.ptype != PRIMITIVE
+        return false
+    end
+    f1 = original_func.name
+    program_func = getfunc(program)
+    if program_func.ptype != PRIMITIVE
+        return false
+    end
+    f2 = program_func.name
+    if argument_index == 0 && f1 == "car" && f2 == "cons"
+        return true
+    elseif argument_index == 0 && f1 == "car" && f2 == "empty"
+        return true
+    elseif argument_index == 0 && f1 == "cdr" && f2 == "cons"
+        return true
+    elseif argument_index == 0 && f1 == "cdr" && f2 == "empty"
+        return true
+    elseif f1 == "+" && f2 == "0"
+        return true
+    elseif argument_index == 1 && f1 == "-" && f2 == "0"
+        return true
+    elseif argument_index == 0 && f1 == "+" && f2 == "+"
+        return true
+    elseif argument_index == 0 && f1 == "*" && f2 == "*"
+        return true
+    elseif f1 == "*" && f2 == "0"
+        return true
+    elseif f1 == "*" && f2 == "1"
+        return true
+    elseif argument_index == 0 && f1 == "empty?" && f2 == "cons"
+        return true
+    elseif argument_index == 0 && f1 == "empty?" && f2 == "empty"
+        return true
+    elseif argument_index == 0 && f1 == "zero?" && f2 == "0"
+        return true
+    elseif argument_index == 0 && f1 == "zero?" && f2 == "1"
+        return true
+    elseif argument_index == 0 && f1 == "zero?" && f2 == "-1"
+        return true
+    elseif argument_index == 1 && f1 == "map" && f2 == "empty"
+        return true
+    elseif f1 == "zip" && f2 == "empty"
+        return true
+    elseif argument_index == 0 && f1 == "fold" && f2 == "empty"
+        return true
+    elseif argument_index == 1 && f1 == "index" && f2 == "empty"
+        return true
+    elseif f1 == "left" && (f2 == "left" || f2 == "right")
+        return true
+    elseif f1 == "right" && (f2 == "right" || f2 == "left")
         return true
     end
-    orig = original_func.name
-    if !haskey(primitives, orig)
-        return true
-    end
-    newf = getname(program)
-    if orig == "car"
-        return newf != "cons" && newf != "empty"
-    elseif orig == "cdr"
-        return newf != "cons" && newf != "empty"
-    elseif orig == "+"
-        return newf == "0" && (argument_index != 1 || newf != "+")
-    elseif orig == "-"
-        return argument_index != 1 || newf != "0"
-    elseif orig == "empty?"
-        return newf != "cons" && newf != "empty"
-    elseif orig == "zero?"
-        return newf != "0" && newf != "1"
-    elseif orig == "index" || orig == "map" || orig == "zip"
-        return newf != "empty"
-    elseif orig == "range"
-        return newf != "0"
-    elseif orig == "fold"
-        return argument_index != 1 || newf != "empty"
-    end
-    return true
+    return false
 end
 
 function stop(upper_bound::Float64, depth::Int)::Bool
@@ -382,7 +406,7 @@ function recurse_appgenerator!(
         depth::Int, argument_index::Int,
         original_func::Program, outer_args::Array{TypeField,1},
         prev_result::Result)
-    if is_symmetrical(
+    if !violates_symmetry(
             argument_index, original_func,
             prev_result.program, grammar.primitives)
         new_func = Application(func, prev_result.program)

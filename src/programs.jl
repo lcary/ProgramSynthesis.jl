@@ -23,7 +23,7 @@ export Program,
        json_format,
        evaluate,
        str,
-       getname
+       getfunc
 
 @enum PROGRAMTYPE begin
     PROGRAM = 0
@@ -104,19 +104,17 @@ Base.show(io::IO, p::Program) = print(io, str(p))
 
 json_format(p::Program)::String = str(p)
 
-function getname(p::Program)::String
+function getfunc(p::Program)::Program
     t = p.ptype
     if t == ABSTRACTION
-        return getname(p.func)
+        return getfunc(p.func)
     elseif t == APPLICATION
-        return getname(p.func)
+        return getfunc(p.func)
     # TODO: what about invented?
     # elseif t == INVENTED
     #     return invented_str(p)
-    elseif t == INDEX
-        return string(p.i)  # TODO: check if correct
     else
-        return p.name
+        return p
     end
 end
 
