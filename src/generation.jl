@@ -11,7 +11,7 @@ export generator, Result, generator
 
 struct Result
     prior::Float64
-    program::AbstractProgram
+    program::Program
     context::Context
 end
 
@@ -19,128 +19,44 @@ function Base.show(io::IO, r::Result)
     print(io, "Result($(r.prior), $(r.program), $(r.context))")
 end
 
-abstract type State end
-
-struct ProgramState <: State
-    context::Context
-    env::Array{AbstractType}
-    type::AbstractType
-    upper_bound::Float64
-    lower_bound::Float64
-    depth::Int
-end
-
-function Base.show(io::IO, state::ProgramState)
-    cls = "ProgramState"
-    t = state.type
-    e = state.env
-    c = state.context
-    u = round(state.upper_bound, digits=3)
-    l = round(state.lower_bound, digits=3)
-    d = state.depth
-    print(io, "$cls($t, env=$e, $c, upper=$u, lower=$l, depth=$d)")
-end
-
-function convert_arrow(state::ProgramState)::ProgramState
-    lhs = state.type.arguments[1]
-    rhs = state.type.arguments[2]
-    env1 = Array{Union{TypeConstructor,TypeVariable}}([lhs])  # TODO: better UnionAll syntax?
-    env = append!(env1, state.env)
-    upper = state.upper_bound
-    lower = state.lower_bound
-    return ProgramState(state.context, env, rhs, upper, lower, state.depth)
-end
-
-struct ApplicationState <: State
-    context::Context
-    env::Array{AbstractType}
-    func::AbstractProgram
-    func_args::Array{AbstractType}
-    upper_bound::Float64
-    lower_bound::Float64
-    depth::Int
-    argument_index::Int
-    original_func::AbstractProgram
-end
-
-function Base.show(io::IO, state::ApplicationState)
-    cls = "ApplicationState"
-    f = state.func
-    a = state.func_args
-    e = state.env
-    c = state.context
-    u = round(state.upper_bound, digits=3)
-    l = round(state.lower_bound, digits=3)
-    d = state.depth
-    print(io, "$cls($f, args=$a, env=$e, $c, upper=$u, lower=$l, depth=$d)")
-end
-
 struct Candidate
     log_probability::Float64
-    type::AbstractType
-    program::AbstractProgram
+    type::TypeField
+    program::Program
     context::Context
-end
-
-function to_app_state1(candidate::Candidate, state::ProgramState)
-    func_args = function_arguments(candidate.type)
-    new_upper = state.upper_bound + candidate.log_probability
-    new_lower = state.lower_bound + candidate.log_probability
-    new_depth = state.depth - 1
-    return ApplicationState(
-        candidate.context, state.env, candidate.program, func_args,
-        new_upper, new_lower, new_depth, 0, candidate.program)
-end
-
-function to_program_state(state::ApplicationState)
-    arg_request = apply(state.func_args[1], state.context)
-    outer_args = state.func_args[2:end]
-    newstate = ProgramState(
-        state.context, state.env, arg_request,
-        state.upper_bound, 0.0, state.depth)
-    return newstate, outer_args
-end
-
-function to_app_state2(
-    state::ApplicationState,
-    result::Result,
-    args::Array{AbstractType}
-)
-    new_func = Application(state.func, result.program)
-    new_upper = state.upper_bound + result.prior
-    new_lower = state.lower_bound + result.prior
-    new_arg_index = state.argument_index + 1
-    return ApplicationState(
-        result.context, state.env, new_func, args,
-        new_upper, new_lower, state.depth, new_arg_index,
-        state.func)
 end
 
 struct VariableCandidate
-    type::AbstractType
-    index::DeBruijnIndex
+    type::TypeField
+    index::Program
     context::Context
 end
 
-function Candidate(vc::VariableCandidate, l::Float64)
+function Candidate(vc::VariableCandidate, l::Float64)::Candidate
     return Candidate(l, vc.type, vc.index, vc.context)
 end
 
-function get_candidate(state::State, production::Production)
-    request = state.type
-    context = state.context
+function get_candidate(
+        request::TypeField, context::Context,
+        production::Production)::Union{Candidate,Float64}
     l = production.log_probability
     p = production.program
     new_context, t = instantiate(p.type, context)
     new_context = unify(new_context, returns(t), request)
+    if new_context == UNIFICATION_FAILURE
+        return UNIFICATION_FAILURE
+    end
     t = apply(t, new_context)
     return Candidate(l, t, p, new_context)
 end
 
-function get_variable_candidate(state::State, t::AbstractType, i::Int)
-    request = state.type
-    context = state.context
+function get_variable_candidate(
+        request::TypeField, context::Context, t::TypeField,
+        i::Int)::Union{VariableCandidate,Float64}
     new_context = unify(context, returns(t), request)
+    if new_context == UNIFICATION_FAILURE
+        return UNIFICATION_FAILURE
+    end
     t = apply(t, new_context)
     return VariableCandidate(t, DeBruijnIndex(i), new_context)
 end
@@ -152,49 +68,81 @@ function update_log_probability(z::Float64, c::Candidate)::Candidate
     return Candidate(new_l, c.type, c.program, c.context)
 end
 
-function final_candidates(candidates::Array{Candidate})::Array{Candidate}
-    z::Float64 = lse([c.log_probability for c in candidates])
-    f = curry(update_log_probability, z)
-    final_candidates::Array{Candidate} = map(f, candidates)
-    return final_candidates
+function get_logs(candidates::Array{Candidate,1})
+    arr = Array{Float64,1}(undef, length(candidates))
+    for (index, c) in enumerate(candidates)
+        arr[index] = c.log_probability
+    end
+    return arr
 end
 
-function build_candidates(grammar::Grammar, state::State)::Array{Candidate}
-    candidates = Array{Candidate}([])
-    variable_candidates = Array{VariableCandidate}([])
+function calculate_lse(candidates::Array{Candidate,1})
+    return lse(get_logs(candidates))
+end
 
+function finalize_candidates!(candidates::Array{Candidate,1})
+    z = calculate_lse(candidates)
+    for (index, c) in enumerate(candidates)
+        candidates[index] = update_log_probability(z, c)
+    end
+end
+
+function get_candidates!(
+        grammar::Grammar, request::TypeField, context::Context,
+        candidates::Array{Candidate,1})
     for p in grammar.productions
-        try
-            push!(candidates, get_candidate(state, p))
-        catch e
-            if typeof(e) <: UnificationFailure
-                continue
-            end
+        r = get_candidate(request, context, p)
+        if r == UNIFICATION_FAILURE
+            continue
         end
+        push!(candidates, r)
     end
+end
 
-    for (i, t) in enumerate(state.env)
-        try
-            push!(variable_candidates, get_variable_candidate(state, t, i - 1))
-        catch e
-            if typeof(e) <: UnificationFailure
-                continue
-            end
+function get_variable_candidates!(
+        request::TypeField, context::Context, env::Array{TypeField,1},
+        variable_candidates::Array{VariableCandidate,1})
+    for (i, t) in enumerate(env)
+        r = get_variable_candidate(request, context, t, i - 1)
+        if r == UNIFICATION_FAILURE
+            continue
         end
+        push!(variable_candidates, r)
     end
+end
 
-    # TODO: check continuationType
-
+function add_variable_candidates!(
+        grammar::Grammar,
+        variable_candidates::Array{VariableCandidate,1},
+        candidates::Array{Candidate,1})
     vl = grammar.log_variable - log(length(variable_candidates))
     for vc in variable_candidates
         push!(candidates, Candidate(vc, vl))
     end
+end
+
+function build_candidates(
+        grammar::Grammar, request::TypeField, context::Context,
+        env::Array{TypeField,1})::Array{Candidate,1}
+
+    candidates = Array{Candidate,1}()
+    variable_candidates = Array{VariableCandidate,1}()
+
+    get_candidates!(grammar, request, context, candidates)
+    get_variable_candidates!(request, context, env, variable_candidates)
+
+    # TODO: check continuationType
+
+    add_variable_candidates!(grammar, variable_candidates, candidates)
+    variable_candidates = nothing
 
     if isempty(candidates)
         throw(NoCandidates)
     end
 
-    return final_candidates(candidates)
+    finalize_candidates!(candidates)
+
+    return candidates
 end
 
 # TODO: rename log_probability
@@ -202,38 +150,21 @@ function valid(candidate::Candidate, upper_bound::Float64)::Bool
     return -candidate.log_probability < upper_bound
 end
 
-function all_invalid(candidates::Array{Candidate}, upper_bound::Float64)::Bool
-    for c in candidates
-        if valid(c, upper_bound)
-            return false
-        end
-    end
-    return true
-end
-
 struct InvalidStateType <: Exception end
-
-# TODO: move to programs.ml
-tosource(p::Program)::String = p.source
-tosource(p::DeBruijnIndex)::String = string(p.i)  # TODO: check if correct
-tosource(p::Application)::String = tosource(p.func)
-tosource(p::Abstraction)::String = tosource(p.body)
 
 # TODO: unit tests
 function is_symmetrical(
-    s::ApplicationState,
-    program::AbstractProgram,
-    primitives::Dict{String,Primitive}
-)::Bool
-    argument_index = s.argument_index
-    if !isa(s.original_func, Program)
+        argument_index::Int, original_func::Program, program::Program,
+        primitives::Dict{String,Program})::Bool
+    argument_index = argument_index
+    if original_func.ptype != PRIMITIVE
         return true
     end
-    orig = s.original_func.source
+    orig = original_func.name
     if !haskey(primitives, orig)
         return true
     end
-    newf = tosource(program)
+    newf = getname(program)
     if orig == "car"
         return newf != "cons" && newf != "empty"
     elseif orig == "cdr"
@@ -256,144 +187,218 @@ function is_symmetrical(
     return true
 end
 
-function debug_state(state::State, debug::Bool)
-    if debug
-        println("state: $state")
-    end
-end
-
-banner(msg::String)::String = "=========$msg========="
-
-function debug_result(result::Result, debug::Bool, msg::String)
-    if debug
-        println(banner(msg))
-        println("result: $result")
-    end
-end
-
-function stop(state::State, debug::Bool)::Bool
-    if state.upper_bound < 0.0 || state.depth <= 1
-        if debug
-            println(banner("ENDSTATE"))
-        end
+function stop(upper_bound::Float64, depth::Int)::Bool
+    if upper_bound < 0.0 || depth <= 1
         return true
     else
         return false
     end
 end
 
-function debug_candidates(candidates::Array{Candidate}, debug::Bool)
-    if debug && !isempty(candidates)
-        println("candidates: [")
-        for c in candidates
-            println("    ", c, ",")
-        end
-        println("]")
-    end
+function generator(
+        grammar::Grammar, env::Array{TypeField,1},
+        type::TypeField, upper_bound::Float64,
+        lower_bound::Float64, max_depth::Int)
+    results = Array{Result,1}()
+    generator!(
+        results, grammar, Context(), env,
+        type, upper_bound, lower_bound, max_depth)
+    return results
 end
 
-function appgenerator(
-    channel::Channel,
-    grammar::Grammar,
-    state::ApplicationState,
-    debug::Bool=false
-)
-    debug_state(state, debug)
-    if stop(state, debug)
-        return
-    end
-    if state.func_args == []
-        if state.lower_bound <= 0.0 && state.upper_bound > 0.0
-            r = Result(0.0, state.func, state.context)
-            d = state.depth
-            debug_result(r, debug, "RESULT(APP CHANNEL #1)(depth=$d)")
-            put!(channel, r)
-            return
+function generator!(
+        results::Array{Result,1},
+        grammar::Grammar,
+        context::Context, env::Array{TypeField,1},
+        type::TypeField, upper_bound::Float64,
+        lower_bound::Float64, depth::Int)
+    if !stop(upper_bound, depth)
+        if Types.is_arrow(type)
+            subresults = Array{Result,1}()
+            process_arrow(
+                subresults, grammar, context, env,
+                type, upper_bound, lower_bound, depth)
+            for r in subresults
+                push!(results, r)
+            end
         else
-            # Reject this enumerate application state
-            return
-        end
-    else
-        s1, args = to_program_state(state)
-        g1 = Channel((c) -> generator(c, grammar, s1, debug))
-        for r1 in g1
-            if !is_symmetrical(state, r1.program, grammar.primitives)
-                continue
-            end
-            s2 = to_app_state2(state, r1, args)
-            g2 = Channel((c) -> appgenerator(c, grammar, s2, debug))
-            for r2 in g2
-                l = r2.prior + r1.prior
-                r = Result(l, r2.program, r2.context)
-                d = state.depth
-                debug_result(r, debug, "RESULT(APP CHANNEL #2)(depth=$d)")
-                put!(channel, r)
+            subresults = Array{Result,1}()
+            process_candidates!(
+                subresults, grammar, context, env,
+                type, upper_bound, lower_bound, depth)
+            for r in subresults
+                push!(results, r)
             end
         end
     end
 end
 
-function generator(
-    channel::Channel,
-    grammar::Grammar,
-    state::ProgramState,
-    debug::Bool=false
-)
-    debug_state(state, debug)
-    if stop(state, debug)
-        return
+function get_new_env(type::TypeField, env::Array{TypeField,1})
+    new_env = Array{TypeField,1}(undef, length(env) + 1)
+    new_env[1] = type
+    new_env[2:end] = env
+    return new_env
+end
+
+function abstract_result(r::Result)::Result
+    return Result(r.prior, Abstraction(r.program), r.context)
+end
+
+function process_arrow(
+        results::Array{Result,1},
+        grammar::Grammar,
+        context::Context, env::Array{TypeField,1},
+        type::TypeField, upper_bound::Float64,
+        lower_bound::Float64, depth::Int)
+    env = get_new_env(type.arguments[1], env)
+    subresults = Array{Result,1}()
+    generator!(
+        subresults, grammar, context, env,
+        type.arguments[2], upper_bound, lower_bound, depth)
+    for result in subresults
+        push!(results, abstract_result(result))
     end
-    if Types.is_arrow(state.type)
-        newstate = convert_arrow(state)
-        gen = Channel((c) -> generator(c, grammar, newstate, debug))
-        for result in gen
-            program = Abstraction(result.program)
-            r = Result(result.prior, program, result.context)
-            d = state.depth
-            debug_result(r, debug, "RESULT(PRG CHANNEL #1)(depth=$d)")
-            put!(channel, r)
-        end
-        return
-    else
-        candidates = build_candidates(grammar, state)
-        debug_candidates(candidates, debug)
-        if all_invalid(candidates, state.upper_bound)
-            return
-        end
-        for candidate in candidates
-            if valid(candidate, state.upper_bound)
-                appstate = to_app_state1(candidate, state)
-                gen = Channel((c) -> appgenerator(c, grammar, appstate, debug))
-                for result in gen
-                    l = result.prior + candidate.log_probability
-                    r = Result(l, result.program, result.context)
-                    d = state.depth
-                    debug_result(r, debug, "RESULT(PRG CHANNEL #2)(depth=$d)")
-                    put!(channel, r)
-                end
+end
+
+function process_candidates!(
+        results::Array{Result,1},
+        grammar::Grammar,
+        context::Context, env::Array{TypeField,1},
+        type::TypeField, upper_bound::Float64,
+        lower_bound::Float64, depth::Int)
+    for candidate in build_candidates(grammar, type, context, env)
+        if valid(candidate, upper_bound)
+            subresults = Array{Result,1}()
+            process_candidate!(
+                subresults, grammar, context, env,
+                type, upper_bound, lower_bound, depth, candidate)
+            for r in subresults
+                push!(results, r)
             end
         end
     end
 end
 
-function generator(
-    grammar::Grammar,
-    env::Array{AbstractType},
-    type::AbstractType,
-    upper_bound::Float64,
-    lower_bound::Float64,
-    max_depth::Int,
-    debug::Bool=false
-)
-    state = ProgramState(
-        Context(),
-        env,
-        type,
-        upper_bound,
-        lower_bound,
-        max_depth
-    )
-    return Channel((channel) -> generator(channel, grammar, state, debug))
+function candidate_result(r::Result, c::Candidate)::Result
+    l = r.prior + c.log_probability
+    return Result(l, r.program, r.context)
+end
+
+function process_candidate!(
+        results::Array{Result,1},
+        grammar::Grammar,
+        context::Context, env::Array{TypeField,1},
+        type::TypeField, upper_bound::Float64,
+        lower_bound::Float64, depth::Int,
+        candidate::Candidate)
+    func_args = function_arguments(candidate.type)
+    new_upper = upper_bound + candidate.log_probability
+    new_lower = lower_bound + candidate.log_probability
+    new_depth = depth - 1
+    arg_index = 0
+
+    subresults = Array{Result,1}()
+    appgenerator!(
+        subresults, grammar, candidate.context, env,
+        candidate.program, func_args, new_upper, new_lower,
+        new_depth, arg_index, candidate.program)
+    for result in subresults
+        push!(results, candidate_result(result, candidate))
+    end
+end
+
+function end_result(func::Program, context::Context)::Result
+    return Result(0.0, func, context)
+end
+
+function bounds_check(lower_bound::Float64, upper_bound::Float64)
+    return lower_bound <= 0.0 && upper_bound > 0.0
+end
+
+function appgenerator!(
+        results::Array{Result,1},
+        grammar::Grammar,
+        context::Context, env::Array{TypeField,1},
+        func::Program, func_args::Array{TypeField,1},
+        upper_bound::Float64, lower_bound::Float64,
+        depth::Int, argument_index::Int,
+        original_func::Program)
+    if !stop(upper_bound, depth)
+        if isempty(func_args)
+            if bounds_check(lower_bound, upper_bound)
+                push!(results, end_result(func, context))
+            end
+        else
+            subresults = Array{Result,1}()
+            recurse_generator!(
+                subresults, grammar, context, env,
+                func, func_args, upper_bound, lower_bound,
+                depth, argument_index, original_func)
+            for r in subresults
+                push!(results, r)
+            end
+        end
+    end
+end
+
+function recurse_generator!(
+        results::Array{Result,1},
+        grammar::Grammar,
+        context::Context, env::Array{TypeField,1},
+        func::Program, func_args::Array{TypeField,1},
+        upper_bound::Float64, lower_bound::Float64,
+        depth::Int, argument_index::Int,
+        original_func::Program)
+    arg_request = apply(func_args[1], context)
+    outer_args = func_args[2:end]
+
+    subresults = Array{Result,1}()
+    generator!(
+        subresults, grammar, context, env,
+        arg_request, upper_bound, 0.0, depth)
+    for result in subresults
+        subsubresults = Array{Result,1}()
+        recurse_appgenerator!(
+            subsubresults, grammar, context, env, func,
+            func_args, upper_bound, lower_bound, depth, argument_index,
+            original_func, outer_args, result)
+        for r in subsubresults
+            push!(results, r)
+        end
+    end
+end
+
+function combined_result(prev_result::Result, new_result::Result)::Result
+    l = new_result.prior + prev_result.prior
+    return Result(l, new_result.program, new_result.context)
+end
+
+function recurse_appgenerator!(
+        results::Array{Result,1},
+        grammar::Grammar,
+        context::Context, env::Array{TypeField,1},
+        func::Program, func_args::Array{TypeField,1},
+        upper_bound::Float64, lower_bound::Float64,
+        depth::Int, argument_index::Int,
+        original_func::Program, outer_args::Array{TypeField,1},
+        prev_result::Result)
+    if is_symmetrical(
+            argument_index, original_func,
+            prev_result.program, grammar.primitives)
+        new_func = Application(func, prev_result.program)
+        new_upper = upper_bound + prev_result.prior
+        new_lower = lower_bound + prev_result.prior
+        new_arg_index = argument_index + 1
+
+        subresults = Array{Result,1}()
+        appgenerator!(
+            subresults, grammar, prev_result.context, env,
+            new_func, outer_args, new_upper, new_lower,
+            depth, new_arg_index, func)
+        for new_result in subresults
+            push!(results, combined_result(prev_result, new_result))
+        end
+    end
 end
 
 end

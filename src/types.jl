@@ -2,9 +2,7 @@ module Types
 
 using ..Utils
 
-export TypeConstructor,
-       TypeVariable,
-       AbstractType,
+export TypeField,
        Context,
        apply,
        function_arguments,
@@ -21,91 +19,108 @@ export TypeConstructor,
        instantiate,
        returns,
        unify,
-       UnificationFailure,
+       UNIFICATION_FAILURE,
        extend
 
 const ARROW = "->"
 
-abstract type AbstractType end
+# TODO: all caps enums
+@enum TYPE constructor=1 variable=2
 
-mutable struct TypeConstructor <: AbstractType
+struct TypeField
     constructor::String
-    arguments::Array{AbstractType,1}
-    index::Union{Int, Nothing}
+    arguments::Array{TypeField,1}
+    index::Int
     is_polymorphic::Bool
+    type::TYPE
+    value::Int
 end
 
-function split_arguments(a::Array{<:AbstractType,1})::Array{<:AbstractType}
+function split_arguments(a::Array{TypeField,1})::Array{TypeField,1}
     if length(a) >= 3
-        return [a[1], a[2:end]]
+        arr = Array{TypeField,1}(undef, 2)
+        arr[1] = a[1]
+        arr[2] = a[2:end]
+        return arr
     else
         return a
     end
 end
 
-function TypeConstructor(c, args, index)
-    is_polymorphic = any([i.is_polymorphic for i in args])
-    return TypeConstructor(c, args, index, is_polymorphic)
+function TypeField(c, args, index)
+    is_polymorphic = any(i.is_polymorphic for i in args)
+    return TypeField(c, args, index, is_polymorphic, constructor, -1)
 end
 
-function TypeConstructor(c::String, a::Array{<:AbstractType,1})
+function TypeField(c::String, a::Array{TypeField,1})
     args = split_arguments(a)
-    return TypeConstructor(c, args, nothing)
+    return TypeField(c, args, -1)
 end
 
-function TypeConstructor(c::String, a::Tuple{N,N} where N<:AbstractType)
-    return TypeConstructor(c, [a[1], [a[2]]], nothing)
+function TypeField(c::String, a::Tuple{TypeField,TypeField})
+    subarr = Array{TypeField,1}(undef, 1)
+    subarr[1] = a[2]
+    arr = Array{TypeField,1}(undef, 2)
+    arr[1] = a[1]
+    arr[2] = subarr
+    return TypeField(c, arr, -1)
 end
 
-TypeConstructor(c::String) = TypeConstructor(c, Array{TypeConstructor,1}([]))
+TypeField(c::String) = TypeField(c, Array{TypeField,1}())
 
-function TypeConstructor(data::Dict{String,Any})
-    return TypeConstructor(
+function TypeField(data::Dict{String,Any})
+    return TypeField(
         data["constructor"],
-        [TypeConstructor(a) for a in data["arguments"]],
-        getoptional(data, "index"),
+        [TypeField(a) for a in data["arguments"]],
+        getoptional(data, "index", -1),
     )
 end
 
-mutable struct TypeVariable <: AbstractType
-    value::Int
-    is_polymorphic::Bool
-    function TypeVariable(value)
-        if !isa(value, Int)
-            throw(TypeError)
-        end
-        return new(value, true)
-    end
+function TypeField(val::Int)
+    args = Array{TypeField,1}()
+    return TypeField("", args, -1, true, variable, val)
 end
 
-const tint = TypeConstructor("int")
-const treal = TypeConstructor("real")
-const tbool = TypeConstructor("bool")
-const tchar = TypeConstructor("char")
-tlist(t::AbstractType) = return TypeConstructor("list", [t])
+const tint = TypeField("int")
+const treal = TypeField("real")
+const tbool = TypeField("bool")
+const tchar = TypeField("char")
+tlist(t::TypeField) = return TypeField("list", [t])
 const tstr = tlist(tchar)
-const t0 = TypeVariable(0)
-const t1 = TypeVariable(1)
-const t2 = TypeVariable(2)
-const t3 = TypeVariable(3)
+const t0 = TypeField(0)
+const t1 = TypeField(1)
+const t2 = TypeField(2)
+const t3 = TypeField(3)
 
-is_arrow(t::TypeConstructor)::Bool = t.constructor == ARROW
-is_arrow(t::TypeVariable)::Bool = false
+is_arrow(t::TypeField)::Bool = t.type == constructor && t.constructor == ARROW
 
-arrow(arg::AbstractType) = arg
+arrow(arg::TypeField) = arg
 
-function arrow(args...)::AbstractType
+function arrow(args...)::TypeField
     if length(args) == 0
         return nothing
     elseif length(args) == 1
         return args[1]
     elseif length(args) == 2
-        return TypeConstructor(ARROW, [args[1], args[2]])
+        arr = Array{TypeField,1}(undef, 2)
+        arr[1] = args[1]
+        arr[2] = args[2]
+        return TypeField(ARROW, arr)
     end
-    return TypeConstructor(ARROW, [args[1], arrow(args[2:end]...)])
+    arr = Array{TypeField,1}(undef, 2)
+    arr[1] = args[1]
+    arr[2] = arrow(args[2:end]...)
+    return TypeField(ARROW, arr)
 end
 
-function Base.hash(t::TypeConstructor, h::UInt)::UInt
+function Base.hash(t::TypeField, h::UInt)::UInt
+    if t.type == constructor
+        return constructor_hash(t, h)
+    end
+    return variable_hash(t, h)
+end
+
+function constructor_hash(t::TypeField, h::UInt)::UInt
     args = t.arguments
     if length(args) == 0
         return hash(t.constructor, h)
@@ -116,13 +131,20 @@ function Base.hash(t::TypeConstructor, h::UInt)::UInt
     end
 end
 
-Base.hash(t::TypeVariable, h::UInt)::UInt = hash(t.value, h)
+variable_hash(t::TypeField, h::UInt)::UInt = hash(t.value, h)
 
-function Base.isequal(a::AbstractType, b::AbstractType)
-    return Base.isequal(hash(a), hash(b))
+function Base.isequal(t1::TypeField, t2::TypeField)
+    return Base.isequal(hash(t1), hash(t2))
 end
 
-function tostr(t::TypeConstructor)
+function tostr(t::TypeField)::String
+    if t.type == constructor
+        return constructor_tostr(t)
+    end
+    return variable_tostr(t)
+end
+
+function constructor_tostr(t::TypeField)
     if is_arrow(t)
         a1 = tostr(t.arguments[1])
         a2 = tostr(t.arguments[2])
@@ -136,35 +158,42 @@ function tostr(t::TypeConstructor)
     end
 end
 
-tostr(t::TypeVariable) = "t$(t.value)"
+variable_tostr(t::TypeField) = "t$(t.value)"
 
-Base.show(io::IO, t::AbstractType) = print(io, tostr(t))
+Base.show(io::IO, t::TypeField) = print(io, tostr(t))
 
-function Base.show(io::IO, a::Array{<:AbstractType})
+function Base.show(io::IO, a::Array{TypeField,1})
     t = join([tostr(i) for i in a], ", ")
     print(io, "[$t]")
 end
 
-function function_arguments(t::AbstractType)::Array{AbstractType}
+function function_arguments(t::TypeField)::Array{TypeField,1}
     if is_arrow(t)
-        args = Array{Union{TypeConstructor,TypeVariable}}([])  # TODO: better UnionAll syntax?
+        args = Array{TypeField,1}()
         arg1 = t.arguments[1]
         arg2 = function_arguments(t.arguments[2])
         push!(args, arg1)
         append!(args, arg2)
         return args
     end
-    return []
+    return Array{TypeField,1}()
 end
 
 struct Context
     next_variable::Int
-    substitution::Array{Tuple{Int,AbstractType}}
+    substitution::Array{Tuple{Int,TypeField},1}
 end
 
-Context() = Context(0, [])
+Context() = Context(0, Array{Tuple{Int,TypeField},1}())
 
-function apply(type::TypeVariable, context::Context)
+function apply(t::TypeField, context::Context)::TypeField
+    if t.type == constructor
+        return constructor_apply(t, context)
+    end
+    return variable_apply(t, context)
+end
+
+function variable_apply(type::TypeField, context::Context)
     for (v, t) in context.substitution
         if v == type.value
             return apply(t, context)
@@ -173,12 +202,15 @@ function apply(type::TypeVariable, context::Context)
     return type
 end
 
-function apply(type::TypeConstructor, context::Context)
+function constructor_apply(type::TypeField, context::Context)
     if !type.is_polymorphic
         return type
     end
-    args = [apply(x, context) for x in type.arguments]
-    return TypeConstructor(type.constructor, args)
+    args = Array{TypeField,1}(undef, length(type.arguments))
+    for (index, a) in enumerate(type.arguments)
+        args[index] = apply(a, context)
+    end
+    return TypeField(type.constructor, args)
 end
 
 function Base.show(io::IO, context::Context)
@@ -189,93 +221,100 @@ function Base.show(io::IO, context::Context)
     print(io, "Context(next=$n, {$s})")
 end
 
-function instantiate(
-    type::TypeVariable,
-    context::Context,
-    bindings::Dict{String,TypeVariable}
-)
-    key = string(type)
+function variable_instantiate(
+        type::TypeField, context::Context,
+        bindings::Dict{String,TypeField})::Tuple{Context,TypeField}
+    key = string(type.value)
     if haskey(bindings, key)
-        return (context, bindings[key])
+        return context, bindings[key]
     end
-    new_type = TypeVariable(context.next_variable)
+    new_type = TypeField(context.next_variable)
     bindings[key] = new_type
     new_context = Context(context.next_variable + 1, context.substitution)
     return new_context, new_type
 end
 
-function instantiate(
-    type::TypeConstructor,
-    context::Context,
-    bindings::Dict{String,TypeVariable}
-)
+function constructor_instantiate(
+        type::TypeField, context::Context,
+        bindings::Dict{String,TypeField})::Tuple{Context,TypeField}
     if !type.is_polymorphic
         return context, type
     end
-    new_args = Array{Union{TypeConstructor,TypeVariable}}([])
-    for a in type.arguments
-        context, new_type = instantiate(a, context, bindings)
-        push!(new_args, new_type)
+    args = Array{TypeField,1}(undef, length(type.arguments))
+    for (index, a) in enumerate(type.arguments)
+        if a.type == constructor
+            context, t = constructor_instantiate(a, context, bindings)
+        else
+            context, t = variable_instantiate(a, context, bindings)
+        end
+        args[index] = t
     end
-    return context, TypeConstructor(type.constructor, new_args)
+    return context, TypeField(type.constructor, args)
 end
 
-function instantiate(type::TypeConstructor, context::Context)
-    return instantiate(type, context, Dict{String,TypeVariable}())
+function instantiate(
+        t::TypeField, context::Context)::Tuple{Context,TypeField}
+    args = (t, context, Dict{String,TypeField}())
+    if t.type == constructor
+        return constructor_instantiate(args...)
+    end
+    return variable_instantiate(args...)
 end
 
-returns(t::TypeVariable) = t
-returns(t::TypeConstructor) = is_arrow(t) ? returns(t.arguments[2]) : t
-
-struct UnificationFailure <: Exception
-    msg
+function returns(t::TypeField)::TypeField
+    if t.type == constructor
+        return is_arrow(t) ? returns(t.arguments[2]) : t
+    end
+    return t
 end
 
-struct Occurs <: Exception end  # TODO: docstring
-
-occurs(t::TypeVariable, v::Int) = t.value == v
-
-function occurs(t::TypeConstructor, v::Int)
+function occurs(t::TypeField, v::Int)::Bool
+    if t.type == variable
+        return t.value == v
+    end
     if !t.is_polymorphic
         return false
     end
-    return any([occurs(a, v) for a in t.arguments])
+    return any(occurs(a, v) for a in t.arguments)
 end
 
-function extend(context::Context, j::Int, t::AbstractType)
-    l = Array{Tuple{Int,Union{TypeVariable,TypeConstructor}}}([])
-    a1 = push!(l, (j, t))
-    sub = append!(a1, context.substitution)
-    return Context(context.next_variable, sub)
+const UNIFICATION_FAILURE = -Inf
+
+function extend(context::Context, j::Int, t::TypeField)
+    len = length(context.substitution) + 1
+    arr = Array{Tuple{Int,TypeField},1}(undef, len)
+    arr[1] = (j, t)
+    arr[2:end] = context.substitution
+    return Context(context.next_variable, arr)
 end
 
-function unify(context::Context, t1::AbstractType, t2::AbstractType)
+function unify(
+        context::Context, t1::TypeField,
+        t2::TypeField)::Union{Float64, Context}
     t1 = apply(t1, context)
     t2 = apply(t2, context)
     if isequal(t1, t2)
         return context
     end
     if !t1.is_polymorphic && !t2.is_polymorphic
-        msg = string("Types are not equal: ", t1, " != ", t2)
-        throw(UnificationFailure(msg))
+        return UNIFICATION_FAILURE
     end
-    # TODO: use multiple dispatch instead
-    if isa(t1, TypeVariable)
+    # TODO: add unit test for occurs
+    if t1.type == variable
         if occurs(t2, t1.value)
-            throw(Occurs)
+            return UNIFICATION_FAILURE
         end
         return extend(context, t1.value, t2)
     end
-    # TODO: use multiple dispatch instead
-    if isa(t2, TypeVariable)
+    # TODO: add unit test for occurs
+    if t2.type == variable
         if occurs(t1, t2.value)
-            throw(Occurs)
+            return UNIFICATION_FAILURE
         end
         return extend(context, t2.value, t1)
     end
     if t1.constructor != t2.constructor
-        msg = string("Types are not equal: ", t1, " != ", t2)
-        throw(UnificationFailure(msg))
+        return UNIFICATION_FAILURE
     end
     k = context
     for (x, y) in zip(t2.arguments, t1.arguments)

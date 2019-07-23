@@ -8,7 +8,14 @@ using DreamCore.Programs: evaluate,
                           try_solve,
                           Abstraction,
                           Application,
-                          str
+                          str,
+                          PROGRAMTYPE,
+                          PROGRAM,
+                          PRIMITIVE,
+                          ABSTRACTION,
+                          APPLICATION,
+                          INDEX,
+                          INVENTED
 using DreamCore.Problems: Problem
 using DreamCore.Primitives: base_primitives
 using DreamCore.Types: arrow, t0, t1, tlist
@@ -17,20 +24,23 @@ using DreamCore.Types: arrow, t0, t1, tlist
     @testset "parse primitive programs" begin
         p = parse_program("map", base_primitives())
         @test isequal(p.type, arrow(arrow(t0, t1), tlist(t0), tlist(t1)))
-        @test p.source == "map"
+        @test p.name == "map"
+        @test p.ptype == PRIMITIVE
         f = (x) -> (x + x)
-        mapf = p.expression(f)
+        mapf = p.func(f)
         @test mapf([1, 2]) == [2, 4]
     end
     @testset "evaluate primitive programs" begin
         primitives = base_primitives()
 
         p1 = parse_program("+", primitives)
+        @test p1.ptype == PRIMITIVE
         f1 = evaluate(p1, [])
         @test f1(3)(4) == 7
         @test f1(-123)(555) == 432
 
         p2 = parse_program("length", primitives)
+        @test p2.ptype == PRIMITIVE
         f2 = evaluate(p2, [])
         @test f2([1,2,3]) == 3
         @test f2([]) == 0

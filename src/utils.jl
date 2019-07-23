@@ -22,7 +22,7 @@ allequal(x) = all(y -> isequal(y, x[1]), x)
 
 curry(f, x) = (xs...) -> f(x, xs...)
 
-function lse(x::Array{Float64})::Float64
+function lse(x::Array{Float64,1})::Float64
     if length(x) == 1
         return x[1]
     end

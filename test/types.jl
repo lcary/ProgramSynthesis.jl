@@ -32,7 +32,7 @@ using DreamCore.Utils: allequal
                 )
             ]
         )
-        t1 = TypeConstructor(d1)
+        t1 = TypeField(d1)
 
         d2 = Dict(
             "constructor" => "->", "arguments" => [
@@ -40,10 +40,10 @@ using DreamCore.Utils: allequal
                 Dict("constructor" => "int", "arguments" => [])
             ]
         )
-        t2 = TypeConstructor(d2)
+        t2 = TypeField(d2)
 
         d3 = Dict("constructor" => "int", "arguments" => [])
-        t3 = TypeConstructor(d3)
+        t3 = TypeField(d3)
 
         t1_args = function_arguments(t1)
         @test length(t1_args) == 2
@@ -66,9 +66,9 @@ using DreamCore.Utils: allequal
                 )
             ]
         )
-        t1 = TypeConstructor(d1)
-        t2 = TypeConstructor(d1)
-        t3 = TypeConstructor(d1)
+        t1 = TypeField(d1)
+        t2 = TypeField(d1)
+        t3 = TypeField(d1)
 
         @test isequal(t1, t2)
         @test isequal(t2, t3)
@@ -81,15 +81,15 @@ using DreamCore.Utils: allequal
                 Dict("constructor" => "int", "arguments" => [])
             ]
         )
-        t4 = TypeConstructor(d2)
-        t5 = TypeConstructor(d2)
+        t4 = TypeField(d2)
+        t5 = TypeField(d2)
 
         @test isequal(t4, t5)
         @test !isequal(t4, t1)
 
         d3 = Dict("constructor" => "int", "arguments" => [])
-        t6 = TypeConstructor(d3)
-        t7 = TypeConstructor(d3)
+        t6 = TypeField(d3)
+        t7 = TypeField(d3)
 
         @test isequal(t6, t7)
         @test !isequal(t6, t4)
@@ -169,7 +169,7 @@ using DreamCore.Utils: allequal
     @testset "test type apply" begin
         context = Context(2, [(0, tint), (1, tint)])
         result = apply(t0, context)
-        @test isa(result, TypeConstructor)
+        @test isa(result, TypeField)
         @test isequal(result, tint)
     end
 end

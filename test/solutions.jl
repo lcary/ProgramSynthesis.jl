@@ -13,7 +13,7 @@ end
 
 @testset "solutions.jl" begin
     @testset "test Solution" begin
-        ptype = TypeConstructor("?", TypeConstructor[], -1)
+        ptype = TypeField("?", TypeField[], -1)
         program = Program("(+ 1)", (x) -> (x + 1), ptype)
         solution = Solution(program, 1.0, 1.0, 0.0)
 
@@ -35,7 +35,7 @@ end
         best1 = solutions.best_solutions[1]
         @test length(best1) == 0
 
-        ptype = TypeConstructor("?", TypeConstructor[], -1)
+        ptype = TypeField("?", TypeField[], -1)
         program = Program("(+ 1)", (x) -> (x + 1), ptype)
         solution1 = Solution(program, 1.0, 1.0, 0.0)
         solution2 = Solution(program, 0.1, 0.1, 0.0)
@@ -88,7 +88,7 @@ end
         problems = [get_test_problem()]
         solutions = SolutionSet(length(problems))
         prior = 0.0
-        ptype = TypeConstructor("?", TypeConstructor[], -1)
+        ptype = TypeField("?", TypeField[], -1)
         program = Program("(+ 1)", (x) -> (x + 1), ptype)
 
         for (index, problem) in enumerate(problems)

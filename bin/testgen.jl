@@ -29,7 +29,7 @@ max_depth = 5
 
 # warm the JIT cache
 println("\nGenerate single program with upper=3.0, lower=1.5")
-env = Array{AbstractType}([])
+env = Array{TypeField}([])
 r = generator(grammar, env, request, 3.0, 1.5, max_depth, false)
 r1 = take!(r)
 println("=> ", r1)
@@ -37,7 +37,7 @@ println("=> ", r1)
 start_time = time()
 
 println("\nGenerate $program_timeout seconds of programs with upper=3.0, lower=1.5")
-env = Array{AbstractType}([])
+env = Array{TypeField}([])
 r = generator(grammar, env, request, 3.0, 1.5, max_depth, false)
 for i in r
     println(string("=> ", i))
@@ -50,7 +50,7 @@ end
 start_time = time()
 
 println("\nGenerate $program_timeout seconds of programs with upper=6.0, lower=4.5")
-env = Array{AbstractType}([])
+env = Array{TypeField}([])
 r = generator(grammar, env, request, 6.0, 4.5, max_depth, false)
 for i in r
     println(string("=> ", i))

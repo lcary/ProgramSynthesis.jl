@@ -1,0 +1,500 @@
+=============================
+JULIA VS. OCAML SPEED TEST v3
+=============================
+
+========================================================
+JULIA (commit: d18deb8940f54adc8424caeec0243cf6ce3e9763)
+========================================================
+
+bash-4.2$ bash scripts/juliatest2.sh
+DEPRECATION WARNING: All versions of Singularity prior to 3.0 are on notice of deprecation. Plan to update your containers accordingly.
+CUDA is available?: False
+using cuda?: False
+wrote 5 tasks to: /om2/user/lcary/ec2/bin/../dreamcoder/../data/less_list_tasks.json
+Removed 0 tasks that were just the identity function
+Including map as a primitive? True
+Including length as a primitive? True
+Including unfold as a primitive? True
+Got 5 list tasks
+Running EC on node006.cm.cluster @ 2019-07-23 13:14:12.911599 with 1 CPUs and parameters:
+	 noConsolidation  =  False
+	 iterations  =  1
+	 enumerationTimeout  =  360
+	 useRecognitionModel  =  False
+	 topk_use_only_likelihood  =  False
+	 pseudoCounts  =  30.0
+	 aic  =  1.0
+	 structurePenalty  =  1.0
+	 arity  =  3
+	 taskReranker  =  default
+	 storeTaskMetrics  =  True
+	 rewriteTaskMetrics  =  False
+	 maximumFrontier  =  10
+	 solver  =  julia
+	 topK  =  2
+	 evaluationTimeout  =  0.0005
+	 cuda  =  False
+
+Currently using this much memory: 129884160
+Currently using this much memory: 129884160
+Using a waking task batch of size: 5
+(python) Launching list(int) -> list(int) (2 tasks) w/ 1 CPUs. 0.000000 <= MDL < 1.500000. Timeout 360.000000.
+['julia', '--project=/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl', '/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec2/bin/../dreamcoder/../messages/julia_request_enumeration_PID54840_20190723_T131412.json']
+response file:  b'/om2/user/lcary/ec2/messages/response_enumeration_PID54841_20190723_T131421.json'
+response data:
+{'reverse': [], 'repeat_n_n_times': []}
+(python) Launching list(int) -> int (3 tasks) w/ 1 CPUs. 0.000000 <= MDL < 1.500000. Timeout 360.000000.
+['julia', '--project=/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl', '/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec2/bin/../dreamcoder/../messages/julia_request_enumeration_PID54850_20190723_T131422.json']
+response file:  b'/om2/user/lcary/ec2/messages/response_enumeration_PID54851_20190723_T131427.json'
+response data:
+{'length': [], 'last_element_of_list': [], 'headth_element_of_tail': []}
+(python) Launching list(int) -> list(int) (2 tasks) w/ 1 CPUs. 1.500000 <= MDL < 3.000000. Timeout 350.706969.
+['julia', '--project=/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl', '/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec2/bin/../dreamcoder/../messages/julia_request_enumeration_PID54855_20190723_T131427.json']
+response file:  b'/om2/user/lcary/ec2/messages/response_enumeration_PID54856_20190723_T131432.json'
+response data:
+{'reverse': [], 'repeat_n_n_times': []}
+(python) Launching list(int) -> int (3 tasks) w/ 1 CPUs. 1.500000 <= MDL < 3.000000. Timeout 354.736994.
+['julia', '--project=/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl', '/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec2/bin/../dreamcoder/../messages/julia_request_enumeration_PID54862_20190723_T131433.json']
+response file:  b'/om2/user/lcary/ec2/messages/response_enumeration_PID54863_20190723_T131438.json'
+response data:
+{'length': [], 'last_element_of_list': [], 'headth_element_of_tail': []}
+(python) Launching list(int) -> list(int) (2 tasks) w/ 1 CPUs. 3.000000 <= MDL < 4.500000. Timeout 345.140647.
+['julia', '--project=/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl', '/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec2/bin/../dreamcoder/../messages/julia_request_enumeration_PID54867_20190723_T131438.json']
+response file:  b'/om2/user/lcary/ec2/messages/response_enumeration_PID54868_20190723_T131443.json'
+response data:
+{'reverse': [], 'repeat_n_n_times': []}
+(python) Launching list(int) -> int (3 tasks) w/ 1 CPUs. 3.000000 <= MDL < 4.500000. Timeout 349.212886.
+['julia', '--project=/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl', '/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec2/bin/../dreamcoder/../messages/julia_request_enumeration_PID54914_20190723_T131443.json']
+response file:  b'/om2/user/lcary/ec2/messages/response_enumeration_PID54915_20190723_T131448.json'
+response data:
+{'length': [], 'last_element_of_list': [], 'headth_element_of_tail': []}
+(python) Launching list(int) -> list(int) (2 tasks) w/ 1 CPUs. 4.500000 <= MDL < 6.000000. Timeout 339.805172.
+['julia', '--project=/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl', '/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec2/bin/../dreamcoder/../messages/julia_request_enumeration_PID54925_20190723_T131449.json']
+response file:  b'/om2/user/lcary/ec2/messages/response_enumeration_PID54926_20190723_T131454.json'
+response data:
+{'reverse': [], 'repeat_n_n_times': []}
+(python) Launching list(int) -> int (3 tasks) w/ 1 CPUs. 4.500000 <= MDL < 6.000000. Timeout 343.877316.
+['julia', '--project=/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl', '/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec2/bin/../dreamcoder/../messages/julia_request_enumeration_PID54930_20190723_T131454.json']
+response file:  b'/om2/user/lcary/ec2/messages/response_enumeration_PID54931_20190723_T131500.json'
+response data:
+{'length': [{'program': '(lambda (length $0))', 'time': 0.2259519100189209, 'logLikelihood': 0.0, 'logPrior': -4.795790545596741}], 'last_element_of_list': [], 'headth_element_of_tail': []}
+solutions to length:  1
+(python) Launching list(int) -> list(int) (2 tasks) w/ 1 CPUs. 6.000000 <= MDL < 7.500000. Timeout 334.125888.
+['julia', '--project=/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl', '/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec2/bin/../dreamcoder/../messages/julia_request_enumeration_PID54978_20190723_T131500.json']
+response file:  b'/om2/user/lcary/ec2/messages/response_enumeration_PID54979_20190723_T131506.json'
+response data:
+{'reverse': [], 'repeat_n_n_times': []}
+(python) Launching list(int) -> int (3 tasks) w/ 1 CPUs. 6.000000 <= MDL < 7.500000. Timeout 338.022274.
+['julia', '--project=/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl', '/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec2/bin/../dreamcoder/../messages/julia_request_enumeration_PID54984_20190723_T131506.json']
+response file:  b'/om2/user/lcary/ec2/messages/response_enumeration_PID54985_20190723_T131512.json'
+response data:
+{'length': [], 'last_element_of_list': [], 'headth_element_of_tail': []}
+(python) Launching list(int) -> list(int) (2 tasks) w/ 1 CPUs. 7.500000 <= MDL < 9.000000. Timeout 328.160625.
+['julia', '--project=/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl', '/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec2/bin/../dreamcoder/../messages/julia_request_enumeration_PID54991_20190723_T131512.json']
+response file:  b'/om2/user/lcary/ec2/messages/response_enumeration_PID54992_20190723_T131517.json'
+response data:
+{'reverse': [], 'repeat_n_n_times': []}
+(python) Launching list(int) -> int (3 tasks) w/ 1 CPUs. 7.500000 <= MDL < 9.000000. Timeout 332.431694.
+['julia', '--project=/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl', '/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec2/bin/../dreamcoder/../messages/julia_request_enumeration_PID54996_20190723_T131517.json']
+response file:  b'/om2/user/lcary/ec2/messages/response_enumeration_PID54997_20190723_T131522.json'
+response data:
+{'length': [], 'last_element_of_list': [], 'headth_element_of_tail': []}
+(python) Launching list(int) -> list(int) (2 tasks) w/ 1 CPUs. 9.000000 <= MDL < 10.500000. Timeout 322.818924.
+['julia', '--project=/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl', '/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec2/bin/../dreamcoder/../messages/julia_request_enumeration_PID55004_20190723_T131523.json']
+response file:  b'/om2/user/lcary/ec2/messages/response_enumeration_PID55005_20190723_T131529.json'
+response data:
+{'reverse': [], 'repeat_n_n_times': []}
+(python) Launching list(int) -> int (3 tasks) w/ 1 CPUs. 9.000000 <= MDL < 10.500000. Timeout 327.057893.
+['julia', '--project=/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl', '/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec2/bin/../dreamcoder/../messages/julia_request_enumeration_PID55013_20190723_T131529.json']
+response file:  b'/om2/user/lcary/ec2/messages/response_enumeration_PID55014_20190723_T131535.json'
+response data:
+{'length': [{'program': '(lambda (length (cons $0 empty)))', 'time': 0.9345560073852539, 'logLikelihood': 0.0, 'logPrior': -10.128509338862111}, {'program': '(lambda (* 1 (length $0)))', 'time': 0.9651269912719727, 'logLikelihood': 0.0, 'logPrior': -9.591581091193483}, {'program': '(lambda (* (length $0) 1))', 'time': 0.965069055557251, 'logLikelihood': 0.0, 'logPrior': -9.591581091193483}, {'program': '(lambda (length (range (length $0))))', 'time': 0.7798638343811035, 'logLikelihood': 0.0, 'logPrior': -9.591581091193483}], 'last_element_of_list': [{'program': '(lambda (index (length $0) $0))', 'time': 0.548792839050293, 'logLikelihood': 0.0, 'logPrior': -9.591581091193483}], 'headth_element_of_tail': []}
+solutions to last_element_of_list:  1
+solutions to length:  4
+(python) Launching list(int) -> list(int) (2 tasks) w/ 1 CPUs. 10.500000 <= MDL < 12.000000. Timeout 316.304449.
+['julia', '--project=/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl', '/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec2/bin/../dreamcoder/../messages/julia_request_enumeration_PID55020_20190723_T131536.json']
+response file:  b'/om2/user/lcary/ec2/messages/response_enumeration_PID55021_20190723_T131543.json'
+response data:
+{'reverse': [], 'repeat_n_n_times': []}
+(python) Launching list(int) -> int (3 tasks) w/ 1 CPUs. 10.500000 <= MDL < 12.000000. Timeout 320.426194.
+['julia', '--project=/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl', '/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec2/bin/../dreamcoder/../messages/julia_request_enumeration_PID55026_20190723_T131544.json']
+response file:  b'/om2/user/lcary/ec2/messages/response_enumeration_PID55027_20190723_T131552.json'
+response data:
+{'length': [{'program': '(lambda (- (length $0) (length empty)))', 'time': 2.94042706489563, 'logLikelihood': 0.0, 'logPrior': -11.989476363991853}], 'last_element_of_list': [], 'headth_element_of_tail': [{'program': '(lambda (index (car $0) (cdr $0)))', 'time': 2.5045230388641357, 'logLikelihood': 0.0, 'logPrior': -11.989476363991853}]}
+solutions to headth_element_of_tail:  1
+solutions to length:  1
+(python) Launching list(int) -> list(int) (2 tasks) w/ 1 CPUs. 12.000000 <= MDL < 13.500000. Timeout 308.355130.
+['julia', '--project=/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl', '/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec2/bin/../dreamcoder/../messages/julia_request_enumeration_PID55033_20190723_T131552.json']
+response file:  b'/om2/user/lcary/ec2/messages/response_enumeration_PID55034_20190723_T131602.json'
+response data:
+{'reverse': [], 'repeat_n_n_times': []}
+(python) Launching list(int) -> int (3 tasks) w/ 1 CPUs. 12.000000 <= MDL < 13.500000. Timeout 311.811902.
+['julia', '--project=/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl', '/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec2/bin/../dreamcoder/../messages/julia_request_enumeration_PID55041_20190723_T131602.json']
+response file:  b'/om2/user/lcary/ec2/messages/response_enumeration_PID55042_20190723_T131612.json'
+response data:
+{'length': [{'program': '(lambda (length (cons 0 (cdr $0))))', 'time': 4.583806991577148, 'logLikelihood': 0.0, 'logPrior': -12.727075307122632}, {'program': '(lambda (length (cons 1 (cdr $0))))', 'time': 4.629618167877197, 'logLikelihood': 0.0, 'logPrior': -12.727075307122632}], 'last_element_of_list': [], 'headth_element_of_tail': []}
+solutions to length:  2
+(python) Launching list(int) -> list(int) (2 tasks) w/ 1 CPUs. 13.500000 <= MDL < 15.000000. Timeout 298.243977.
+['julia', '--project=/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl', '/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec2/bin/../dreamcoder/../messages/julia_request_enumeration_PID55054_20190723_T131613.json']
+response file:  b'/om2/user/lcary/ec2/messages/response_enumeration_PID55055_20190723_T131648.json'
+response data:
+{'reverse': [], 'repeat_n_n_times': []}
+(python) Launching list(int) -> int (3 tasks) w/ 1 CPUs. 13.500000 <= MDL < 15.000000. Timeout 301.563873.
+['julia', '--project=/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl', '/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec2/bin/../dreamcoder/../messages/julia_request_enumeration_PID55156_20190723_T131648.json']
+response file:  b'/om2/user/lcary/ec2/messages/response_enumeration_PID55157_20190723_T131723.json'
+response data:
+{'length': [{'program': '(lambda (if (is-square 1) (length $0) 1))', 'time': 29.03710699081421, 'logLikelihood': 0.0, 'logPrior': -14.186700941328073}, {'program': '(lambda (length (if (empty? $0) empty $0)))', 'time': 28.7843759059906, 'logLikelihood': 0.0, 'logPrior': -14.186700941328073}], 'last_element_of_list': [{'program': '(lambda (index (length (cons $0 empty)) $0))', 'time': 28.357260942459106, 'logLikelihood': 0.0, 'logPrior': -14.924299884458852}, {'program': '(lambda (* 1 (index (length $0) $0)))', 'time': 29.10336399078369, 'logLikelihood': 0.0, 'logPrior': -14.387371636790224}, {'program': '(lambda (* (index (length $0) $0) 1))', 'time': 29.09175992012024, 'logLikelihood': 0.0, 'logPrior': -14.387371636790224}, {'program': '(lambda (length (range (index (length $0) $0))))', 'time': 28.671016931533813, 'logLikelihood': 0.0, 'logPrior': -14.387371636790224}, {'program': '(lambda (index (* 1 (length $0)) $0))', 'time': 28.647196054458618, 'logLikelihood': 0.0, 'logPrior': -14.387371636790224}, {'program': '(lambda (index (* (length $0) 1) $0))', 'time': 28.646195888519287, 'logLikelihood': 0.0, 'logPrior': -14.387371636790224}, {'program': '(lambda (index (length (cdr $0)) (cdr $0)))', 'time': 28.357533931732178, 'logLikelihood': 0.0, 'logPrior': -14.387371636790224}, {'program': '(lambda (index (length (range (length $0))) $0))', 'time': 28.03784990310669, 'logLikelihood': 0.0, 'logPrior': -14.387371636790224}], 'headth_element_of_tail': [{'program': '(lambda (index (index 1 $0) (cdr $0)))', 'time': 27.986013889312744, 'logLikelihood': 0.0, 'logPrior': -14.387371636790224}]}
+solutions to last_element_of_list:  8
+solutions to headth_element_of_tail:  1
+solutions to length:  2
+(python) Launching list(int) -> list(int) (2 tasks) w/ 1 CPUs. 15.000000 <= MDL < 16.500000. Timeout 262.660928.
+['julia', '--project=/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl', '/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec2/bin/../dreamcoder/../messages/julia_request_enumeration_PID55171_20190723_T131723.json']
+response file:  b'/om2/user/lcary/ec2/messages/response_enumeration_PID55172_20190723_T131850.json'
+response data:
+{'reverse': [], 'repeat_n_n_times': []}
+(python) Launching list(int) -> int (2 tasks) w/ 1 CPUs. 15.000000 <= MDL < 16.500000. Timeout 266.830630.
+['julia', '--project=/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl', '/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec2/bin/../dreamcoder/../messages/julia_request_enumeration_PID55282_20190723_T131851.json']
+response file:  b'/om2/user/lcary/ec2/messages/response_enumeration_PID55283_20190723_T132017.json'
+response data:
+{'last_element_of_list': [{'program': '(lambda (car (index (length $0) (cons $0 empty))))', 'time': 81.31976795196533, 'logLikelihood': 0.0, 'logPrior': -16.38392551866429}], 'headth_element_of_tail': []}
+solutions to last_element_of_list:  1
+(python) Launching list(int) -> list(int) (2 tasks) w/ 1 CPUs. 16.500000 <= MDL < 18.000000. Timeout 174.882564.
+['julia', '--project=/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl', '/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec2/bin/../dreamcoder/../messages/julia_request_enumeration_PID55770_20190723_T132018.json']
+response file:  b'/om2/user/lcary/ec2/messages/response_enumeration_PID55771_20190723_T132713.json'
+response data:
+{'reverse': [], 'repeat_n_n_times': []}
+(python) Launching list(int) -> int (1 tasks) w/ 1 CPUs. 16.500000 <= MDL < 18.000000. Timeout 179.841671.
+['julia', '--project=/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl', '/om2/user/lcary/ec2/bin/../dreamcoder/../../DreamCore.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec2/bin/../dreamcoder/../messages/julia_request_enumeration_PID56740_20190723_T132713.json']
+response file:  b'/om2/user/lcary/ec2/messages/response_enumeration_PID56741_20190723_T133341.json'
+response data:
+{'headth_element_of_tail': []}
+Generative model enumeration results:
+MISS repeat_n_n_times
+HIT last_element_of_list w/ (lambda (index (length $0) $0)) ; log prior = -9.591581 ; log likelihood = 0.000000
+HIT headth_element_of_tail w/ (lambda (index (car $0) (cdr $0))) ; log prior = -11.989476 ; log likelihood = 0.000000
+MISS reverse
+HIT length w/ (lambda (length $0)) ; log prior = -4.795791 ; log likelihood = 0.000000
+Hits 3/5 tasks
+Average description length of a program solving a task: 8.792283 nats
+Generative model average:  31 sec.	median: 33 	max: 42 	standard deviation 11
+Currently using this much memory: 129929216
+Frontiers discovered top down: 3
+Total frontiers: 3
+Currently using this much memory: 129929216
+Showing the top 5 programs in each frontier being sent to the compressor:
+last_element_of_list
+-0.06	(lambda (index (length $0) $0))
+-4.86	(lambda (* (index (length $0) $0) 1))
+-4.86	(lambda (* 1 (index (length $0) $0)))
+-4.86	(lambda (index (* (length $0) 1) $0))
+-4.86	(lambda (index (* 1 (length $0)) $0))
+
+headth_element_of_tail
+-0.09	(lambda (index (car $0) (cdr $0)))
+-2.48	(lambda (index (index 1 $0) (cdr $0)))
+
+length
+-0.03	(lambda (length $0))
+-4.83	(lambda (* (length $0) 1))
+-4.83	(lambda (* 1 (length $0)))
+-4.83	(lambda (length (range (length $0))))
+-5.36	(lambda (length (cons $0 empty)))
+
+Compression message saved to: compressionMessages/2019-07-23T13:33:42.008967
+Compression backend will run for most 99 iterations
+Total number of candidates: 117
+Constructed version spaces and coalesced candidates in 390.383ms.
+Trimmed down the beam, have only 117 best candidates
+Rewrote topK in 431.499ms.
+Initial score: -69.327191
+Scored candidates in 40.9896ms.
+No improvement possible.
+Completed one step of memory consolidation in 916.714ms.
+completed ocaml compression in 916.748ms.
+Finished consolidation.
+Induced a grammar in 1.5 seconds
+Grammar after iteration 1:
+0.000000	t0	$_
+0.000000	(t0 -> t1) -> list(t0) -> list(t1)	map
+0.000000	t0 -> (t0 -> bool) -> (t0 -> t1) -> (t0 -> t0) -> list(t1)	unfold
+0.000000	int -> list(int)	range
+0.000000	int -> list(t0) -> t0	index
+0.000000	list(t0) -> t1 -> (t0 -> t1 -> t1) -> t1	fold
+0.000000	list(t0) -> int	length
+0.000000	bool -> t0 -> t0 -> t0	if
+0.000000	int -> int -> int	+
+0.000000	int -> int -> int	-
+0.000000	list(t0)	empty
+0.000000	t0 -> list(t0) -> list(t0)	cons
+0.000000	list(t0) -> t0	car
+0.000000	list(t0) -> list(t0)	cdr
+0.000000	list(t0) -> bool	empty?
+0.000000	int	0
+0.000000	int	1
+0.000000	int -> int -> int	*
+0.000000	int -> int -> int	mod
+0.000000	int -> int -> bool	gt?
+0.000000	int -> int -> bool	eq?
+0.000000	int -> bool	is-prime
+0.000000	int -> bool	is-square
+Currently using this much memory: 130113536
+Exported checkpoint to experimentOutputs/list/2019-07-23T13:14:12.900584/list_aic=1.0_arity=3_ET=360_it=1_MF=10_noConsolidation=False_pc=30.0_RW=False_solver=julia_STM=True_L=1.0_TRR=default_K=2_topkNotMAP=False_rec=False.pickle
+Exporting primitive graph to experimentOutputs/list/2019-07-23T13:14:12.900584/list_primitives_0_depth.pdf
+Exported primitive graph to experimentOutputs/list/2019-07-23T13:14:12.900584/list_primitives_0_unordered.pdf
+
+========================================================
+OCAML (commit: 0f0bd72278e24715dd30fdbc2518df5ef5f65035)
+========================================================
+
+bash-4.2$ bash scripts/ocamltest2.sh
+DEPRECATION WARNING: All versions of Singularity prior to 3.0 are on notice of deprecation. Plan to update your containers accordingly.
+CUDA is available?: False
+using cuda?: False
+wrote 5 tasks to: /om2/user/lcary/ec2/bin/../dreamcoder/../data/less_list_tasks.json
+Removed 0 tasks that were just the identity function
+Including map as a primitive? True
+Including length as a primitive? True
+Including unfold as a primitive? True
+Got 5 list tasks
+Running EC on node023.cm.cluster @ 2019-07-23 13:15:21.565071 with 1 CPUs and parameters:
+	 noConsolidation  =  False
+	 iterations  =  1
+	 enumerationTimeout  =  360
+	 useRecognitionModel  =  False
+	 topk_use_only_likelihood  =  False
+	 pseudoCounts  =  30.0
+	 aic  =  1.0
+	 structurePenalty  =  1.0
+	 arity  =  3
+	 taskReranker  =  default
+	 storeTaskMetrics  =  True
+	 rewriteTaskMetrics  =  False
+	 maximumFrontier  =  10
+	 solver  =  ocaml
+	 topK  =  2
+	 evaluationTimeout  =  0.0005
+	 cuda  =  False
+
+Currently using this much memory: 119705600
+Currently using this much memory: 119705600
+Using a waking task batch of size: 5
+(python) Launching list(int) -> list(int) (2 tasks) w/ 1 CPUs. 0.000000 <= MDL < 1.500000. Timeout 360.000000.
+request file:  /om2/user/lcary/ec2/bin/../dreamcoder/../messages/ocaml_request_enumeration_PID26557_20190723_T131521.json
+	(ocaml: 1 CPUs. shatter: 1. |fringe| = 1. |finished| = 0.)
+response:
+{'repeat_n_n_times': [], 'reverse': []}
+(python) Launching list(int) -> int (3 tasks) w/ 1 CPUs. 0.000000 <= MDL < 1.500000. Timeout 360.000000.
+request file:  /om2/user/lcary/ec2/bin/../dreamcoder/../messages/ocaml_request_enumeration_PID26561_20190723_T131521.json
+	(ocaml: 1 CPUs. shatter: 1. |fringe| = 1. |finished| = 0.)
+response:
+{'last_element_of_list': [], 'headth_element_of_tail': [], 'length': []}
+(python) Launching list(int) -> list(int) (2 tasks) w/ 1 CPUs. 1.500000 <= MDL < 3.000000. Timeout 359.812154.
+request file:  /om2/user/lcary/ec2/bin/../dreamcoder/../messages/ocaml_request_enumeration_PID26564_20190723_T131521.json
+	(ocaml: 1 CPUs. shatter: 1. |fringe| = 1. |finished| = 0.)
+response:
+{'repeat_n_n_times': [], 'reverse': []}
+(python) Launching list(int) -> int (3 tasks) w/ 1 CPUs. 1.500000 <= MDL < 3.000000. Timeout 359.971022.
+request file:  /om2/user/lcary/ec2/bin/../dreamcoder/../messages/ocaml_request_enumeration_PID26567_20190723_T131521.json
+	(ocaml: 1 CPUs. shatter: 1. |fringe| = 1. |finished| = 0.)
+response:
+{'last_element_of_list': [], 'headth_element_of_tail': [], 'length': []}
+(python) Launching list(int) -> list(int) (2 tasks) w/ 1 CPUs. 3.000000 <= MDL < 4.500000. Timeout 359.783587.
+request file:  /om2/user/lcary/ec2/bin/../dreamcoder/../messages/ocaml_request_enumeration_PID26571_20190723_T131521.json
+	(ocaml: 1 CPUs. shatter: 1. |fringe| = 1. |finished| = 0.)
+response:
+{'repeat_n_n_times': [], 'reverse': []}
+(python) Launching list(int) -> int (3 tasks) w/ 1 CPUs. 3.000000 <= MDL < 4.500000. Timeout 359.942179.
+request file:  /om2/user/lcary/ec2/bin/../dreamcoder/../messages/ocaml_request_enumeration_PID26574_20190723_T131521.json
+	(ocaml: 1 CPUs. shatter: 1. |fringe| = 1. |finished| = 0.)
+response:
+{'last_element_of_list': [], 'headth_element_of_tail': [], 'length': []}
+(python) Launching list(int) -> list(int) (2 tasks) w/ 1 CPUs. 4.500000 <= MDL < 6.000000. Timeout 359.755363.
+request file:  /om2/user/lcary/ec2/bin/../dreamcoder/../messages/ocaml_request_enumeration_PID26577_20190723_T131521.json
+	(ocaml: 1 CPUs. shatter: 1. |fringe| = 1. |finished| = 0.)
+response:
+{'repeat_n_n_times': [], 'reverse': []}
+(python) Launching list(int) -> int (3 tasks) w/ 1 CPUs. 4.500000 <= MDL < 6.000000. Timeout 359.914577.
+request file:  /om2/user/lcary/ec2/bin/../dreamcoder/../messages/ocaml_request_enumeration_PID26580_20190723_T131521.json
+	(ocaml: 1 CPUs. shatter: 1. |fringe| = 1. |finished| = 0.)
+response:
+{'last_element_of_list': [], 'headth_element_of_tail': [], 'length': [{'program': '(lambda (length $0))', 'time': 0.0011408329010009766, 'logLikelihood': 0.0, 'logPrior': -4.7957905455967405}]}
+(python) Launching list(int) -> list(int) (2 tasks) w/ 1 CPUs. 6.000000 <= MDL < 7.500000. Timeout 359.726629.
+request file:  /om2/user/lcary/ec2/bin/../dreamcoder/../messages/ocaml_request_enumeration_PID26583_20190723_T131522.json
+	(ocaml: 1 CPUs. shatter: 1. |fringe| = 1. |finished| = 0.)
+response:
+{'repeat_n_n_times': [], 'reverse': []}
+(python) Launching list(int) -> int (3 tasks) w/ 1 CPUs. 6.000000 <= MDL < 7.500000. Timeout 359.882748.
+request file:  /om2/user/lcary/ec2/bin/../dreamcoder/../messages/ocaml_request_enumeration_PID26586_20190723_T131522.json
+	(ocaml: 1 CPUs. shatter: 1. |fringe| = 1. |finished| = 0.)
+response:
+{'last_element_of_list': [], 'headth_element_of_tail': [], 'length': []}
+(python) Launching list(int) -> list(int) (2 tasks) w/ 1 CPUs. 7.500000 <= MDL < 9.000000. Timeout 359.695699.
+request file:  /om2/user/lcary/ec2/bin/../dreamcoder/../messages/ocaml_request_enumeration_PID26589_20190723_T131522.json
+	(ocaml: 1 CPUs. shatter: 1. |fringe| = 1. |finished| = 0.)
+response:
+{'repeat_n_n_times': [], 'reverse': []}
+(python) Launching list(int) -> int (3 tasks) w/ 1 CPUs. 7.500000 <= MDL < 9.000000. Timeout 359.850225.
+request file:  /om2/user/lcary/ec2/bin/../dreamcoder/../messages/ocaml_request_enumeration_PID26592_20190723_T131522.json
+	(ocaml: 1 CPUs. shatter: 1. |fringe| = 1. |finished| = 0.)
+response:
+{'last_element_of_list': [], 'headth_element_of_tail': [], 'length': []}
+(python) Launching list(int) -> list(int) (2 tasks) w/ 1 CPUs. 9.000000 <= MDL < 10.500000. Timeout 359.662574.
+request file:  /om2/user/lcary/ec2/bin/../dreamcoder/../messages/ocaml_request_enumeration_PID26595_20190723_T131522.json
+	(ocaml: 1 CPUs. shatter: 1. |fringe| = 1. |finished| = 0.)
+response:
+{'repeat_n_n_times': [], 'reverse': []}
+(python) Launching list(int) -> int (3 tasks) w/ 1 CPUs. 9.000000 <= MDL < 10.500000. Timeout 359.817504.
+request file:  /om2/user/lcary/ec2/bin/../dreamcoder/../messages/ocaml_request_enumeration_PID26598_20190723_T131522.json
+	(ocaml: 1 CPUs. shatter: 1. |fringe| = 1. |finished| = 0.)
+response:
+{'last_element_of_list': [], 'headth_element_of_tail': [{'program': '(lambda (index (car $0) $0))', 'time': 0.010039806365966797, 'logLikelihood': 0.0, 'logPrior': -9.591581091193481}], 'length': [{'program': '(lambda (length (map (lambda 1) $0)))', 'time': 0.0029633045196533203, 'logLikelihood': 0.0, 'logPrior': -10.32918003432426}, {'program': '(lambda (length (map (lambda 0) $0)))', 'time': 0.0028870105743408203, 'logLikelihood': 0.0, 'logPrior': -10.32918003432426}, {'program': '(lambda (length (map (lambda empty) $0)))', 'time': 0.0028066635131835938, 'logLikelihood': 0.0, 'logPrior': -10.32918003432426}, {'program': '(lambda (length (range (length $0))))', 'time': 0.0010325908660888672, 'logLikelihood': 0.0, 'logPrior': -9.591581091193481}]}
+(python) Launching list(int) -> list(int) (2 tasks) w/ 1 CPUs. 10.500000 <= MDL < 12.000000. Timeout 359.600118.
+request file:  /om2/user/lcary/ec2/bin/../dreamcoder/../messages/ocaml_request_enumeration_PID26601_20190723_T131522.json
+	(ocaml: 1 CPUs. shatter: 1. |fringe| = 1. |finished| = 0.)
+response:
+{'repeat_n_n_times': [], 'reverse': []}
+(python) Launching list(int) -> int (3 tasks) w/ 1 CPUs. 10.500000 <= MDL < 12.000000. Timeout 359.742900.
+request file:  /om2/user/lcary/ec2/bin/../dreamcoder/../messages/ocaml_request_enumeration_PID26604_20190723_T131522.json
+	(ocaml: 1 CPUs. shatter: 1. |fringe| = 1. |finished| = 0.)
+response:
+{'last_element_of_list': [{'program': '(lambda (index (length (cdr $0)) $0))', 'time': 0.03876948356628418, 'logLikelihood': 0.0, 'logPrior': -11.989476363991852}], 'headth_element_of_tail': [{'program': '(lambda (index (index 0 $0) $0))', 'time': 0.0421290397644043, 'logLikelihood': 0.0, 'logPrior': -11.989476363991852}], 'length': [{'program': '(lambda (+ (length empty) (length $0)))', 'time': 0.06319189071655273, 'logLikelihood': 0.0, 'logPrior': -11.989476363991852}, {'program': '(lambda (+ (length $0) (length empty)))', 'time': 0.0628957748413086, 'logLikelihood': 0.0, 'logPrior': -11.989476363991852}, {'program': '(lambda (+ 1 (length (cdr $0))))', 'time': 0.06047964096069336, 'logLikelihood': 0.0, 'logPrior': -11.989476363991852}, {'program': '(lambda (length (map (lambda $1) $0)))', 'time': 0.0076253414154052734, 'logLikelihood': 0.0, 'logPrior': -11.022327214884205}, {'program': '(lambda (length (map (lambda $0) $0)))', 'time': 0.0075397491455078125, 'logLikelihood': 0.0, 'logPrior': -11.022327214884205}]}
+(python) Launching list(int) -> list(int) (2 tasks) w/ 1 CPUs. 12.000000 <= MDL < 13.500000. Timeout 359.405533.
+request file:  /om2/user/lcary/ec2/bin/../dreamcoder/../messages/ocaml_request_enumeration_PID26607_20190723_T131522.json
+	(ocaml: 1 CPUs. shatter: 1. |fringe| = 1. |finished| = 0.)
+response:
+{'repeat_n_n_times': [], 'reverse': []}
+(python) Launching list(int) -> int (2 tasks) w/ 1 CPUs. 12.000000 <= MDL < 13.500000. Timeout 359.494444.
+request file:  /om2/user/lcary/ec2/bin/../dreamcoder/../messages/ocaml_request_enumeration_PID26611_20190723_T131523.json
+	(ocaml: 1 CPUs. shatter: 1. |fringe| = 1. |finished| = 0.)
+response:
+{'last_element_of_list': [], 'headth_element_of_tail': []}
+(python) Launching list(int) -> list(int) (2 tasks) w/ 1 CPUs. 13.500000 <= MDL < 15.000000. Timeout 358.971541.
+request file:  /om2/user/lcary/ec2/bin/../dreamcoder/../messages/ocaml_request_enumeration_PID26614_20190723_T131523.json
+	(ocaml: 1 CPUs. shatter: 1. |fringe| = 1. |finished| = 0.)
+response:
+{'repeat_n_n_times': [], 'reverse': []}
+(python) Launching list(int) -> int (2 tasks) w/ 1 CPUs. 13.500000 <= MDL < 15.000000. Timeout 359.116815.
+request file:  /om2/user/lcary/ec2/bin/../dreamcoder/../messages/ocaml_request_enumeration_PID26619_20190723_T131526.json
+	(ocaml: 1 CPUs. shatter: 1. |fringe| = 1. |finished| = 0.)
+response:
+{'last_element_of_list': [{'program': '(lambda (index (- (length $0) 1) $0))', 'time': 0.6158912181854248, 'logLikelihood': 0.0, 'logPrior': -14.387371636790222}, {'program': '(lambda (index (length $0) (cons 1 $0)))', 'time': 0.5036678314208984, 'logLikelihood': 0.0, 'logPrior': -14.387371636790222}, {'program': '(lambda (index (length $0) (cons 0 $0)))', 'time': 0.5035779476165771, 'logLikelihood': 0.0, 'logPrior': -14.387371636790222}], 'headth_element_of_tail': [{'program': '(lambda (index (car (map (lambda $0) $0)) $0))', 'time': 0.5406198501586914, 'logLikelihood': 0.0, 'logPrior': -14.474383013779853}, {'program': '(lambda (index (index (length empty) $0) $0))', 'time': 0.5611281394958496, 'logLikelihood': 0.0, 'logPrior': -14.387371636790222}, {'program': '(lambda (index (car $0) (map (lambda $0) $0)))', 'time': 0.5307042598724365, 'logLikelihood': 0.0, 'logPrior': -14.474383013779851}, {'program': '(lambda (index (length (range (car $0))) $0))', 'time': 0.5081524848937988, 'logLikelihood': 0.0, 'logPrior': -14.387371636790222}, {'program': '(lambda (length (range (index (car $0) $0))))', 'time': 0.007373332977294922, 'logLikelihood': 0.0, 'logPrior': -14.387371636790222}]}
+(python) Launching list(int) -> list(int) (2 tasks) w/ 1 CPUs. 15.000000 <= MDL < 16.500000. Timeout 356.363889.
+request file:  /om2/user/lcary/ec2/bin/../dreamcoder/../messages/ocaml_request_enumeration_PID26645_20190723_T131528.json
+	(ocaml: 1 CPUs. shatter: 1. |fringe| = 1. |finished| = 0.)
+response:
+{'repeat_n_n_times': [{'program': '(lambda (map (lambda (car $1)) (range (car $0))))', 'time': 2.551471710205078, 'logLikelihood': 0.0, 'logPrior': -15.167530194339797}], 'reverse': []}
+(python) Launching list(int) -> int (2 tasks) w/ 1 CPUs. 15.000000 <= MDL < 16.500000. Timeout 356.670368.
+request file:  /om2/user/lcary/ec2/bin/../dreamcoder/../messages/ocaml_request_enumeration_PID26936_20190723_T131536.json
+	(ocaml: 1 CPUs. shatter: 1. |fringe| = 1. |finished| = 0.)
+response:
+{'last_element_of_list': [], 'headth_element_of_tail': [{'program': '(lambda (index (fold $0 1 (lambda (lambda $1))) $0))', 'time': 2.030229091644287, 'logLikelihood': 0.0, 'logPrior': -15.167530194339799}, {'program': '(lambda (index (fold $0 0 (lambda (lambda $1))) $0))', 'time': 2.029669761657715, 'logLikelihood': 0.0, 'logPrior': -15.167530194339799}]}
+(python) Launching list(int) -> list(int) (2 tasks) w/ 1 CPUs. 16.500000 <= MDL < 18.000000. Timeout 348.320304.
+request file:  /om2/user/lcary/ec2/bin/../dreamcoder/../messages/ocaml_request_enumeration_PID27059_20190723_T131543.json
+	(ocaml: 1 CPUs. shatter: 1. |fringe| = 1. |finished| = 0.)
+response:
+{'repeat_n_n_times': [{'program': '(lambda (fold $0 empty (lambda (lambda (map (lambda $2) (range $1))))))', 'time': 24.306501388549805, 'logLikelihood': 0.0, 'logPrior': -17.6524368441278}, {'program': '(lambda (fold $0 $0 (lambda (lambda (map (lambda $2) (range $1))))))', 'time': 24.264635801315308, 'logLikelihood': 0.0, 'logPrior': -17.6524368441278}, {'program': '(lambda (map (lambda (index 0 $1)) (range (car $0))))', 'time': 12.146645069122314, 'logLikelihood': 0.0, 'logPrior': -17.652436844127795}, {'program': '(lambda (map (lambda (car $1)) (range (index 0 $0))))', 'time': 11.666168928146362, 'logLikelihood': 0.0, 'logPrior': -17.565425467138166}, {'program': '(lambda (car (map (lambda (map (lambda $1) (range $0))) $0)))', 'time': 4.257323741912842, 'logLikelihood': 0.0, 'logPrior': -17.451766148665644}], 'reverse': []}
+(python) Launching list(int) -> int (2 tasks) w/ 1 CPUs. 16.500000 <= MDL < 18.000000. Timeout 349.488581.
+request file:  /om2/user/lcary/ec2/bin/../dreamcoder/../messages/ocaml_request_enumeration_PID27697_20190723_T131622.json
+	(ocaml: 1 CPUs. shatter: 1. |fringe| = 1. |finished| = 0.)
+response:
+{'last_element_of_list': [{'program': '(lambda (length (range (index (length (cdr $0)) $0))))', 'time': 0.07808065414428711, 'logLikelihood': 0.0, 'logPrior': -16.785266909588593}, {'program': '(lambda (index (length (cdr (cdr $0))) (cdr $0)))', 'time': 8.007328271865845, 'logLikelihood': 0.0, 'logPrior': -16.78526690958859}, {'program': '(lambda (index (length (cdr (range (length $0)))) $0))', 'time': 8.001250267028809, 'logLikelihood': 0.0, 'logPrior': -16.785266909588593}, {'program': '(lambda (index (length $0) (cons (length empty) $0)))', 'time': 7.880032300949097, 'logLikelihood': 0.0, 'logPrior': -16.78526690958859}, {'program': '(lambda (index (length $0) (cons (length $0) $0)))', 'time': 7.879939079284668, 'logLikelihood': 0.0, 'logPrior': -16.78526690958859}, {'program': '(lambda (index (length $0) (cons (car $0) $0)))', 'time': 7.880521774291992, 'logLikelihood': 0.0, 'logPrior': -16.78526690958859}], 'headth_element_of_tail': [{'program': '(lambda (index (car $0) (cons 0 (cdr $0))))', 'time': 8.341959476470947, 'logLikelihood': 0.0, 'logPrior': -16.78526690958859}]}
+(python) Launching list(int) -> list(int) (2 tasks) w/ 1 CPUs. 18.000000 <= MDL < 19.500000. Timeout 309.439155.
+request file:  /om2/user/lcary/ec2/bin/../dreamcoder/../messages/ocaml_request_enumeration_PID28195_20190723_T131656.json
+	(ocaml: 1 CPUs. shatter: 1. |fringe| = 1. |finished| = 0.)
+response:
+{'repeat_n_n_times': [], 'reverse': []}
+(python) Launching list(int) -> list(int) (2 tasks) w/ 1 CPUs. 19.500000 <= MDL < 21.000000. Timeout 130.388450.
+request file:  /om2/user/lcary/ec2/bin/../dreamcoder/../messages/ocaml_request_enumeration_PID31522_20190723_T131955.json
+	(ocaml: 1 CPUs. shatter: 1. |fringe| = 1. |finished| = 0.)
+response:
+{'repeat_n_n_times': [{'program': '(lambda (car (map (lambda (map (lambda (car $2)) (range $0))) $0)))', 'time': 78.76594400405884, 'logLikelihood': 0.0, 'logPrior': -20.25512652957218}, {'program': '(lambda (car (map (lambda (map (lambda $1) (range (car $1)))) $0)))', 'time': 78.45245146751404, 'logLikelihood': 0.0, 'logPrior': -19.849661421464017}], 'reverse': []}
+Generative model enumeration results:
+HIT repeat_n_n_times w/ (lambda (map (lambda (car $1)) (range (car $0)))) ; log prior = -15.167530 ; log likelihood = 0.000000
+HIT last_element_of_list w/ (lambda (index (length (cdr $0)) $0)) ; log prior = -11.989476 ; log likelihood = 0.000000
+HIT headth_element_of_tail w/ (lambda (index (car $0) $0)) ; log prior = -9.591581 ; log likelihood = 0.000000
+MISS reverse
+HIT length w/ (lambda (length $0)) ; log prior = -4.795791 ; log likelihood = 0.000000
+Hits 4/5 tasks
+Average description length of a program solving a task: 10.386095 nats
+Generative model average:  2 sec.	median: 0 	max: 6 	standard deviation 3
+Currently using this much memory: 120123392
+Frontiers discovered top down: 4
+Total frontiers: 4
+Currently using this much memory: 120123392
+Showing the top 5 programs in each frontier being sent to the compressor:
+repeat_n_n_times
+-0.38	(lambda (map (lambda (car $1)) (range (car $0))))
+-2.66	(lambda (car (map (lambda (map (lambda $1) (range $0))) $0)))
+-2.78	(lambda (map (lambda (car $1)) (range (index 0 $0))))
+-2.86	(lambda (map (lambda (index 0 $1)) (range (car $0))))
+-2.86	(lambda (fold $0 $0 (lambda (lambda (map (lambda $2) (range $1))))))
+
+last_element_of_list
+-0.28	(lambda (index (length (cdr $0)) $0))
+-2.68	(lambda (index (- (length $0) 1) $0))
+-2.68	(lambda (index (length $0) (cons 0 $0)))
+-2.68	(lambda (index (length $0) (cons 1 $0)))
+-5.08	(lambda (index (length $0) (cons (car $0) $0)))
+
+headth_element_of_tail
+-0.13	(lambda (index (car $0) $0))
+-2.53	(lambda (index (index 0 $0) $0))
+-4.93	(lambda (index (index (length empty) $0) $0))
+-4.93	(lambda (index (length (range (car $0))) $0))
+-4.93	(lambda (length (range (index (car $0) $0))))
+
+length
+-0.03	(lambda (length $0))
+-4.82	(lambda (length (range (length $0))))
+-5.56	(lambda (length (map (lambda 0) $0)))
+-5.56	(lambda (length (map (lambda 1) $0)))
+-5.56	(lambda (length (map (lambda empty) $0)))
+
+Compression message saved to: compressionMessages/2019-07-23T13:22:06.022268
+Compression backend will run for most 99 iterations
+Total number of candidates: 31
+Constructed version spaces and coalesced candidates in 891.267ms.
+Trimmed down the beam, have only 31 best candidates
+Rewrote topK in 878.134ms.
+Initial score: -83.902079
+Scored candidates in 16.3898ms.
+No improvement possible.
+Completed one step of memory consolidation in 1.90356s.
+completed ocaml compression in 1.90359s.
+Finished consolidation.
+Induced a grammar in 2.1 seconds
+Grammar after iteration 1:
+0.000000	t0	$_
+0.000000	(t0 -> t1) -> list(t0) -> list(t1)	map
+0.000000	t0 -> (t0 -> bool) -> (t0 -> t1) -> (t0 -> t0) -> list(t1)	unfold
+0.000000	int -> list(int)	range
+0.000000	int -> list(t0) -> t0	index
+0.000000	list(t0) -> t1 -> (t0 -> t1 -> t1) -> t1	fold
+0.000000	list(t0) -> int	length
+0.000000	bool -> t0 -> t0 -> t0	if
+0.000000	int -> int -> int	+
+0.000000	int -> int -> int	-
+0.000000	list(t0)	empty
+0.000000	t0 -> list(t0) -> list(t0)	cons
+0.000000	list(t0) -> t0	car
+0.000000	list(t0) -> list(t0)	cdr
+0.000000	list(t0) -> bool	empty?
+0.000000	int	0
+0.000000	int	1
+0.000000	int -> int -> int	*
+0.000000	int -> int -> int	mod
+0.000000	int -> int -> bool	gt?
+0.000000	int -> int -> bool	eq?
+0.000000	int -> bool	is-prime
+0.000000	int -> bool	is-square
+Currently using this much memory: 120455168
+Exported checkpoint to experimentOutputs/list/2019-07-23T13:15:21.554491/list_aic=1.0_arity=3_ET=360_it=1_MF=10_noConsolidation=False_pc=30.0_RW=False_solver=ocaml_STM=True_L=1.0_TRR=default_K=2_topkNotMAP=False_rec=False.pickle
+Exporting primitive graph to experimentOutputs/list/2019-07-23T13:15:21.554491/list_primitives_0_depth.pdf
+Exported primitive graph to experimentOutputs/list/2019-07-23T13:15:21.554491/list_primitives_0_unordered.pdf
+
+==========================
+OBSERVATIONS AND QUESTIONS
+==========================
+
+* why are they returning different results for the same requests?
+* why doesn't julia have results for repeat_n_n_times?
