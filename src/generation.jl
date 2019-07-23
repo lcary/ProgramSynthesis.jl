@@ -77,12 +77,9 @@ function final_candidates(
     return final_candidates
 end
 
-function build_candidates(
+function get_candidates!(
         grammar::Grammar, request::TypeField, context::Context,
-        env::Array{TypeField,1})::Array{Candidate,1}
-    candidates = Array{Candidate,1}()
-    variable_candidates = Array{VariableCandidate,1}()
-
+        candidates::Array{Candidate,1})
     for p in grammar.productions
         r = get_candidate(request, context, p)
         if r == UNIFICATION_FAILURE
@@ -90,7 +87,11 @@ function build_candidates(
         end
         push!(candidates, r)
     end
+end
 
+function get_variable_candidates!(
+        request::TypeField, context::Context, env::Array{TypeField,1},
+        variable_candidates::Array{VariableCandidate,1})
     for (i, t) in enumerate(env)
         r = get_variable_candidate(request, context, t, i - 1)
         if r == UNIFICATION_FAILURE
@@ -98,13 +99,31 @@ function build_candidates(
         end
         push!(variable_candidates, r)
     end
+end
 
-    # TODO: check continuationType
-
+function add_variable_candidates!(
+        grammar::Grammar,
+        variable_candidates::Array{VariableCandidate,1},
+        candidates::Array{Candidate,1})
     vl = grammar.log_variable - log(length(variable_candidates))
     for vc in variable_candidates
         push!(candidates, Candidate(vc, vl))
     end
+end
+
+function build_candidates(
+        grammar::Grammar, request::TypeField, context::Context,
+        env::Array{TypeField,1})::Array{Candidate,1}
+
+    candidates = Array{Candidate,1}()
+    variable_candidates = Array{VariableCandidate,1}()
+
+    get_candidates!(grammar, request, context, candidates)
+    get_variable_candidates!(request, context, env, variable_candidates)
+
+    # TODO: check continuationType
+
+    add_variable_candidates!(grammar, variable_candidates, candidates)
     variable_candidates = nothing
 
     if isempty(candidates)
@@ -117,16 +136,6 @@ end
 # TODO: rename log_probability
 function valid(candidate::Candidate, upper_bound::Float64)::Bool
     return -candidate.log_probability < upper_bound
-end
-
-function all_invalid(
-        candidates::Array{Candidate,1}, upper_bound::Float64)::Bool
-    for c in candidates
-        if valid(c, upper_bound)
-            return false
-        end
-    end
-    return true
 end
 
 struct InvalidStateType <: Exception end
@@ -233,14 +242,12 @@ end
         type::TypeField, upper_bound::Float64,
         lower_bound::Float64, depth::Int)
     candidates = build_candidates(grammar, type, context, env)
-    if !all_invalid(candidates, upper_bound)
-        for candidate in candidates
-            if valid(candidate, upper_bound)
-                for r in process_candidate(
-                        grammar, context, env,
-                        type, upper_bound, lower_bound, depth, candidate)
-                    @yield r
-                end
+    for candidate in candidates
+        if valid(candidate, upper_bound)
+            for r in process_candidate(
+                    grammar, context, env,
+                    type, upper_bound, lower_bound, depth, candidate)
+                @yield r
             end
         end
     end
