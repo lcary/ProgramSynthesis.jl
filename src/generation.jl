@@ -69,8 +69,20 @@ function update_log_probability(z::Float64, c::Candidate)::Candidate
     return Candidate(new_l, c.type, c.program, c.context)
 end
 
+function get_logs(candidates::Array{Candidate,1})
+    arr = Array{Float64,1}(undef, length(candidates))
+    for (index, c) in enumerate(candidates)
+        arr[index] = c.log_probability
+    end
+    return arr
+end
+
+function calculate_lse(candidates::Array{Candidate,1})
+    return lse(get_logs(candidates))
+end
+
 function finalize_candidates!(candidates::Array{Candidate,1})
-    z::Float64 = lse([c.log_probability for c in candidates])
+    z = calculate_lse(candidates)
     for (index, c) in enumerate(candidates)
         candidates[index] = update_log_probability(z, c)
     end
