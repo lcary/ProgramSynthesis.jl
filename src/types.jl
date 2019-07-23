@@ -35,9 +35,12 @@ struct TypeField
     value::Int
 end
 
-function split_arguments(a::Array{TypeField,1})::Array{TypeField}
+function split_arguments(a::Array{TypeField,1})::Array{TypeField,1}
     if length(a) >= 3
-        return [a[1], a[2:end]]
+        arr = Array{TypeField,1}(undef, 2)
+        arr[1] = a[1]
+        arr[2] = a[2:end]
+        return arr
     else
         return a
     end
@@ -54,7 +57,12 @@ function TypeField(c::String, a::Array{TypeField,1})
 end
 
 function TypeField(c::String, a::Tuple{TypeField,TypeField})
-    return TypeField(c, [a[1], [a[2]]], -1)
+    subarr = Array{TypeField,1}(undef, 1)
+    subarr[1] = a[2]
+    arr = Array{TypeField,1}(undef, 2)
+    arr[1] = a[1]
+    arr[2] = subarr
+    return TypeField(c, arr, -1)
 end
 
 TypeField(c::String) = TypeField(c, Array{TypeField,1}())
@@ -93,9 +101,15 @@ function arrow(args...)::TypeField
     elseif length(args) == 1
         return args[1]
     elseif length(args) == 2
-        return TypeField(ARROW, [args[1], args[2]])
+        arr = Array{TypeField,1}(undef, 2)
+        arr[1] = args[1]
+        arr[2] = args[2]
+        return TypeField(ARROW, arr)
     end
-    return TypeField(ARROW, [args[1], arrow(args[2:end]...)])
+    arr = Array{TypeField,1}(undef, 2)
+    arr[1] = args[1]
+    arr[2] = arrow(args[2:end]...)
+    return TypeField(ARROW, arr)
 end
 
 function Base.hash(t::TypeField, h::UInt)::UInt
