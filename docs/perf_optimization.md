@@ -4,322 +4,210 @@ performance optimization
 ocaml_request_enumeration_PID26993_20190719_T155300
 ---------------------------------------------------
 
-6 seconds in julia, <1s in ocaml (see julia_v_ocaml_speedtest2.txt)
-
-before any optimizations:
+tested with:
 ```
 ❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID26993_20190719_T155300.json
-@time for result in generator(args...)
+```
+
+total originally 6 seconds in julia, <1s in ocaml (see julia_v_ocaml_speedtest2.txt)
+
+before optimizations, results for T1 `@time for result in generator(args...)`:
+```
 1.795149 seconds (4.68 M allocations: 234.763 MiB, 6.03% gc time)
-/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID19706_20190720_T194350.json
+1.781357 seconds (4.68 M allocations: 234.767 MiB, 6.08% gc time)
+1.877394 seconds (4.68 M allocations: 234.870 MiB, 5.75% gc time)
+1.751759 seconds (4.68 M allocations: 234.285 MiB, 3.85% gc time)
+1.765500 seconds (4.68 M allocations: 234.285 MiB, 3.71% gc time)
+1.738592 seconds (4.68 M allocations: 234.285 MiB, 3.73% gc time)
+1.810187 seconds (4.68 M allocations: 234.285 MiB, 3.39% gc time)
 ```
+results for T2 `@time run_enumeration(request_message_file)`:
 ```
-❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID26993_20190719_T155300.json
-  1.781357 seconds (4.68 M allocations: 234.767 MiB, 6.08% gc time)
-  ^@time for result in generator(args...)
-/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID21770_20190721_T124433.json
-```
-```
-❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID26993_20190719_T155300.json
-  1.877394 seconds (4.68 M allocations: 234.870 MiB, 5.75% gc time)
-  ^@time for result in generator(args...)
-  4.740023 seconds (12.15 M allocations: 608.340 MiB, 5.73% gc time)
-  ^@time run_enumeration(request_message_file)
-/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID27166_20190721_T142106.json
-```
-```
-❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID26993_20190719_T155300.json
-  1.751759 seconds (4.68 M allocations: 234.285 MiB, 3.85% gc time)
-  ^@time for result in generator(args...)
-  4.572324 seconds (12.15 M allocations: 607.935 MiB, 4.99% gc time)
-  ^@time run_enumeration(request_message_file)
-/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID27208_20190721_T142113.json
-```
-```
-❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID26993_20190719_T155300.json
-  1.765500 seconds (4.68 M allocations: 234.285 MiB, 3.71% gc time)
-  ^@time for result in generator(args...)
-  4.563093 seconds (12.15 M allocations: 607.935 MiB, 4.80% gc time)
-  ^@time run_enumeration(request_message_file)
-/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID27255_20190721_T142119.json
-```
-```
-❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID26993_20190719_T155300.json
-  1.738592 seconds (4.68 M allocations: 234.285 MiB, 3.73% gc time)
-  ^@time for result in generator(args...)
-  4.507864 seconds (12.15 M allocations: 607.935 MiB, 4.84% gc time)
-  ^@time run_enumeration(request_message_file)
-/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID27300_20190721_T142125.json
-```
-```
-❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID26993_20190719_T155300.json
-  1.810187 seconds (4.68 M allocations: 234.285 MiB, 3.39% gc time)
-  ^@time for result in generator(args...)
-  4.599063 seconds (12.15 M allocations: 607.935 MiB, 4.73% gc time)
-  ^@time run_enumeration(request_message_file)
-/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID27356_20190721_T142132.json
+4.740023 seconds (12.15 M allocations: 608.340 MiB, 5.73% gc time)
+4.572324 seconds (12.15 M allocations: 607.935 MiB, 4.99% gc time)
+4.563093 seconds (12.15 M allocations: 607.935 MiB, 4.80% gc time)
+4.507864 seconds (12.15 M allocations: 607.935 MiB, 4.84% gc time)
+4.599063 seconds (12.15 M allocations: 607.935 MiB, 4.73% gc time)
 ```
 
-After eb1925f1fb64f37f592871449a1f1fb41186162f:
+After eb1925f1fb64f37f592871449a1f1fb41186162f, T2:
 ```
-❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID26993_20190719_T155300.json
-  4.420796 seconds (11.65 M allocations: 581.888 MiB, 4.88% gc time)
-  ^@time run_enumeration(request_message_file)
-/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID4111_20190722_T084137.json
+4.420796 seconds (11.65 M allocations: 581.888 MiB, 4.88% gc time)
 ```
-after a75313dee15506a24bb9937e8de5fc4d67a042f7:
+after a75313dee15506a24bb9937e8de5fc4d67a042f7, T2:
 ```
-julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID26993_20190719_T155300.json
-  3.251178 seconds (8.94 M allocations: 446.567 MiB, 5.56% gc time)
-  ^@time run_enumeration(request_message_file)
-/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID8389_20190722_T093050.json
+3.251178 seconds (8.94 M allocations: 446.567 MiB, 5.56% gc time)
 ```
-after 6a4a3a90b14e3379360b477060ac184b04080afb:
+after 6a4a3a90b14e3379360b477060ac184b04080afb, T1 and T2:
 ```
-julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID26993_20190719_T155300.json
-  1.212398 seconds (3.15 M allocations: 157.087 MiB, 3.71% gc time)
-  ^@time for result in generator(args...)
-  3.595471 seconds (9.27 M allocations: 462.037 MiB, 4.79% gc time)
-  ^@time run_enumeration(request_message_file)
-/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID13758_20190722_T110451.json
+1.212398 seconds (3.15 M allocations: 157.087 MiB, 3.71% gc time)
+3.595471 seconds (9.27 M allocations: 462.037 MiB, 4.79% gc time)
 ```
-after 9149c967743168e6dd61b9cadc497c179d4e14c7:
+after 9149c967743168e6dd61b9cadc497c179d4e14c7, T1 and T2:
 ```
-❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID26993_20190719_T155300.json
-  1.168213 seconds (3.18 M allocations: 158.357 MiB, 3.49% gc time)
-  ^@time for result in generator(args...)
-  3.573195 seconds (9.29 M allocations: 462.875 MiB, 5.00% gc time)
-  ^@time run_enumeration(request_message_file)
-/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID15725_20190722_T112136.json
+1.168213 seconds (3.18 M allocations: 158.357 MiB, 3.49% gc time)
+3.573195 seconds (9.29 M allocations: 462.875 MiB, 5.00% gc time)
 ```
-after fda2757a72796255bbd660e65d54d837d4bc26be:
+after fda2757a72796255bbd660e65d54d837d4bc26be, T2:
 ```
-❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID26993_20190719_T155300.json
-  3.298817 seconds (8.63 M allocations: 430.709 MiB, 4.89% gc time)
-  ^@time run_enumeration(request_message_file)
-/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID37805_20190722_T165710.json
+3.298817 seconds (8.63 M allocations: 430.709 MiB, 4.89% gc time)
 ```
-after 0faaf18d14eed9f6bc40e9993cbb8e3017355ed1:
+after 0faaf18d14eed9f6bc40e9993cbb8e3017355ed1, T1 and T2:
 ```
-❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID26993_20190719_T155300.json
-  0.254832 seconds (658.38 k allocations: 34.181 MiB, 2.57% gc time)
-  3.502173 seconds (8.18 M allocations: 407.674 MiB, 5.59% gc time)
-  ^@time run_enumeration(request_message_file)
-/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID39083_20190722_T170829.json
+0.254832 seconds (658.38 k allocations: 34.181 MiB, 2.57% gc time)
+3.502173 seconds (8.18 M allocations: 407.674 MiB, 5.59% gc time)
 ```
-after a3d18f79b5dbaee4c750e2f74a49cac73992213b:
+after a3d18f79b5dbaee4c750e2f74a49cac73992213b, T2:
 ```
-❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID26993_20190719_T155300.json
-  3.319275 seconds (7.94 M allocations: 400.044 MiB, 5.16% gc time)
-  ^@time run_enumeration(request_message_file)
-/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID40519_20190722_T173314.json
+3.319275 seconds (7.94 M allocations: 400.044 MiB, 5.16% gc time)
 ```
-after a94520432b1e99ebaddab8615db0749598401ebe:
+after a94520432b1e99ebaddab8615db0749598401ebe, T1 and T2:
 ```
-❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID26993_20190719_T155300.json
-  0.953247 seconds (1.89 M allocations: 98.253 MiB, 2.37% gc time)
-  3.386845 seconds (7.95 M allocations: 400.740 MiB, 4.64% gc time)
-  ^@time run_enumeration(request_message_file)
-/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID46849_20190722_T221817.json
+0.953247 seconds (1.89 M allocations: 98.253 MiB, 2.37% gc time)
+3.386845 seconds (7.95 M allocations: 400.740 MiB, 4.64% gc time)
+```
+after d75133b4ec47360e41690b173d4ac4959d8369f5, T1 and T2:
+```
+0.950576 seconds (1.81 M allocations: 94.059 MiB, 2.40% gc time)
+3.384675 seconds (8.03 M allocations: 404.340 MiB, 4.34% gc time)
 ```
 
 ocaml_request_enumeration_PID27008_20190719_T155300
 ---------------------------------------------------
 
-12 seconds in julia, <1s in ocaml (see julia_v_ocaml_speedtest2.txt)
-
-before any optimizations:
+test command:
 ```
 ❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID27008_20190719_T155300.json
-@time for result in generator(args...)
+```
+
+total 12 seconds in julia, <1s in ocaml (see julia_v_ocaml_speedtest2.txt)
+
+before any optimizations, `@time for result in generator(args...)` T1:
+```
 8.124766 seconds (34.59 M allocations: 1.840 GiB, 4.50% gc time)
-/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID19756_20190720_T194412.json
+8.062860 seconds (34.59 M allocations: 1.841 GiB, 4.59% gc time)
 ```
+After eb1925f1fb64f37f592871449a1f1fb41186162f, T1 and T2:
 ```
-❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID27008_20190719_T155300.json
-  8.062860 seconds (34.59 M allocations: 1.841 GiB, 4.59% gc time)
-  ^@time for result in generator(args...)
-/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID21820_20190721_T124512.json
-```
-
-After eb1925f1fb64f37f592871449a1f1fb41186162f:
-```
-❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID27008_20190719_T155300.json
 5.206285 seconds (34.00 M allocations: 1.817 GiB, 6.67% gc time)
-^@time for result in generator(args...)
 7.649697 seconds (40.73 M allocations: 2.145 GiB, 6.44% gc time)
-^@time run_enumeration(request_message_file)
-/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID4255_20190722_T084304.json
 ```
-after a75313dee15506a24bb9937e8de5fc4d67a042f7:
+after a75313dee15506a24bb9937e8de5fc4d67a042f7, T1 and T2:
 ```
-julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID27008_20190719_T155300.json
-  3.134039 seconds (22.40 M allocations: 1.187 GiB, 6.37% gc time)
-  ^@time for result in generator(args...)
-  5.105741 seconds (27.75 M allocations: 1.447 GiB, 6.58% gc time)
-  ^@time run_enumeration(request_message_file)
-/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID8134_20190722_T092919.json
+3.134039 seconds (22.40 M allocations: 1.187 GiB, 6.37% gc time)
+5.105741 seconds (27.75 M allocations: 1.447 GiB, 6.58% gc time)
 ```
-
-after 6a4a3a90b14e3379360b477060ac184b04080afb:
+after 6a4a3a90b14e3379360b477060ac184b04080afb, T1 and T2:
 ```
-❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID27008_20190719_T155300.json
-  3.287473 seconds (22.48 M allocations: 1.193 GiB, 7.67% gc time)
-  ^@time for result in generator(args...)
-  5.613945 seconds (28.05 M allocations: 1.464 GiB, 7.00% gc time)
-  ^@time run_enumeration(request_message_file)
-/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID14158_20190722_T110657.json
+3.287473 seconds (22.48 M allocations: 1.193 GiB, 7.67% gc time)
+5.613945 seconds (28.05 M allocations: 1.464 GiB, 7.00% gc time)
 ```
-after 9149c967743168e6dd61b9cadc497c179d4e14c7:
+after 9149c967743168e6dd61b9cadc497c179d4e14c7, T1 and T2:
 ```
-❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID27008_20190719_T155300.json
-  3.190760 seconds (22.50 M allocations: 1.194 GiB, 5.34% gc time)
-  ^@time for result in generator(args...)
-  5.234920 seconds (28.06 M allocations: 1.464 GiB, 5.52% gc time)
-  ^@time run_enumeration(request_message_file)
-/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID15338_20190722_T112005.json
+3.190760 seconds (22.50 M allocations: 1.194 GiB, 5.34% gc time)
+5.234920 seconds (28.06 M allocations: 1.464 GiB, 5.52% gc time)
 ```
-after 0faaf18d14eed9f6bc40e9993cbb8e3017355ed1:
+after 0faaf18d14eed9f6bc40e9993cbb8e3017355ed1, T1 and T2:
 ```
-❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID27008_20190719_T155300.json
-  1.666996 seconds (18.33 M allocations: 976.201 MiB, 7.72% gc time)
-  4.545484 seconds (25.30 M allocations: 1.290 GiB, 6.27% gc time)
-  ^@time run_enumeration(request_message_file)
-/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID38888_20190722_T170737.json
+1.666996 seconds (18.33 M allocations: 976.201 MiB, 7.72% gc time)
+4.545484 seconds (25.30 M allocations: 1.290 GiB, 6.27% gc time)
 ```
-after a3d18f79b5dbaee4c750e2f74a49cac73992213b:
+after a3d18f79b5dbaee4c750e2f74a49cac73992213b, T2:
 ```
-❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID27008_20190719_T155300.json
-  4.540733 seconds (24.29 M allocations: 1.261 GiB, 6.12% gc time)
-  ^@time run_enumeration(request_message_file)
-/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID40572_20190722_T173346.json
+4.540733 seconds (24.29 M allocations: 1.261 GiB, 6.12% gc time)
 ```
-after a94520432b1e99ebaddab8615db0749598401ebe:
+after a94520432b1e99ebaddab8615db0749598401ebe, T1 and T2:
 ```
-❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID27008_20190719_T155300.json
-  2.456591 seconds (18.92 M allocations: 1021.341 MiB, 6.05% gc time)
-  4.694774 seconds (24.44 M allocations: 1.266 GiB, 5.93% gc time)
-  ^@time run_enumeration(request_message_file)
-/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID46617_20190722_T221648.json
+2.456591 seconds (18.92 M allocations: 1021.341 MiB, 6.05% gc time)
+4.694774 seconds (24.44 M allocations: 1.266 GiB, 5.93% gc time)
 ```
-after bacb2a7a8a38a0973b7fa8cb3b6f06a51c909366:
+after bacb2a7a8a38a0973b7fa8cb3b6f06a51c909366, T1 and T2:
 ```
-❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID27008_20190719_T155300.json
-  2.483610 seconds (18.84 M allocations: 1015.842 MiB, 6.14% gc time)
-  4.654759 seconds (24.36 M allocations: 1.261 GiB, 6.30% gc time)
-  ^@time run_enumeration(request_message_file)
-/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID50393_20190723_T075348.json
+2.483610 seconds (18.84 M allocations: 1015.842 MiB, 6.14% gc time)
+4.654759 seconds (24.36 M allocations: 1.261 GiB, 6.30% gc time)
+```
+after d75133b4ec47360e41690b173d4ac4959d8369f5, T1 and T2:
+```
+2.523960 seconds (18.80 M allocations: 1014.093 MiB, 5.69% gc time)
+4.825156 seconds (24.48 M allocations: 1.267 GiB, 5.59% gc time)
 ```
 
 ocaml_request_enumeration_PID27034_20190719_T155304
 ---------------------------------------------------
 
+command:
+```
+❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID27034_20190719_T155304.json
+```
+
 >6min in julia, <2s in ocaml (see julia_v_ocaml_speedtest2.txt)
 
-before any optimizations (note, running with response_enumeration_PID19906_20190720_T195112 in parallel):
+before any optimizations (note, running with ocaml_request_enumeration_PID27039_20190719_T155306 in parallel), T2:
 ```
-❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID27034_20190719_T155304.json
-@time for result in generator(args...)
 362.197598 seconds (1.83 G allocations: 99.171 GiB, 3.27% gc time)
-/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID19808_20190720_T195039.json
 ```
-after a75313dee15506a24bb9937e8de5fc4d67a042f7:
+after a75313dee15506a24bb9937e8de5fc4d67a042f7, T1 and T2:
 ```
-julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID27034_20190719_T155304.json
 129.488836 seconds (1.48 G allocations: 79.780 GiB, 6.62% gc time)
-  ^@time for result in generator(args...)
 131.618129 seconds (1.48 G allocations: 80.060 GiB, 6.60% gc time)
-  ^@time run_enumeration(request_message_file)
-/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID9595_20190722_T094402.json
 ```
-after 6a4a3a90b14e3379360b477060ac184b04080afb:
+after 6a4a3a90b14e3379360b477060ac184b04080afb, T1 and T2:
 ```
-❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID27034_20190719_T155304.json
 140.774280 seconds (1.48 G allocations: 79.815 GiB, 7.96% gc time)
-  ^@time for result in generator(args...)
 143.325902 seconds (1.48 G allocations: 80.105 GiB, 7.92% gc time)
-  ^@time run_enumeration(request_message_file)
-/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID14365_20190722_T111155.json
 ```
-after 9149c967743168e6dd61b9cadc497c179d4e14c7:
+after 9149c967743168e6dd61b9cadc497c179d4e14c7, T1 and T2:
 ```
-❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID27034_20190719_T155304.json
 143.787190 seconds (1.48 G allocations: 79.816 GiB, 8.69% gc time)
-  ^@time for result in generator(args...)
 146.072933 seconds (1.48 G allocations: 80.106 GiB, 8.65% gc time)
-  ^@time run_enumeration(request_message_file)
-/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID15336_20190722_T112156.json
 ```
-most recently at a72b4d7c1b7c355eb8dd1111678af9f6b10f1ce2:
+most recently at a72b4d7c1b7c355eb8dd1111678af9f6b10f1ce2, T1 and T2:
 ```
-julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID27034_20190719_T155304.json
 150.205627 seconds (1.47 G allocations: 79.570 GiB, 8.62% gc time)
-  ^@time for result in generator(args...)
 152.595186 seconds (1.47 G allocations: 79.857 GiB, 8.57% gc time)
-  ^@time run_enumeration(request_message_file)
-/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID29151_20190722_T141453.json
 ```
-after 0faaf18d14eed9f6bc40e9993cbb8e3017355ed1:
+after 0faaf18d14eed9f6bc40e9993cbb8e3017355ed1, T1 and T2:
 ```
-❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID27034_20190719_T155304.json
- 85.489968 seconds (1.34 G allocations: 70.032 GiB, 10.63% gc time)
- 88.531716 seconds (1.35 G allocations: 70.389 GiB, 10.48% gc time)
-  ^@time run_enumeration(request_message_file)
-/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID39135_20190722_T171028.json
+85.489968 seconds (1.34 G allocations: 70.032 GiB, 10.63% gc time)
+88.531716 seconds (1.35 G allocations: 70.389 GiB, 10.48% gc time)
 ```
-after a3d18f79b5dbaee4c750e2f74a49cac73992213b:
+after a3d18f79b5dbaee4c750e2f74a49cac73992213b, T2:
 ```
-❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID27034_20190719_T155304.json
- 94.948203 seconds (1.30 G allocations: 69.455 GiB, 9.47% gc time)
-  ^@time run_enumeration(request_message_file)
-/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID40619_20190722_T173543.json
+94.948203 seconds (1.30 G allocations: 69.455 GiB, 9.47% gc time)
 ```
 
-response_enumeration_PID19906_20190720_T195112
-----------------------------------------------
+ocaml_request_enumeration_PID27039_20190719_T155306
+---------------------------------------------------
+
+test command:
+```
+❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID27039_20190719_T155306.json
+```
 
 >6min in julia, 8s in ocaml (see julia_v_ocaml_speedtest2.txt)
 
-before any optimizations (note, running with ocaml_request_enumeration_PID27034_20190719_T155304 in parallel):
+before any optimizations (note, running with ocaml_request_enumeration_PID27034_20190719_T155304 in parallel), T2:
 ```
-❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID27039_20190719_T155306.json
-@time for result in generator(args...)
 381.788591 seconds (1.93 G allocations: 104.542 GiB, 3.36% gc time)
-/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID19906_20190720_T195112.json
 ```
-after a75313dee15506a24bb9937e8de5fc4d67a042f7:
+after a75313dee15506a24bb9937e8de5fc4d67a042f7, T1 and T2 over 2 sessions:
 ```
-❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID27039_20190719_T155306.json
 364.932885 seconds (4.13 G allocations: 223.375 GiB, 8.27% gc time)
-  ^@time for result in generator(args...)
 366.894658 seconds (4.14 G allocations: 223.641 GiB, 8.25% gc time)
-  ^@time run_enumeration(request_message_file)
-/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID9596_20190722_T094758.json
 ```
 ```
-❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID27039_20190719_T155306.json
 356.781747 seconds (3.97 G allocations: 214.368 GiB, 9.03% gc time)
-  ^@time for result in generator(args...)
 358.796908 seconds (3.97 G allocations: 214.634 GiB, 9.01% gc time)
-  ^@time run_enumeration(request_message_file)
-/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID9697_20190722_T095946.json
 ```
-after 0faaf18d14eed9f6bc40e9993cbb8e3017355ed1:
+after 0faaf18d14eed9f6bc40e9993cbb8e3017355ed1, T1 and T2:
 ```
-❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID27039_20190719_T155306.json
-
 269.430770 seconds (4.29 G allocations: 223.980 GiB, 9.90% gc time)
 272.325908 seconds (4.29 G allocations: 224.318 GiB, 9.85% gc time)
-  ^@time run_enumeration(request_message_file)
-/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID39518_20190722_T171755.json
 ```
-after a3d18f79b5dbaee4c750e2f74a49cac73992213b:
+after a3d18f79b5dbaee4c750e2f74a49cac73992213b, T1 and T2:
 ```
-❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID27039_20190719_T155306.json
 289.711500 seconds (4.14 G allocations: 220.997 GiB, 11.64% gc time)
 291.897993 seconds (4.15 G allocations: 221.266 GiB, 11.60% gc time)
-  ^@time run_enumeration(request_message_file)
-/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID41693_20190722_T175001.json
 ```
 
 benchmark1.jl
