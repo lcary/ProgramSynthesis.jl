@@ -114,6 +114,14 @@ after a3d18f79b5dbaee4c750e2f74a49cac73992213b:
   ^@time run_enumeration(request_message_file)
 /Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID40519_20190722_T173314.json
 ```
+after a94520432b1e99ebaddab8615db0749598401ebe:
+```
+❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID26993_20190719_T155300.json
+  0.953247 seconds (1.89 M allocations: 98.253 MiB, 2.37% gc time)
+  3.386845 seconds (7.95 M allocations: 400.740 MiB, 4.64% gc time)
+  ^@time run_enumeration(request_message_file)
+/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID46849_20190722_T221817.json
+```
 
 ocaml_request_enumeration_PID27008_20190719_T155300
 ---------------------------------------------------
@@ -185,6 +193,22 @@ after a3d18f79b5dbaee4c750e2f74a49cac73992213b:
   4.540733 seconds (24.29 M allocations: 1.261 GiB, 6.12% gc time)
   ^@time run_enumeration(request_message_file)
 /Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID40572_20190722_T173346.json
+```
+after a94520432b1e99ebaddab8615db0749598401ebe:
+```
+❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID27008_20190719_T155300.json
+  2.456591 seconds (18.92 M allocations: 1021.341 MiB, 6.05% gc time)
+  4.694774 seconds (24.44 M allocations: 1.266 GiB, 5.93% gc time)
+  ^@time run_enumeration(request_message_file)
+/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID46617_20190722_T221648.json
+```
+after bacb2a7a8a38a0973b7fa8cb3b6f06a51c909366:
+```
+❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID27008_20190719_T155300.json
+  2.483610 seconds (18.84 M allocations: 1015.842 MiB, 6.14% gc time)
+  4.654759 seconds (24.36 M allocations: 1.261 GiB, 6.30% gc time)
+  ^@time run_enumeration(request_message_file)
+/Users/lcary/w/mit/DreamCore.jl/messages/response_enumeration_PID50393_20190723_T075348.json
 ```
 
 ocaml_request_enumeration_PID27034_20190719_T155304
@@ -802,4 +826,56 @@ mean:
 TrialEstimate(85.862 μs)
 maximum:
 TrialEstimate(35.884 ms)
+```
+after a94520432b1e99ebaddab8615db0749598401ebe:
+```
+❯ julia --project perf/benchmark3.jl
+BenchmarkTools.Trial
+  params: BenchmarkTools.Parameters
+    seconds: Float64 5.0
+    samples: Int64 10000
+    evals: Int64 1
+    overhead: Float64 0.0
+    gctrial: Bool true
+    gcsample: Bool false
+    time_tolerance: Float64 0.05
+    memory_tolerance: Float64 0.01
+  times: Array{Float64}((10000,)) [71450.0, 71486.0, 71530.0, 71547.0, 71593.0, 71604.0, 71605.0, 71615.0, 71617.0, 71675.0  …  2.35171e6, 2.36103e6, 2.36525e6, 2.38108e6, 2.48257e6, 2.49156e6, 2.61078e6, 4.26561e6, 9.90922e6, 3.80245e7]
+  gctimes: Array{Float64}((10000,)) [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0  …  2.2527e6, 2.2687e6, 2.26891e6, 2.28951e6, 2.33603e6, 2.30222e6, 2.39278e6, 4.0527e6, 9.77994e6, 3.79067e7]
+  memory: Int64 69952
+  allocs: Int64 1252
+minimum:
+TrialEstimate(71.450 μs)
+median:
+TrialEstimate(73.484 μs)
+mean:
+TrialEstimate(88.512 μs)
+maximum:
+TrialEstimate(38.025 ms)
+```
+after bacb2a7a8a38a0973b7fa8cb3b6f06a51c909366:
+```
+❯ julia --project perf/benchmark3.jl
+BenchmarkTools.Trial
+  params: BenchmarkTools.Parameters
+    seconds: Float64 5.0
+    samples: Int64 10000
+    evals: Int64 1
+    overhead: Float64 0.0
+    gctrial: Bool true
+    gcsample: Bool false
+    time_tolerance: Float64 0.05
+    memory_tolerance: Float64 0.01
+  times: Array{Float64}((10000,)) [71177.0, 71410.0, 71418.0, 71427.0, 71450.0, 71459.0, 71498.0, 71513.0, 71521.0, 71523.0  …  2.17883e6, 2.20941e6, 2.22405e6, 2.26426e6, 2.33974e6, 2.52692e6, 2.55003e6, 2.55316e6, 9.4524e6, 3.85289e7]
+  gctimes: Array{Float64}((10000,)) [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0  …  2.08918e6, 2.11925e6, 2.1359e6, 2.17659e6, 2.23767e6, 2.41591e6, 2.4015e6, 2.44396e6, 9.35224e6, 3.84121e7]
+  memory: Int64 69808
+  allocs: Int64 1250
+minimum:
+TrialEstimate(71.177 μs)
+median:
+TrialEstimate(72.931 μs)
+mean:
+TrialEstimate(86.374 μs)
+maximum:
+TrialEstimate(38.529 ms)
 ```
