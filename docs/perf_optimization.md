@@ -430,6 +430,32 @@ TrialEstimate(9.943 ms)
 maximum:
 TrialEstimate(67.890 ms)
 ```
+after a6cb34bddc0d5a8d25e7e4d1c2793dda0892b4d8:
+```
+❯ julia --project perf/benchmark1.jl
+BenchmarkTools.Trial
+  params: BenchmarkTools.Parameters
+    seconds: Float64 5.0
+    samples: Int64 10000
+    evals: Int64 1
+    overhead: Float64 0.0
+    gctrial: Bool true
+    gcsample: Bool false
+    time_tolerance: Float64 0.05
+    memory_tolerance: Float64 0.01
+  times: Array{Float64}((503,)) [8.13995e6, 8.193e6, 8.25309e6, 8.25497e6, 8.25548e6, 8.26158e6, 8.2644e6, 8.33644e6, 8.35435e6, 8.36508e6  …  1.34091e7, 1.34406e7, 1.3532e7, 1.36861e7, 1.38207e7, 1.45572e7, 1.48643e7, 1.52867e7, 2.13777e7, 4.44901e7]
+  gctimes: Array{Float64}((503,)) [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0  …  2.78294e6, 1.41514e6, 1.60934e6, 1.38012e6, 2.679e6, 1.69975e6, 0.0, 1.89576e6, 1.13919e7, 3.57553e7]
+  memory: Int64 7164672
+  allocs: Int64 124200
+minimum:
+TrialEstimate(8.140 ms)
+median:
+TrialEstimate(9.633 ms)
+mean:
+TrialEstimate(9.937 ms)
+maximum:
+TrialEstimate(44.490 ms)
+```
 
 benchmark2.jl
 -------------
@@ -563,6 +589,32 @@ mean:
 TrialEstimate(997.307 ms)
 maximum:
 TrialEstimate(1.026 s)
+```
+after a3d18f79b5dbaee4c750e2f74a49cac73992213b:
+```
+❯ julia --project perf/benchmark2.jl
+BenchmarkTools.Trial
+  params: BenchmarkTools.Parameters
+    seconds: Float64 5.0
+    samples: Int64 10000
+    evals: Int64 1
+    overhead: Float64 0.0
+    gctrial: Bool true
+    gcsample: Bool false
+    time_tolerance: Float64 0.05
+    memory_tolerance: Float64 0.01
+  times: Array{Float64}((5,)) [1.01251e9, 1.0238e9, 1.07422e9, 1.08511e9, 1.09869e9]
+  gctimes: Array{Float64}((5,)) [5.78005e7, 6.5488e7, 7.21054e7, 9.13673e7, 1.32985e8]
+  memory: Int64 911594112
+  allocs: Int64 15901701
+minimum:
+TrialEstimate(1.013 s)
+median:
+TrialEstimate(1.074 s)
+mean:
+TrialEstimate(1.059 s)
+maximum:
+TrialEstimate(1.099 s)
 ```
 
 benchmark3.jl
@@ -724,4 +776,30 @@ mean:
 TrialEstimate(91.298 μs)
 maximum:
 TrialEstimate(33.968 ms)
+```
+after a3d18f79b5dbaee4c750e2f74a49cac73992213b:
+```
+❯ julia --project perf/benchmark3.jl
+BenchmarkTools.Trial
+  params: BenchmarkTools.Parameters
+    seconds: Float64 5.0
+    samples: Int64 10000
+    evals: Int64 1
+    overhead: Float64 0.0
+    gctrial: Bool true
+    gcsample: Bool false
+    time_tolerance: Float64 0.05
+    memory_tolerance: Float64 0.01
+  times: Array{Float64}((10000,)) [70636.0, 70727.0, 70747.0, 70771.0, 70777.0, 70810.0, 70821.0, 70839.0, 70848.0, 70849.0  …  2.1472e6, 2.15192e6, 2.16535e6, 2.18402e6, 2.36212e6, 2.46261e6, 2.52076e6, 2.66956e6, 9.37321e6, 3.58843e7]
+  gctimes: Array{Float64}((10000,)) [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0  …  2.06305e6, 2.06161e6, 2.08302e6, 2.09001e6, 2.27445e6, 2.36534e6, 2.41932e6, 2.5836e6, 9.21288e6, 3.57697e7]
+  memory: Int64 69952
+  allocs: Int64 1252
+minimum:
+TrialEstimate(70.636 μs)
+median:
+TrialEstimate(72.251 μs)
+mean:
+TrialEstimate(85.862 μs)
+maximum:
+TrialEstimate(35.884 ms)
 ```
