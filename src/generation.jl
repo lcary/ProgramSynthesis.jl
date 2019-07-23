@@ -218,9 +218,9 @@ end
 end
 
 function get_new_env(type::TypeField, env::Array{TypeField,1})
-    new_env = Array{TypeField,1}()
-    push!(new_env, type)
-    append!(new_env, env)
+    new_env = Array{TypeField,1}(undef, length(env) + 1)
+    new_env[1] = type
+    new_env[2:end] = env
     return new_env
 end
 
