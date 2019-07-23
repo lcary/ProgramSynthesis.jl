@@ -217,20 +217,22 @@ end
     end
 end
 
+function get_new_env(type::TypeField, env::Array{TypeField,1})
+    new_env = Array{TypeField,1}()
+    push!(new_env, type)
+    append!(new_env, env)
+    return new_env
+end
+
 @resumable function process_arrow(
         grammar::Grammar,
         context::Context, env::Array{TypeField,1},
         type::TypeField, upper_bound::Float64,
         lower_bound::Float64, depth::Int)
-    lhs = type.arguments[1]
-    rhs = type.arguments[2]
-    new_env = Array{TypeField,1}()
-    push!(new_env, lhs)
-    append!(new_env, env)
-
+    env = get_new_env(type.arguments[1], env)
     for result in generator(
-            grammar, context, new_env,
-            rhs, upper_bound, lower_bound, depth)
+            grammar, context, env,
+            type.arguments[2], upper_bound, lower_bound, depth)
         program = Abstraction(result.program)
         @yield Result(result.prior, program, result.context)
     end
