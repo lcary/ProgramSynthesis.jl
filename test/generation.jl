@@ -9,7 +9,7 @@ using DreamCore.Generation: generator,
                             Candidate,
                             InvalidStateException,
                             update_log_probability,
-                            final_candidates,
+                            finalize_candidates!,
                             get_candidate,
                             get_variable_candidate,
                             update_log_probability
@@ -275,7 +275,7 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
             @test round(new_c.log_probability, digits=4) == -2.3979
         end
     end
-    @testset "test final_candidates" begin
+    @testset "test finalize_candidates" begin
         data = JSON.parsefile(TEST_FILE2)
         l = 0.0
         data["DSL"]["productions"] = [
@@ -306,13 +306,13 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
         push!(candidates, c2)
         push!(candidates, c3)
 
-        results = final_candidates(candidates)
-        @test length(results) == 3
-        @test round(results[1].log_probability, digits=4) == -1.0986
-        @test round(results[2].log_probability, digits=4) == -1.0986
-        @test round(results[3].log_probability, digits=4) == -1.0986
+        finalize_candidates!(candidates)
+
+        @test round(candidates[1].log_probability, digits=4) == -1.0986
+        @test round(candidates[2].log_probability, digits=4) == -1.0986
+        @test round(candidates[3].log_probability, digits=4) == -1.0986
     end
-    @testset "test final_candidates batch" begin
+    @testset "test finalize_candidates   batch" begin
         data = JSON.parsefile(TEST_FILE2)
         l = 0.0
         data["DSL"]["productions"] = [
@@ -348,7 +348,7 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
             c += 3
         end
 
-        results = final_candidates(candidates)
-        @test length(results) == 999
+        finalize_candidates!(candidates)
+        @test length(candidates) == 999
     end
 end

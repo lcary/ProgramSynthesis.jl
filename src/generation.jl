@@ -69,12 +69,11 @@ function update_log_probability(z::Float64, c::Candidate)::Candidate
     return Candidate(new_l, c.type, c.program, c.context)
 end
 
-function final_candidates(
-        candidates::Array{Candidate,1})::Array{Candidate,1}
+function finalize_candidates!(candidates::Array{Candidate,1})
     z::Float64 = lse([c.log_probability for c in candidates])
-    f = curry(update_log_probability, z)
-    final_candidates::Array{Candidate,1} = map(f, candidates)
-    return final_candidates
+    for (index, c) in enumerate(candidates)
+        candidates[index] = update_log_probability(z, c)
+    end
 end
 
 function get_candidates!(
@@ -130,7 +129,9 @@ function build_candidates(
         throw(NoCandidates)
     end
 
-    return final_candidates(candidates)
+    finalize_candidates!(candidates)
+
+    return candidates
 end
 
 # TODO: rename log_probability
