@@ -302,7 +302,6 @@ function unify(
         return context
     end
     if !t1.is_polymorphic && !t2.is_polymorphic
-        msg = string("Types are not equal: ", t1, " != ", t2)
         return UNIFICATION_FAILURE
     end
     # TODO: add unit test for occurs
@@ -320,7 +319,6 @@ function unify(
         return extend(context, t2.value, t1)
     end
     if t1.constructor != t2.constructor
-        msg = string("Types are not equal: ", t1, " != ", t2)
         return UNIFICATION_FAILURE
     end
     k = context
