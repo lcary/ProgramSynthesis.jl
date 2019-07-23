@@ -205,7 +205,10 @@ function constructor_apply(type::TypeField, context::Context)
     if !type.is_polymorphic
         return type
     end
-    args = [apply(x, context) for x in type.arguments]
+    args = Array{TypeField,1}(undef, length(type.arguments))
+    for (index, a) in enumerate(type.arguments)
+        args[index] = apply(a, context)
+    end
     return TypeField(type.constructor, args)
 end
 
