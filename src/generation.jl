@@ -231,8 +231,7 @@ end
             grammar, context, new_env,
             rhs, upper_bound, lower_bound, depth)
         program = Abstraction(result.program)
-        r = Result(result.prior, program, result.context)
-        @yield r
+        @yield Result(result.prior, program, result.context)
     end
 end
 
@@ -241,8 +240,7 @@ end
         context::Context, env::Array{TypeField,1},
         type::TypeField, upper_bound::Float64,
         lower_bound::Float64, depth::Int)
-    candidates = build_candidates(grammar, type, context, env)
-    for candidate in candidates
+    for candidate in build_candidates(grammar, type, context, env)
         if valid(candidate, upper_bound)
             for r in process_candidate(
                     grammar, context, env,
@@ -270,8 +268,7 @@ end
             candidate.program, func_args, new_upper, new_lower,
             new_depth, arg_index, candidate.program)
         l = result.prior + candidate.log_probability
-        r = Result(l, result.program, result.context)
-        @yield r
+        @yield Result(l, result.program, result.context)
     end
 end
 
@@ -341,8 +338,7 @@ end
                 new_func, outer_args, new_upper, new_lower,
                 depth, new_arg_index, func)
             l = new_result.prior + prev_result.prior
-            r = Result(l, new_result.program, new_result.context)
-            @yield r
+            @yield Result(l, new_result.program, new_result.context)
         end
     end
 end
