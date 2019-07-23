@@ -136,6 +136,11 @@ e8d997c:
 0.942853 seconds (2.22 M allocations: 110.496 MiB, 3.55% gc time)
 3.307319 seconds (8.23 M allocations: 408.895 MiB, 5.71% gc time)
 ```
+8cdd7ce (ResumableFunctions):
+```
+0.800475 seconds (1.31 M allocations: 69.896 MiB, 1.62% gc time)
+3.130675 seconds (7.33 M allocations: 369.273 MiB, 4.73% gc time)
+```
 
 ocaml_request_enumeration_PID27008_20190719_T155300
 ---------------------------------------------------
@@ -256,6 +261,11 @@ e8d997c:
 2.121765 seconds (10.22 M allocations: 659.305 MiB, 5.85% gc time)
 4.271650 seconds (15.67 M allocations: 930.462 MiB, 5.87% gc time)
 ```
+8cdd7ce (ResumableFunctions):
+```
+1.620817 seconds (8.69 M allocations: 568.865 MiB, 5.70% gc time)
+3.738126 seconds (14.15 M allocations: 841.001 MiB, 5.82% gc time)
+```
 
 ocaml_request_enumeration_PID27034_20190719_T155304
 ---------------------------------------------------
@@ -325,6 +335,11 @@ after a3d18f79b5dbaee4c750e2f74a49cac73992213b, T2:
 66.886507 seconds (516.50 M allocations: 36.477 GiB, 8.57% gc time)
 69.265900 seconds (522.36 M allocations: 36.761 GiB, 8.45% gc time)
 ```
+8cdd7ce (ResumableFunctions):
+```
+37.888585 seconds (485.88 M allocations: 33.585 GiB, 10.94% gc time)
+40.193846 seconds (491.75 M allocations: 33.870 GiB, 10.68% gc time)
+```
 
 ocaml_request_enumeration_PID27039_20190719_T155306
 ---------------------------------------------------
@@ -373,6 +388,11 @@ after a3d18f79b5dbaee4c750e2f74a49cac73992213b, T1 and T2:
 ```
 218.751266 seconds (1.69 G allocations: 119.709 GiB, 8.31% gc time)
 221.039737 seconds (1.70 G allocations: 119.974 GiB, 8.28% gc time)
+```
+8cdd7ce (ResumableFunctions):
+```
+125.481979 seconds (1.59 G allocations: 110.372 GiB, 10.62% gc time)
+127.684052 seconds (1.60 G allocations: 110.638 GiB, 10.54% gc time)
 ```
 
 benchmark1.jl
