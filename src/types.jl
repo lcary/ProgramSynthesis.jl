@@ -27,12 +27,12 @@ const ARROW = "->"
 @enum TYPE constructor=1 variable=2
 
 struct TypeField
-    constructor::Union{String, Nothing}
+    constructor::String
     arguments::Array{TypeField,1}
-    index::Union{Int, Nothing}
+    index::Int
     is_polymorphic::Bool
     type::TYPE
-    value::Union{Int, Nothing}
+    value::Int
 end
 
 function split_arguments(a::Array{TypeField,1})::Array{TypeField}
@@ -45,16 +45,16 @@ end
 
 function TypeField(c, args, index)
     is_polymorphic = any([i.is_polymorphic for i in args])
-    return TypeField(c, args, index, is_polymorphic, constructor, nothing)
+    return TypeField(c, args, index, is_polymorphic, constructor, -1)
 end
 
 function TypeField(c::String, a::Array{TypeField,1})
     args = split_arguments(a)
-    return TypeField(c, args, nothing)
+    return TypeField(c, args, -1)
 end
 
 function TypeField(c::String, a::Tuple{TypeField,TypeField})
-    return TypeField(c, [a[1], [a[2]]], nothing)
+    return TypeField(c, [a[1], [a[2]]], -1)
 end
 
 TypeField(c::String) = TypeField(c, Array{TypeField,1}())
@@ -63,13 +63,13 @@ function TypeField(data::Dict{String,Any})
     return TypeField(
         data["constructor"],
         [TypeField(a) for a in data["arguments"]],
-        getoptional(data, "index"),
+        getoptional(data, "index", -1),
     )
 end
 
 function TypeField(val::Int)
     args = Array{TypeField,1}()
-    return TypeField(nothing, args, nothing, true, variable, val)
+    return TypeField("", args, -1, true, variable, val)
 end
 
 const tint = TypeField("int")
