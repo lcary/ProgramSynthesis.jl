@@ -224,6 +224,10 @@ function get_new_env(type::TypeField, env::Array{TypeField,1})
     return new_env
 end
 
+function abstract_result(r::Result)::Result
+    return Result(r.prior, Abstraction(r.program), r.context)
+end
+
 @resumable function process_arrow(
         grammar::Grammar,
         context::Context, env::Array{TypeField,1},
@@ -233,8 +237,7 @@ end
     for result in generator(
             grammar, context, env,
             type.arguments[2], upper_bound, lower_bound, depth)
-        program = Abstraction(result.program)
-        @yield Result(result.prior, program, result.context)
+        @yield abstract_result(result)
     end
 end
 
@@ -254,6 +257,11 @@ end
     end
 end
 
+function candidate_result(r::Result, c::Candidate)::Result
+    l = r.prior + c.log_probability
+    return Result(l, r.program, r.context)
+end
+
 @resumable function process_candidate(
         grammar::Grammar,
         context::Context, env::Array{TypeField,1},
@@ -270,9 +278,12 @@ end
             grammar, candidate.context, env,
             candidate.program, func_args, new_upper, new_lower,
             new_depth, arg_index, candidate.program)
-        l = result.prior + candidate.log_probability
-        @yield Result(l, result.program, result.context)
+        @yield candidate_result(result, candidate)
     end
+end
+
+function end_result(func::Program, context::Context)::Result
+    return Result(0.0, func, context)
 end
 
 @resumable function appgenerator(
@@ -285,7 +296,7 @@ end
     if !stop(upper_bound, depth)
         if func_args == []
             if lower_bound <= 0.0 && upper_bound > 0.0
-                @yield Result(0.0, func, context)
+                @yield end_result(func, context)
             end
         else
             for r in recurse_generator(
@@ -320,6 +331,11 @@ end
     end
 end
 
+function combined_result(prev_result::Result, new_result::Result)::Result
+    l = new_result.prior + prev_result.prior
+    return Result(l, new_result.program, new_result.context)
+end
+
 @resumable function recurse_appgenerator(
         grammar::Grammar,
         context::Context, env::Array{TypeField,1},
@@ -340,8 +356,7 @@ end
                 grammar, prev_result.context, env,
                 new_func, outer_args, new_upper, new_lower,
                 depth, new_arg_index, func)
-            l = new_result.prior + prev_result.prior
-            @yield Result(l, new_result.program, new_result.context)
+            @yield combined_result(prev_result, new_result)
         end
     end
 end
