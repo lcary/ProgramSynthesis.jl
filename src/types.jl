@@ -83,12 +83,7 @@ const t1 = TypeField(1)
 const t2 = TypeField(2)
 const t3 = TypeField(3)
 
-function is_arrow(t::TypeField)::Bool
-    if t.type == constructor
-        return t.constructor == ARROW
-    end
-    return false
-end
+is_arrow(t::TypeField)::Bool = t.type == constructor && t.constructor == ARROW
 
 arrow(arg::TypeField) = arg
 
