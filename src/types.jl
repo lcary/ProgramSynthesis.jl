@@ -26,7 +26,7 @@ const ARROW = "->"
 
 @enum TYPE constructor=1 variable=2
 
-mutable struct TypeField
+struct TypeField
     constructor::Union{String, Nothing}
     arguments::Array{TypeField,1}
     index::Union{Int, Nothing}

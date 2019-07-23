@@ -4,14 +4,14 @@ using ..Types
 
 export Problem, Example
 
-mutable struct Example
+struct Example
     inputs
     output
 end
 
 Example(data) = Example(data["inputs"], data["output"])
 
-mutable struct Problem
+struct Problem
     name::String
     type::TypeField
     examples::Array{Example,1}

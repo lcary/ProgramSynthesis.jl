@@ -7,7 +7,7 @@ using ..Utils
 
 export Grammar, Production
 
-mutable struct Production
+struct Production
     program::Program
     log_probability::Float64
 end
@@ -17,7 +17,7 @@ function Production(data::Dict{String,Any}, primitives::Dict{String,Program})
     return Production(program, data["logProbability"])
 end
 
-mutable struct Grammar
+struct Grammar
     primitives::Dict{String,Program}
     productions::Array{Production,1}
     log_variable::Float64
