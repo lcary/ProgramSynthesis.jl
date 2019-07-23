@@ -286,6 +286,10 @@ function end_result(func::Program, context::Context)::Result
     return Result(0.0, func, context)
 end
 
+function bounds_check(lower_bound::Float64, upper_bound::Float64)
+    return lower_bound <= 0.0 && upper_bound > 0.0
+end
+
 @resumable function appgenerator(
         grammar::Grammar,
         context::Context, env::Array{TypeField,1},
@@ -294,8 +298,8 @@ end
         depth::Int, argument_index::Int,
         original_func::Program)
     if !stop(upper_bound, depth)
-        if func_args == []
-            if lower_bound <= 0.0 && upper_bound > 0.0
+        if isempty(func_args)
+            if bounds_check(lower_bound, upper_bound)
                 @yield end_result(func, context)
             end
         else
