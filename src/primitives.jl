@@ -68,6 +68,7 @@ function base_primitives()::Dict{String,Program}
     math_type = arrow(tint, tint, tint)
     comparison_type = arrow(tint, tint, tbool)
 
+    _index = (x) -> (y) -> y[x + 1]  # adjust for julia's 1-based indexing
     _unfold = (n) -> throw(NotImplementedError)
     _range = (n) -> Array{Int,1}(range(1, length=n))
     _fold = (n) -> throw(NotImplementedError)
@@ -88,7 +89,7 @@ function base_primitives()::Dict{String,Program}
         "7" => Primitive("7", tint, 7),
         "8" => Primitive("8", tint, 8),
         "9" => Primitive("9", tint, 9),
-        "index" => Primitive("index", index_type, (x) -> (y) -> y[x]),
+        "index" => Primitive("index", index_type, _index),
         "length" => Primitive("length", length_type, (x) -> length(x)),
         "map" => Primitive("map", map_type, (x) -> (y) -> map(x, y)),
         "unfold" => Primitive("unfold", unfold_type, _unfold),

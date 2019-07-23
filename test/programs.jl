@@ -113,6 +113,20 @@ using DreamCore.Types: arrow, t0, t1, tlist
             )
         )
         @test str(p5) == "(lambda (cons (length empty) \$0))"
+
+        p6 = Abstraction(
+            Application(
+                Application(
+                    parse_program("index", primitives),
+                    Application(
+                        parse_program("car", primitives),
+                        DeBruijnIndex(0)
+                    )
+                ),
+                DeBruijnIndex(0)
+            )
+        )
+        @test str(p6) == "(lambda (index (car \$0) \$0))"
     end
     @testset "try_solve length problem with length" begin
         primitives = base_primitives()
@@ -500,5 +514,62 @@ using DreamCore.Types: arrow, t0, t1, tlist
         @test log_likelihood == -Inf
         @test data["examples"][1]["inputs"] == [[16,3,9,1,7,12,5,12,4,14]]
         @test data["examples"][1]["output"] == [1,7,12,5,12,4,14]
+    end
+    @testset "solve headth_element_of_tail" begin
+        data = Dict(
+            "name" => "headth_element_of_tail",
+            "request" => Dict(
+                "constructor" => "->",
+                "arguments" => [
+                    Dict("constructor" => "list", "arguments" => [
+                        Dict("constructor" => "int", "arguments" => [])
+                    ]),
+                    Dict("constructor" => "int", "arguments" => [])
+                ]
+            ),
+            "maximumFrontier" => 10,
+            "examples" => [
+                Dict(
+                    "inputs" => [[6,1,7,3,5,8,2]],
+                    "output" => 2
+                ),
+                Dict(
+                    "inputs" => [[3,6,6,7,5]],
+                    "output" => 7
+                ),
+                Dict(
+                    "inputs" => [[3,5,6,3,2,7,0]],
+                    "output" => 3
+                ),
+                Dict(
+                    "inputs" => [[1,6,7,1,2]],
+                    "output" => 6
+                ),
+                Dict(
+                    "inputs" => [[1,4]],
+                    "output" => 4
+                )
+            ]
+        )
+        problem = Problem(data)
+
+        primitives = base_primitives()
+
+        program = Abstraction(
+            Application(
+                Application(
+                    parse_program("index", primitives),
+                    Application(
+                        parse_program("car", primitives),
+                        DeBruijnIndex(0)
+                    )
+                ),
+                DeBruijnIndex(0)
+            )
+        )
+
+        success, log_likelihood = try_solve(program, problem)
+        @test success
+        @test log_likelihood == 0.0
     end
 end
