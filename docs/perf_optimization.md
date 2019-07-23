@@ -131,6 +131,11 @@ e8d997c:
 0.172249 seconds (510.88 k allocations: 27.305 MiB, 3.97% gc time)
 3.191169 seconds (7.81 M allocations: 386.443 MiB, 5.68% gc time)
 ```
+30b8a48 (required regression to use channels):
+```
+0.942853 seconds (2.22 M allocations: 110.496 MiB, 3.55% gc time)
+3.307319 seconds (8.23 M allocations: 408.895 MiB, 5.71% gc time)
+```
 
 ocaml_request_enumeration_PID27008_20190719_T155300
 ---------------------------------------------------
@@ -246,6 +251,11 @@ e8d997c:
 0.771682 seconds (7.85 M allocations: 526.781 MiB, 7.60% gc time)
 3.605504 seconds (14.60 M allocations: 858.672 MiB, 5.85% gc time)
 ```
+30b8a48 (required regression to use channels):
+```
+2.121765 seconds (10.22 M allocations: 659.305 MiB, 5.85% gc time)
+4.271650 seconds (15.67 M allocations: 930.462 MiB, 5.87% gc time)
+```
 
 ocaml_request_enumeration_PID27034_20190719_T155304
 ---------------------------------------------------
@@ -310,6 +320,11 @@ after a3d18f79b5dbaee4c750e2f74a49cac73992213b, T2:
 19.933620 seconds (464.57 M allocations: 32.697 GiB, 18.83% gc time)
 22.957007 seconds (471.71 M allocations: 33.040 GiB, 17.11% gc time)
 ```
+30b8a48 (required regression to use channels):
+```
+66.886507 seconds (516.50 M allocations: 36.477 GiB, 8.57% gc time)
+69.265900 seconds (522.36 M allocations: 36.761 GiB, 8.45% gc time)
+```
 
 ocaml_request_enumeration_PID27039_20190719_T155306
 ---------------------------------------------------
@@ -353,6 +368,11 @@ after a3d18f79b5dbaee4c750e2f74a49cac73992213b, T1 and T2:
 ```
 64.921158 seconds (1.60 G allocations: 112.671 GiB, 16.37% gc time)
 67.690494 seconds (1.60 G allocations: 112.992 GiB, 15.92% gc time)
+```
+30b8a48 (required regression to use channels):
+```
+218.751266 seconds (1.69 G allocations: 119.709 GiB, 8.31% gc time)
+221.039737 seconds (1.70 G allocations: 119.974 GiB, 8.28% gc time)
 ```
 
 benchmark1.jl
