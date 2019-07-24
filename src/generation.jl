@@ -510,6 +510,8 @@ function program_generator(
         cost = state.cost
         depth = state.depth
 
+        println("DEBUG: current state: ", state)
+
         if out_of_bounds(cost, upper_bound, depth)
             continue
         end
@@ -517,12 +519,12 @@ function program_generator(
         if program_is_finished(path, skeleton)
             if bounds_check(lower_bound, cost, upper_bound)
                 put!(channel, Result(cost, skeleton, context))
-                continue
             end
+            continue
         end
 
-        for (child, l) in children(state)
-            error("Not implemented")
+        for state in children(state)
+            push!(stack, state)
         end
     end
 end
@@ -536,7 +538,6 @@ function children(state::State)
     depth = state.depth
 
     type = follow_path(skeleton, path).type
-    println(state, type)
     children = Array{State,1}()
 
     if Types.is_arrow(type)
@@ -574,7 +575,7 @@ function children(state::State)
 end
 
 function state_violates_symmetry(state::State)
-    error("Not implemented!")
+    error("Not implemented yet")
 end
 
 function apply_unknown(e::Program, t::TypeField)
