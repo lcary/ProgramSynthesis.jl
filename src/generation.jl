@@ -7,7 +7,7 @@ using ..Grammars
 using ..Programs
 using ..Utils
 
-export generator, Result, generator
+export generator, Result, generator, program_generator
 
 struct Result
     prior::Float64
@@ -228,6 +228,7 @@ function generator(
         type, upper_bound, lower_bound, max_depth))
 end
 
+# TODO: deprecate in favor of iteration
 function generator(
         channel::Channel,
         grammar::Grammar,
@@ -258,6 +259,7 @@ function abstract_result(r::Result)::Result
     return Result(r.prior, Abstraction(r.program), r.context)
 end
 
+# TODO: deprecate in favor of iteration
 function process_arrow(
         channel::Channel,
         grammar::Grammar,
@@ -273,6 +275,7 @@ function process_arrow(
     end
 end
 
+# TODO: deprecate in favor of iteration
 function process_candidates(
         channel::Channel,
         grammar::Grammar,
@@ -293,6 +296,7 @@ function candidate_result(r::Result, c::Candidate)::Result
     return Result(l, r.program, r.context)
 end
 
+# TODO: deprecate in favor of iteration
 function process_candidate(
         channel::Channel,
         grammar::Grammar,
@@ -323,6 +327,7 @@ function bounds_check(lower_bound::Float64, upper_bound::Float64)
     return lower_bound <= 0.0 && upper_bound > 0.0
 end
 
+# TODO: deprecate in favor of iteration
 function appgenerator(
         channel::Channel,
         grammar::Grammar,
@@ -344,6 +349,7 @@ function appgenerator(
         end
     end
 end
+
 
 function recurse_generator(
         channel::Channel,
@@ -372,6 +378,7 @@ function combined_result(prev_result::Result, new_result::Result)::Result
     return Result(l, new_result.program, new_result.context)
 end
 
+# TODO: deprecate in favor of iteration
 function recurse_appgenerator(
         channel::Channel,
         grammar::Grammar,
@@ -396,6 +403,109 @@ function recurse_appgenerator(
         for new_result in gen
             put!(channel, combined_result(prev_result, new_result))
         end
+    end
+end
+
+struct ProgramState
+    context::Context
+    env::Array{TypeField,1}
+    type::TypeField
+    func::Program
+    func_args::Array{TypeField,1}
+    upper_bound::Float64
+    lower_bound::Float64
+    depth::Int
+    argument_index::Int
+end
+
+"""
+Program Generator as Iterative Model
+------------------------------------
+
+Do a depth-first search of programs that can be generated for a
+given request type within some upper and lower description length bounds.
+
+To do iteration, we use a stack of partial/hole programs, finalizing once both
+(1) the description length of the program has exceeded the bounds, and
+(2) all partial/incomplete parts of the program have been completed.
+
+As a point of reference, a similar algorithm is implemented by
+the `best_first_enumeration` function in dreamcoder's solvers/enumeration.ml
+code, where a partial program is represented by the `best_first_state`.
+
+Terms:
+  - `skeleton::Program`: skeleton structure of program being created.
+  - `context::Context`: type context for program.
+  - `path::Array{TypeField}`: path to next "?"/partial part of program.
+  - `cost::Float64`: negative log probability of program.
+
+Example: (λ (+ ? ?))
+
+Steps to solve (`log_p` = log probability, `+??`=`(+??)`=`(App(+,?),?)`):
+  1.  ?     log_p=0
+  2a. 1     log_p=-log2
+  2b. + ? ?     log_p=-log2
+  3.  + ? ?     log_p=-log2
+  4a. + 1 ?     log_p=-log2-log2
+  4b. + (+ ? ?) ?       log_p=-log2-log2
+  5a. + 1 1             log_p=-log2-log2-log2
+  5b. + 1 (+ ? ?)       log_p=-log2-log2-log2
+  5c. + (+ ? ?) ?       log_p=-log2-log2
+
+From the above steps, each step of adding a concrete program (e.g. "1")
+adds to the log probability. Each step of adding a partial program ("?")
+means a skeleton is added back to the stack for additional exploration,
+in which other programs will be inserted to the space occupied by the "?"
+in subsequent iterations.
+
+In graphical form:
+         ?
+        /  \\
+       / \\  x
+      /\\ \\
+     /\\/\\\\
+  [ x /\\/\\ x ]  <-- yield all x's (leafs)
+
+From the above small graph of "/\\"s which represents the search space,
+when all of the partial/hole ("?") programs are completed for a skeleton,
+we consider the skeleton program to be complete. Completed programs are
+considered leaf nodes in the graph that is the search space. The brackets
+in the graph depict the point at which the bounds for the mean description
+length of the programs have been passed, and is the point where all completed
+programs should be returned to the outside world.
+
+In this enumeration algorithm, programs are returned via a `Channel`
+in order to avoid running out of memory, since accumulating the programs
+in an array would be infeasable in the case where we are searching over
+billions of programs. Assumption: the stack size should grow logarithmically
+with the depth of the search space, so it would require absurdly deep spaces
+to run out of memory during iteration.
+"""
+function program_generator(
+        channel::Channel, grammar::Grammar,
+        context::Context, env::Array{TypeField,1},
+        type::TypeField, upper_bound::Float64,
+        lower_bound::Float64, max_depth::Int)
+
+    stack = Stack{State}()
+
+    initial = ProgramState(
+        context, env, type, Hole(), Array{TypeField,1}(),
+        upper_bound, lower_bound, max_depth, 0)
+
+    push!(stack, initial)
+
+    while !isempty(stack)
+        state = pop!(stack)
+        context = state.context
+        env = state.env
+        type = state.type
+        func = state.func
+        func_args = state.func_args
+        upper_bound = state.upper_bound
+        lower_bound = state.lower_bound
+        depth = state.depth
+        argument_index = state.argument_index
     end
 end
 

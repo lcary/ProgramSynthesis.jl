@@ -20,6 +20,8 @@ export Program,
        APPLICATION,
        INDEX,
        INVENTED,
+       HOLE,
+       Hole,
        json_format,
        evaluate,
        str,
@@ -32,6 +34,7 @@ export Program,
     APPLICATION = 3
     INDEX = 4
     INVENTED = 5
+    HOLE = 6
 end
 
 struct Program
@@ -70,6 +73,10 @@ end
 # TODO: add type inference ( # type::TypeField )
 function Invented(body::Program)::Program
     return Program("", nothing, body, nothing, -1, INVENTED)
+end
+
+function Hole()::Program
+    return Program("?", nothing, nothing, nothing, -1, HOLE)
 end
 
 function str(p::Program, isfunc::Bool=false)::String
