@@ -211,7 +211,7 @@ function violates_symmetry(
     return false
 end
 
-function stop(upper_bound::Float64, depth::Int)::Bool
+function out_of_bounds(upper_bound::Float64, depth::Int)::Bool
     if upper_bound < 0.0 || depth <= 1
         return true
     else
@@ -235,7 +235,7 @@ function generator(
         context::Context, env::Array{TypeField,1},
         type::TypeField, upper_bound::Float64,
         lower_bound::Float64, depth::Int)
-    if !stop(upper_bound, depth)
+    if !out_of_bounds(upper_bound, depth)
         if Types.is_arrow(type)
             process_arrow(
                 channel, grammar, context, env,
@@ -336,7 +336,7 @@ function appgenerator(
         upper_bound::Float64, lower_bound::Float64,
         depth::Int, argument_index::Int,
         original_func::Program)
-    if !stop(upper_bound, depth)
+    if !out_of_bounds(upper_bound, depth)
         if isempty(func_args)
             if bounds_check(lower_bound, upper_bound)
                 put!(channel, end_result(func, context))
@@ -406,16 +406,19 @@ function recurse_appgenerator(
     end
 end
 
+@enum PATH LEFT=0 RIGHT=1
+
 struct ProgramState
     context::Context
     env::Array{TypeField,1}
     type::TypeField
-    func::Program
+    program::Program
     func_args::Array{TypeField,1}
     upper_bound::Float64
     lower_bound::Float64
     depth::Int
     argument_index::Int
+    path::Array{Union{PATH,TypeField},1}
 end
 
 """
@@ -491,22 +494,44 @@ function program_generator(
 
     initial = ProgramState(
         context, env, type, Hole(), Array{TypeField,1}(),
-        upper_bound, lower_bound, max_depth, 0)
+        upper_bound, lower_bound, max_depth, 0,
+        Array{Union{PATH,TypeField},1}())
 
     push!(stack, initial)
 
     while !isempty(stack)
+
         state = pop!(stack)
+
         context = state.context
         env = state.env
         type = state.type
-        func = state.func
+        program = state.program
         func_args = state.func_args
         upper_bound = state.upper_bound
         lower_bound = state.lower_bound
         depth = state.depth
         argument_index = state.argument_index
+        path = state.path
+
+        if out_of_bounds(upper_bound, depth)
+            continue
+        end
+
+        # Base case
+        if program_generation_finished(path, program)
+            if bounds_check(lower_bound, upper_bound)
+                put!(channel, end_result(program, context))
+                continue
+            end
+        end
+
     end
+end
+
+function program_generation_finished(
+        path::Array{Union{PATH,TypeField},1}, program)
+    return isempty(path) && program.ptype != HOLE
 end
 
 function program_generator(
