@@ -487,7 +487,7 @@ function program_generator(
         type::TypeField, upper_bound::Float64,
         lower_bound::Float64, max_depth::Int)
 
-    stack = Stack{State}()
+    stack = Stack{ProgramState}()
 
     initial = ProgramState(
         context, env, type, Hole(), Array{TypeField,1}(),
@@ -507,6 +507,15 @@ function program_generator(
         depth = state.depth
         argument_index = state.argument_index
     end
+end
+
+function program_generator(
+        grammar::Grammar, env::Array{TypeField,1},
+        type::TypeField, upper_bound::Float64,
+        lower_bound::Float64, max_depth::Int)
+    return Channel((channel) -> program_generator(
+        channel, grammar, Context(), env,
+        type, upper_bound, lower_bound, max_depth))
 end
 
 end
