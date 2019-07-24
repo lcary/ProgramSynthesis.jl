@@ -20,8 +20,8 @@ export Program,
        APPLICATION,
        INDEX,
        INVENTED,
-       HOLE,
-       Hole,
+       UNKNOWN,
+       Unknown,
        json_format,
        evaluate,
        str,
@@ -34,7 +34,7 @@ export Program,
     APPLICATION = 3
     INDEX = 4
     INVENTED = 5
-    HOLE = 6
+    UNKNOWN = 6
 end
 
 struct Program
@@ -75,8 +75,8 @@ function Invented(body::Program)::Program
     return Program("", nothing, body, nothing, -1, INVENTED)
 end
 
-function Hole()::Program
-    return Program("?", nothing, nothing, nothing, -1, HOLE)
+function Unknown(type::TypeField)::Program
+    return Program("?", type, nothing, nothing, -1, UNKNOWN)
 end
 
 function str(p::Program, isfunc::Bool=false)::String
@@ -111,6 +111,7 @@ Base.show(io::IO, p::Program) = print(io, str(p))
 
 json_format(p::Program)::String = str(p)
 
+# TODO: use iteration instead of recursion
 function getfunc(p::Program)::Program
     t = p.ptype
     if t == ABSTRACTION
@@ -125,6 +126,7 @@ function getfunc(p::Program)::Program
     end
 end
 
+# TODO: use iteration instead of recursion
 function evaluate(p::Program, env)
     t = p.ptype
     if t == ABSTRACTION

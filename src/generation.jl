@@ -211,7 +211,7 @@ function violates_symmetry(
     return false
 end
 
-function out_of_bounds(upper_bound::Float64, depth::Int)::Bool
+function stop(upper_bound::Float64, depth::Int)::Bool
     if upper_bound < 0.0 || depth <= 1
         return true
     else
@@ -235,7 +235,7 @@ function generator(
         context::Context, env::Array{TypeField,1},
         type::TypeField, upper_bound::Float64,
         lower_bound::Float64, depth::Int)
-    if !out_of_bounds(upper_bound, depth)
+    if !stop(upper_bound, depth)
         if Types.is_arrow(type)
             process_arrow(
                 channel, grammar, context, env,
@@ -336,7 +336,7 @@ function appgenerator(
         upper_bound::Float64, lower_bound::Float64,
         depth::Int, argument_index::Int,
         original_func::Program)
-    if !out_of_bounds(upper_bound, depth)
+    if !stop(upper_bound, depth)
         if isempty(func_args)
             if bounds_check(lower_bound, upper_bound)
                 put!(channel, end_result(func, context))
@@ -408,17 +408,19 @@ end
 
 @enum PATH LEFT=0 RIGHT=1
 
-struct ProgramState
+PathType = Union{TypeField,PATH}
+Path = Array{PathType,1}
+
+function get_env(path::Path)
+    return reversed(filter((x) -> isa(x, TypeField), path))
+end
+
+struct State
+    skeleton::Program
     context::Context
-    env::Array{TypeField,1}
-    type::TypeField
-    program::Program
-    func_args::Array{TypeField,1}
-    upper_bound::Float64
-    lower_bound::Float64
+    path::Path
+    cost::Float64
     depth::Int
-    argument_index::Int
-    path::Array{Union{PATH,TypeField},1}
 end
 
 """
@@ -490,48 +492,145 @@ function program_generator(
         type::TypeField, upper_bound::Float64,
         lower_bound::Float64, max_depth::Int)
 
-    stack = Stack{ProgramState}()
+    stack = Stack{State}()
 
-    initial = ProgramState(
-        context, env, type, Hole(), Array{TypeField,1}(),
-        upper_bound, lower_bound, max_depth, 0,
-        Array{Union{PATH,TypeField},1}())
+    path = Array{Union{PATH,TypeField},1}()
+    initial = State(Unknown(type), context, path, 0.0, max_depth)
 
     push!(stack, initial)
 
+    # also check time with each iteration
     while !isempty(stack)
 
         state = pop!(stack)
 
+        skeleton = state.skeleton
         context = state.context
-        env = state.env
-        type = state.type
-        program = state.program
-        func_args = state.func_args
-        upper_bound = state.upper_bound
-        lower_bound = state.lower_bound
-        depth = state.depth
-        argument_index = state.argument_index
         path = state.path
+        cost = state.cost
+        depth = state.depth
 
-        if out_of_bounds(upper_bound, depth)
+        if out_of_bounds(cost, upper_bound, depth)
             continue
         end
 
-        # Base case
-        if program_generation_finished(path, program)
-            if bounds_check(lower_bound, upper_bound)
-                put!(channel, end_result(program, context))
+        if program_is_finished(path, skeleton)
+            if bounds_check(lower_bound, cost, upper_bound)
+                put!(channel, Result(cost, skeleton, context))
                 continue
             end
         end
 
+        for (child, l) in children(state)
+            error("Not implemented")
+        end
     end
 end
 
-function program_generation_finished(
+# TODO: should entire state be passed?
+function children(state::State)
+    skeleton = state.skeleton
+    context = state.context
+    path = state.path
+    cost = state.cost
+    depth = state.depth
+
+    type = follow_path(skeleton, path).type
+    println(state, type)
+    children = Array{State,1}()
+
+    if Types.is_arrow(type)
+        new_program = Abstraction(Unknown(type.arguments[2]))
+        skeleton = modify_skeleton(skeleton, new_program, path)
+        path = get_new_path(path, type.arguments[1])
+        state = State(skeleton, context, path, cost, depth)
+        push!(children, state)
+    else
+        env = get_env(path)
+        for c in build_candidates(grammar, type, context, env)
+            # TODO: refactor, extract to method
+            func_args = function_arguments(c.type)
+            new_upper = upper_bound + c.log_probability
+            new_lower = lower_bound + c.log_probability
+            new_depth = depth - 1
+            arg_index = 0
+            if isempty(func_args)
+                new_skeleton = modify_skeleton(skeleton, c.program, path)
+                new_path = unwind_path(path)
+                new_cost = cost - c.log_probability
+                state = State(new_skeleton, c.context, new_path, cost)
+                push!(children, state)
+            else
+                new_program = foldl(apply_unknown, func_args; init=c)
+                new_skeleton = modify_skeleton(skeleton, new_program, path)
+                new_cost = cost - c.log_probability
+                new_path = get_new_path(path, func_args[2:end])
+                state = State(new_skeleton, c.context, new_path, cost, depth)
+                push!(children, state)
+            end
+        end
+    end
+    return filter(!state_violates_symmetry, children)
+end
+
+function state_violates_symmetry(state::State)
+    error("Not implemented!")
+end
+
+function apply_unknown(e::Program, t::TypeField)
+    return Application(e, Unknown(t))
+end
+
+function get_new_path(path::Path, type::TypeField)
+    new_path = copy(path)
+    push!(new_path, type)
+    return new_path
+end
+
+function get_new_path(path::Path, typearray::Array{TypeField,1})
+    new_path = copy(path)
+    for a in typearray
+        push!(new_path, LEFT)
+    end
+    push!(new_path, RIGHT)
+    return new_path
+end
+
+function modify_skeleton(p1::Program, p2::Program, path::Path)
+    if is_initial_state(p1, path)
+        return p2
+    else
+        error("Not implemented yet")
+    end
+end
+
+function follow_path(p::Program, path::Path)
+    if is_initial_state(p, path)
+        return p
+    else
+        error("Not implemented yet")
+    end
+end
+
+function is_initial_state(p::Program, path::Path)
+    return isempty(path) && p.ptype == UNKNOWN
+end
+
+function bounds_check(lower_bound::Float64, cost::Float64, upper_bound::Float64)
+    return lower_bound <= cost < upper_bound
+end
+
+function out_of_bounds(cost::Float64, upper_bound::Float64, depth::Int)::Bool
+    if upper_bound < cost || depth <= 1
+        return true
+    else
+        return false
+    end
+end
+
+function program_is_finished(
         path::Array{Union{PATH,TypeField},1}, program)
-    return isempty(path) && program.ptype != HOLE
+    return isempty(path) && program.ptype != UNKNOWN
 end
 
 function program_generator(
