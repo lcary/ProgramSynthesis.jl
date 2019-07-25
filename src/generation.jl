@@ -522,7 +522,7 @@ function program_generator(
 
         if program_is_finished(path, skeleton)
             if bounds_check(lower_bound, cost, upper_bound)
-                put!(channel, Result(cost, skeleton, context))
+                put!(channel, Result(-cost, skeleton, context))
             end
             continue
         end
