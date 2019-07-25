@@ -527,13 +527,12 @@ function program_generator(
             continue
         end
 
-        for state in children(state, grammar)
-            push!(stack, state)
-        end
+        add_children!(stack, state, grammar)
     end
 end
 
-function children(state::State, grammar::Grammar)::Array{State,1}
+function add_children!(
+        stack::Stack{State}, state::State, grammar::Grammar)
     skeleton = state.skeleton
     context = state.context
     path = state.path
@@ -541,27 +540,27 @@ function children(state::State, grammar::Grammar)::Array{State,1}
     depth = state.depth
 
     type = follow_path(path, skeleton).type
-    children = Array{State,1}()
 
     if Types.is_arrow(type)
         new_program = Abstraction(Unknown(type.arguments[2]))
         skeleton = modify_skeleton(path, skeleton, new_program)
         path = get_new_path(path, type.arguments[1])
         state = State(skeleton, context, path, cost, depth)
-        push!(children, state)
+        if !state_violates_symmetry(state)
+            push!(stack, state)
+        end
     else
         env = get_env(path)
         depth = depth - 1
         for c in build_candidates(grammar, type, context, env)
-            process_candidate!(c, state, depth, env, children)
+            process_candidate!(stack, c, state, depth, env)
         end
     end
-    return filter(!state_violates_symmetry, children)
 end
 
 function process_candidate!(
-        c::Candidate, state::State, new_depth::Int, env::Array{TypeField,1},
-        children::Array{State,1})
+        stack::Stack{State},
+        c::Candidate, state::State, new_depth::Int, env::Array{TypeField,1})
     skeleton = state.skeleton
     context = state.context
     path = state.path
@@ -573,14 +572,18 @@ function process_candidate!(
         path = unwind_path(path)
         cost = cost - c.log_probability
         state = State(skeleton, c.context, path, cost, new_depth)
-        push!(children, state)
+        if !state_violates_symmetry(state)
+            push!(stack, state)
+        end
     else
         new_program = foldl(apply_unknown, func_args; init=c)
         skeleton = modify_skeleton(path, skeleton, new_program)
         cost = cost - c.log_probability
         path = get_new_path(path, func_args[2:end])
         state = State(skeleton, c.context, path, cost, new_depth)
-        push!(children, state)
+        if !state_violates_symmetry(state)
+            push!(stack, state)
+        end
     end
 end
 
@@ -591,9 +594,6 @@ function unwind_path(path::Path)
         if isempty(p)
             return p
         elseif isa(p[1], TypeField)
-            # new_p = Array{Path,1}()
-            # push!(new_p, p[1])
-            # push!(new_p, unwind(p[2:end]))
             return unwind(p[2:end])
         elseif p[1] == RIGHT
             return unwind(p[2:end])
@@ -609,16 +609,12 @@ end
 
 # TODO: unit tests
 function state_violates_symmetry(state::State)
-    # println("testing symmetry...")
     # TODO: convert recursion to iteration
     function r(p::Program)
         if p.ptype == ABSTRACTION
             return r(p.func)
         elseif p.ptype == APPLICATION
-            # println("checking if APPLICATION violates_symmetry")
             f, args = application_parse(p)
-            # println("f: ", f)
-            # println("args: ", args)
             return r(f) || any(r(a) for a in args) || arg_violation(args, f)
         else
             return false
@@ -628,10 +624,7 @@ function state_violates_symmetry(state::State)
 end
 
 function arg_violation(args::Array{Program,1}, orig_func::Program)
-    # println("checking arg_violations...")
     for (index, f) in enumerate(args)
-        # println(index)
-        # println(f)
         if violates_symmetry(index - 1, orig_func, f)
             return true
         end
@@ -680,7 +673,6 @@ end
 # TODO: unit tests
 # TODO: convert recursion to iteration
 function modify_skeleton(path::Path, p1::Program, p2::Program)
-    # println("modify_skeleton(): ", path, " ", p1, " ", p2)
     if is_initial_path(path, p1)
         return p2
     elseif is_abstract_path(path, p1)
@@ -700,7 +692,6 @@ end
 # TODO: unit tests
 # TODO: convert recursion to iteration
 function follow_path(path::Path, p::Program)::Program
-    # println("follow_path(): ", path, " ", p)
     if is_initial_path(path, p)
         return p
     elseif is_abstract_path(path, p)
