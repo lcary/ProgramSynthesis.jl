@@ -490,6 +490,7 @@ billions of programs. Assumption: the stack size should grow logarithmically
 with the depth of the search space, so it would require absurdly deep spaces
 to run out of memory during iteration.
 """
+# TODO: remove unused env arg
 function program_generator(
         channel::Channel, grammar::Grammar,
         context::Context, env::Array{TypeField,1},
@@ -633,19 +634,14 @@ function arg_violation(args::Array{Program,1}, orig_func::Program)
 end
 
 # TODO: move to programs.ml
-# TODO: unit tests
-# TODO: convert recursion to iteration
 function application_parse(p::Program)
+    args = Array{Program,1}()
     # TODO: Convert if-equals-check to function
-    if p.ptype == APPLICATION
-        args = Array{Program,1}()
-        f, x = application_parse(p.func)
-        append!(args, x)
-        push!(args, p.args)
-        return f, args
-    else
-        return p, Array{Program,1}()
+    while p.ptype == APPLICATION
+        pushfirst!(args, p.args)
+        p = p.func
     end
+    return p, args
 end
 
 function apply_unknown(c::Candidate, t::TypeField)
@@ -741,6 +737,7 @@ function program_is_finished(
     return isempty(path) && program.ptype != UNKNOWN
 end
 
+# TODO: remove unused env arg
 function program_generator(
         grammar::Grammar, env::Array{TypeField,1},
         type::TypeField, upper_bound::Float64,
