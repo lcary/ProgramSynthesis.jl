@@ -599,9 +599,8 @@ function unwind_path(path::Path)
         elseif p[1] == RIGHT
             return unwind(p[2:end])
         elseif p[1] == LEFT
-            new_p = Path()
-            push!(new_p, RIGHT)
-            append!(new_p, p[2:end])
+            new_p = p[2:end]
+            pushfirst!(new_p, RIGHT)
             return new_p
         end
     end
