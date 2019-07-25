@@ -514,7 +514,7 @@ function program_generator(
         cost = state.cost
         depth = state.depth
 
-        println("DEBUG: current state: ", state)
+        # println("DEBUG: current state: ", state)
 
         if out_of_bounds(cost, upper_bound, depth)
             continue
@@ -565,7 +565,7 @@ function children(state::State, grammar::Grammar)::Array{State,1}
                 new_path = unwind_path(path)
                 # println("unwinded path.")
                 new_cost = cost - c.log_probability
-                state = State(new_skeleton, c.context, new_path, cost, depth)
+                state = State(new_skeleton, c.context, new_path, new_cost, depth)
                 push!(children, state)
             else
                 new_program = foldl(apply_unknown, func_args; init=c)
@@ -574,7 +574,7 @@ function children(state::State, grammar::Grammar)::Array{State,1}
                 # println("modification complete: ", typeof(new_skeleton), " - ", new_skeleton)
                 new_cost = cost - c.log_probability
                 new_path = get_new_path(path, func_args[2:end])
-                state = State(new_skeleton, c.context, new_path, cost, depth)
+                state = State(new_skeleton, c.context, new_path, new_cost, depth)
                 push!(children, state)
             end
         end

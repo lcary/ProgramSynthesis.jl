@@ -27,6 +27,7 @@ grammar = Grammar(data["DSL"], base_primitives())
 problems = map(Problem, data["tasks"])
 type = problems[1].type
 env = Array{TypeField}([])
+println(type)
 r = program_generator(grammar, env, type, 3.0, 1.5, 99)
 for i in r
     println(i)
