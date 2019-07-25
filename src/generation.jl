@@ -154,8 +154,8 @@ struct InvalidStateType <: Exception end
 
 # TODO: unit tests
 function violates_symmetry(
-        argument_index::Int, original_func::Program, program::Program,
-        primitives::Dict{String,Program})::Bool
+        argument_index::Int, original_func::Program,
+        program::Program)::Bool
     if original_func.ptype != PRIMITIVE
         return false
     end
@@ -388,9 +388,7 @@ function recurse_appgenerator(
         depth::Int, argument_index::Int,
         original_func::Program, outer_args::Array{TypeField,1},
         prev_result::Result)
-    if !violates_symmetry(
-            argument_index, original_func,
-            prev_result.program, grammar.primitives)
+    if !violates_symmetry(argument_index, original_func, prev_result.program)
         new_func = Application(func, prev_result.program)
         new_upper = upper_bound + prev_result.prior
         new_lower = lower_bound + prev_result.prior
@@ -411,8 +409,14 @@ end
 PathType = Union{TypeField,PATH}
 Path = Array{PathType,1}
 
-function get_env(path::Path)
-    return reversed(filter((x) -> isa(x, TypeField), path))
+function get_env(path::Path)::Array{TypeField,1}
+    env = Array{TypeField,1}()
+    for p in path
+        if isa(p, TypeField)
+            push!(env, p)
+        end
+    end
+    return reverse(env)
 end
 
 struct State
@@ -523,47 +527,51 @@ function program_generator(
             continue
         end
 
-        for state in children(state)
+        for state in children(state, grammar)
             push!(stack, state)
         end
     end
 end
 
 # TODO: should entire state be passed?
-function children(state::State)
+function children(state::State, grammar::Grammar)::Array{State,1}
     skeleton = state.skeleton
     context = state.context
     path = state.path
     cost = state.cost
     depth = state.depth
 
-    type = follow_path(skeleton, path).type
+    type = follow_path(path, skeleton).type
     children = Array{State,1}()
 
     if Types.is_arrow(type)
         new_program = Abstraction(Unknown(type.arguments[2]))
-        skeleton = modify_skeleton(skeleton, new_program, path)
+        # println("modifying skeleton 1...")
+        skeleton = modify_skeleton(path, skeleton, new_program)
+        # println("modification complete: ", typeof(skeleton), " - ", skeleton)
         path = get_new_path(path, type.arguments[1])
         state = State(skeleton, context, path, cost, depth)
         push!(children, state)
     else
         env = get_env(path)
+        depth = depth - 1
         for c in build_candidates(grammar, type, context, env)
             # TODO: refactor, extract to method
             func_args = function_arguments(c.type)
-            new_upper = upper_bound + c.log_probability
-            new_lower = lower_bound + c.log_probability
-            new_depth = depth - 1
-            arg_index = 0
             if isempty(func_args)
-                new_skeleton = modify_skeleton(skeleton, c.program, path)
+                # println("modifying skeleton 2...")
+                new_skeleton = modify_skeleton(path, skeleton, c.program)
+                # println("modification complete: ", typeof(new_skeleton), " - ", new_skeleton)
                 new_path = unwind_path(path)
+                # println("unwinded path.")
                 new_cost = cost - c.log_probability
-                state = State(new_skeleton, c.context, new_path, cost)
+                state = State(new_skeleton, c.context, new_path, cost, depth)
                 push!(children, state)
             else
                 new_program = foldl(apply_unknown, func_args; init=c)
-                new_skeleton = modify_skeleton(skeleton, new_program, path)
+                # println("modifying skeleton 3...")
+                new_skeleton = modify_skeleton(path, skeleton, new_program)
+                # println("modification complete: ", typeof(new_skeleton), " - ", new_skeleton)
                 new_cost = cost - c.log_probability
                 new_path = get_new_path(path, func_args[2:end])
                 state = State(new_skeleton, c.context, new_path, cost, depth)
@@ -574,12 +582,82 @@ function children(state::State)
     return filter(!state_violates_symmetry, children)
 end
 
-function state_violates_symmetry(state::State)
-    error("Not implemented yet")
+# TODO: unit tests
+function unwind_path(path::Path)
+    # TODO: convert recursion to iteration
+    function unwind(p)
+        if isempty(p)
+            return p
+        elseif isa(p[1], TypeField)
+            # new_p = Array{Path,1}()
+            # push!(new_p, p[1])
+            # push!(new_p, unwind(p[2:end]))
+            return unwind(p[2:end])
+        elseif p[1] == RIGHT
+            return unwind(p[2:end])
+        elseif p[1] == LEFT
+            new_p = Path()
+            push!(new_p, RIGHT)
+            append!(new_p, p[2:end])
+            return new_p
+        end
+    end
+    return reverse(unwind(reverse(path)))
 end
 
-function apply_unknown(e::Program, t::TypeField)
-    return Application(e, Unknown(t))
+# TODO: unit tests
+function state_violates_symmetry(state::State)
+    # println("testing symmetry...")
+    # TODO: convert recursion to iteration
+    function r(p::Program)
+        if p.ptype == ABSTRACTION
+            return r(p.func)
+        elseif p.ptype == APPLICATION
+            # println("checking if APPLICATION violates_symmetry")
+            f, args = application_parse(p)
+            # println("f: ", f)
+            # println("args: ", args)
+            return r(f) || any(r(a) for a in args) || arg_violation(args, f)
+        else
+            return false
+        end
+    end
+    return r(state.skeleton)
+end
+
+function arg_violation(args::Array{Program,1}, orig_func::Program)
+    # println("checking arg_violations...")
+    for (index, f) in enumerate(args)
+        # println(index)
+        # println(f)
+        if violates_symmetry(index - 1, orig_func, f)
+            return true
+        end
+    end
+    return false
+end
+
+# TODO: unit tests
+# TODO: convert recursion to iteration
+function application_parse(p::Program)
+    # TODO: Convert if-equals-check to function
+    if p.ptype == APPLICATION
+        args = Array{Program,1}()
+        f, x = application_parse(p.func)
+        append!(args, x)
+        push!(args, p.args)
+        return f, args
+    else
+        return p, Array{Program,1}()
+    end
+end
+
+function apply_unknown(c::Candidate, t::TypeField)
+    return apply_unknown(c.program, t)
+end
+
+function apply_unknown(p::Program, t::TypeField)
+    return Application(p, Unknown(t))
 end
 
 function get_new_path(path::Path, type::TypeField)
@@ -597,24 +675,59 @@ function get_new_path(path::Path, typearray::Array{TypeField,1})
     return new_path
 end
 
-function modify_skeleton(p1::Program, p2::Program, path::Path)
-    if is_initial_state(p1, path)
+# TODO: unit tests
+# TODO: convert recursion to iteration
+function modify_skeleton(path::Path, p1::Program, p2::Program)
+    # println("modify_skeleton(): ", path, " ", p1, " ", p2)
+    if is_initial_path(path, p1)
         return p2
+    elseif is_abstract_path(path, p1)
+        return Abstraction(modify_skeleton(path[2:end], p1.func, p2))
+    elseif is_left_path(path, p1)
+        return Application(modify_skeleton(path[2:end], p1.func, p2), p1.args)
+    elseif is_right_path(path, p1)
+        return Application(p1.func, modify_skeleton(path[2:end], p1.args, p2))
     else
-        error("Not implemented yet")
+        println("DEBUG: path     = ", string(path))
+        println("DEBUG: program1 = ", string(p1))
+        println("DEBUG: program2 = ", string(p2))
+        error("modify_skeleton(): unexpected state, unable to modify skeleton.")
     end
 end
 
-function follow_path(p::Program, path::Path)
-    if is_initial_state(p, path)
+# TODO: unit tests
+# TODO: convert recursion to iteration
+function follow_path(path::Path, p::Program)::Program
+    # println("follow_path(): ", path, " ", p)
+    if is_initial_path(path, p)
         return p
+    elseif is_abstract_path(path, p)
+        return follow_path(path[2:end], p.func)
+    elseif is_left_path(path, p)
+        return follow_path(path[2:end], p.func)
+    elseif is_right_path(path, p)
+        return follow_path(path[2:end], p.args)
     else
-        error("Not implemented yet")
+        println("DEBUG: path    = ", string(path))
+        println("DEBUG: program = ", string(p))
+        error("follow_path(): unexpected state, unable to resolve path.")
     end
 end
 
-function is_initial_state(p::Program, path::Path)
+function is_initial_path(path::Path, p::Program)
     return isempty(path) && p.ptype == UNKNOWN
+end
+
+function is_abstract_path(path::Path, p::Program)
+    return isa(path[1], TypeField) && p.ptype == ABSTRACTION
+end
+
+function is_left_path(path::Path, p::Program)
+    return path[1] == LEFT && p.ptype == APPLICATION
+end
+
+function is_right_path(path::Path, p::Program)
+    return path[1] == RIGHT && p.ptype == APPLICATION
 end
 
 function bounds_check(lower_bound::Float64, cost::Float64, upper_bound::Float64)
