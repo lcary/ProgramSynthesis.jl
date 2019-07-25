@@ -533,7 +533,6 @@ function program_generator(
     end
 end
 
-# TODO: should entire state be passed?
 function children(state::State, grammar::Grammar)::Array{State,1}
     skeleton = state.skeleton
     context = state.context
@@ -546,9 +545,7 @@ function children(state::State, grammar::Grammar)::Array{State,1}
 
     if Types.is_arrow(type)
         new_program = Abstraction(Unknown(type.arguments[2]))
-        # println("modifying skeleton 1...")
         skeleton = modify_skeleton(path, skeleton, new_program)
-        # println("modification complete: ", typeof(skeleton), " - ", skeleton)
         path = get_new_path(path, type.arguments[1])
         state = State(skeleton, context, path, cost, depth)
         push!(children, state)
@@ -556,30 +553,35 @@ function children(state::State, grammar::Grammar)::Array{State,1}
         env = get_env(path)
         depth = depth - 1
         for c in build_candidates(grammar, type, context, env)
-            # TODO: refactor, extract to method
-            func_args = function_arguments(c.type)
-            if isempty(func_args)
-                # println("modifying skeleton 2...")
-                new_skeleton = modify_skeleton(path, skeleton, c.program)
-                # println("modification complete: ", typeof(new_skeleton), " - ", new_skeleton)
-                new_path = unwind_path(path)
-                # println("unwinded path.")
-                new_cost = cost - c.log_probability
-                state = State(new_skeleton, c.context, new_path, new_cost, depth)
-                push!(children, state)
-            else
-                new_program = foldl(apply_unknown, func_args; init=c)
-                # println("modifying skeleton 3...")
-                new_skeleton = modify_skeleton(path, skeleton, new_program)
-                # println("modification complete: ", typeof(new_skeleton), " - ", new_skeleton)
-                new_cost = cost - c.log_probability
-                new_path = get_new_path(path, func_args[2:end])
-                state = State(new_skeleton, c.context, new_path, new_cost, depth)
-                push!(children, state)
-            end
+            process_candidate!(c, state, depth, env, children)
         end
     end
     return filter(!state_violates_symmetry, children)
+end
+
+function process_candidate!(
+        c::Candidate, state::State, new_depth::Int, env::Array{TypeField,1},
+        children::Array{State,1})
+    skeleton = state.skeleton
+    context = state.context
+    path = state.path
+    cost = state.cost
+
+    func_args = function_arguments(c.type)
+    if isempty(func_args)
+        skeleton = modify_skeleton(path, skeleton, c.program)
+        path = unwind_path(path)
+        cost = cost - c.log_probability
+        state = State(skeleton, c.context, path, cost, new_depth)
+        push!(children, state)
+    else
+        new_program = foldl(apply_unknown, func_args; init=c)
+        skeleton = modify_skeleton(path, skeleton, new_program)
+        cost = cost - c.log_probability
+        path = get_new_path(path, func_args[2:end])
+        state = State(skeleton, c.context, path, cost, new_depth)
+        push!(children, state)
+    end
 end
 
 # TODO: unit tests
