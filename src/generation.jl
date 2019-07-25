@@ -632,6 +632,7 @@ function arg_violation(args::Array{Program,1}, orig_func::Program)
     return false
 end
 
+# TODO: move to programs.ml
 # TODO: unit tests
 # TODO: convert recursion to iteration
 function application_parse(p::Program)

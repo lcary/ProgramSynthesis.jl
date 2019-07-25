@@ -152,6 +152,20 @@ using DreamCore.Types: arrow, t0, t1, tlist
         )
 
         @test str(p7) == "(lambda (+ (index (car \$0) (car ?)) ?))"
+
+        p8 = Abstraction(
+            Application(
+                Application(
+                    parse_program("*", primitives),
+                    parse_program("1", primitives)
+                ),
+                Application(
+                    parse_program("length", primitives),
+                    DeBruijnIndex(0)
+                )
+            )
+        )
+        @test str(p8) == "(lambda (* 1 (length \$0)))"
     end
     @testset "try_solve length problem with length" begin
         primitives = base_primitives()
