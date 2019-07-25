@@ -15,7 +15,8 @@ using DreamCore.Programs: evaluate,
                           ABSTRACTION,
                           APPLICATION,
                           INDEX,
-                          INVENTED
+                          INVENTED,
+                          Unknown
 using DreamCore.Problems: Problem
 using DreamCore.Primitives: base_primitives
 using DreamCore.Types: arrow, t0, t1, tlist
@@ -127,6 +128,30 @@ using DreamCore.Types: arrow, t0, t1, tlist
             )
         )
         @test str(p6) == "(lambda (index (car \$0) \$0))"
+
+        p7 = Abstraction(
+            Application(
+                Application(
+                    parse_program("+", primitives),
+                    Application(
+                        Application(
+                            parse_program("index", primitives),
+                            Application(
+                                parse_program("car", primitives),
+                                DeBruijnIndex(0)
+                            )
+                        ),
+                        Application(
+                            parse_program("car", primitives),
+                            Unknown(t0)
+                        )
+                    )
+                ),
+                Unknown(t0)
+            )
+        )
+
+        @test str(p7) == "(lambda (+ (index (car \$0) (car ?)) ?))"
     end
     @testset "try_solve length problem with length" begin
         primitives = base_primitives()
