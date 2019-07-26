@@ -583,23 +583,21 @@ function process_candidate(
     return State(skeleton, c.context, path, cost, new_depth)
 end
 
-# TODO: unit tests
-function unwind_path(path::Path)
-    # TODO: convert recursion to iteration
-    function unwind(p)
-        if isempty(p)
-            return p
-        elseif isa(p[1], TypeField)
-            return unwind(p[2:end])
-        elseif p[1] == RIGHT
-            return unwind(p[2:end])
-        elseif p[1] == LEFT
-            new_p = p[2:end]
-            pushfirst!(new_p, RIGHT)
-            return new_p
+function unwind_path(p::Path)
+    unwound = Path()
+    counter = length(p)
+    hitleft = false
+    while counter > 0
+        i = p[counter]
+        if hitleft
+            pushfirst!(unwound, i)
+        elseif i == LEFT
+            pushfirst!(unwound, RIGHT)
+            hitleft = true
         end
+        counter -= 1
     end
-    return reverse(unwind(reverse(path)))
+    return unwound
 end
 
 function state_violates_symmetry(state::State, child::Program)::Bool
