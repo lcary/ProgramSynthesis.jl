@@ -1,6 +1,7 @@
 module Generation
 
 using DataStructures
+using ResumableFunctions
 
 using ..Types
 using ..Grammars
@@ -497,8 +498,8 @@ with the depth of the search space, so it would require absurdly deep spaces
 to run out of memory during iteration.
 """
 # TODO: remove unused env arg
-function program_generator(
-        channel::Channel, grammar::Grammar,
+@resumable function program_generator(
+        grammar::Grammar,
         context::Context, env::Array{TypeField,1},
         type::TypeField, upper_bound::Float64,
         lower_bound::Float64, max_depth::Int)
@@ -529,7 +530,7 @@ function program_generator(
 
         if program_is_finished(path, skeleton)
             if bounds_check(lower_bound, cost, upper_bound)
-                put!(channel, Result(-cost, skeleton, context))
+                @yield Result(-cost, skeleton, context)
             end
             continue
         end
@@ -779,13 +780,15 @@ function program_is_finished(
 end
 
 # TODO: remove unused env arg
-function program_generator(
+@resumable function program_generator(
         grammar::Grammar, env::Array{TypeField,1},
         type::TypeField, upper_bound::Float64,
         lower_bound::Float64, max_depth::Int)
-    return Channel((channel) -> program_generator(
-        channel, grammar, Context(), env,
-        type, upper_bound, lower_bound, max_depth))
+    for i in program_generator(
+            grammar, Context(), env,
+            type, upper_bound, lower_bound, max_depth)
+        @yield i
+    end
 end
 
 end
