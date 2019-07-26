@@ -549,9 +549,7 @@ function add_children!(
         skeleton = modify_skeleton(path, skeleton, new_program)
         path = get_new_path(path, type.arguments[1])
         state = State(skeleton, context, path, cost, depth)
-        if !state_violates_symmetry(state)
-            push!(stack, state)
-        end
+        push!(stack, state)
     else
         env = get_env(path)
         depth = depth - 1
@@ -564,6 +562,11 @@ end
 function process_candidate!(
         stack::Stack{State},
         c::Candidate, state::State, new_depth::Int, env::Array{TypeField,1})
+
+    if state_violates_symmetry(state, c.program)
+        return
+    end
+
     skeleton = state.skeleton
     context = state.context
     path = state.path
@@ -573,21 +576,14 @@ function process_candidate!(
     if isempty(func_args)
         skeleton = modify_skeleton(path, skeleton, c.program)
         path = unwind_path(path)
-        cost = cost - c.log_probability
-        state = State(skeleton, c.context, path, cost, new_depth)
-        if !state_violates_symmetry(state)
-            push!(stack, state)
-        end
     else
         new_program = foldl(apply_unknown, func_args; init=c)
         skeleton = modify_skeleton(path, skeleton, new_program)
-        cost = cost - c.log_probability
         path = get_new_path(path, func_args[2:end])
-        state = State(skeleton, c.context, path, cost, new_depth)
-        if !state_violates_symmetry(state)
-            push!(stack, state)
-        end
     end
+    cost = cost - c.log_probability
+    state = State(skeleton, c.context, path, cost, new_depth)
+    push!(stack, state)
 end
 
 # TODO: unit tests
@@ -609,7 +605,60 @@ function unwind_path(path::Path)
     return reverse(unwind(reverse(path)))
 end
 
-# TODO: unit tests
+function state_violates_symmetry(state::State, child::Program)::Bool
+    parent = get_parent(state.path, state.skeleton)
+    if parent == nothing
+        return false
+    else
+        index = get_child_index(parent, state.path)
+        return violates_symmetry(index, getfunc(parent), child)
+    end
+end
+
+function get_child_index(p::Program, path::Path)
+    if p.ptype != APPLICATION
+        if length(path) == 0
+            return 0
+        else
+            return path[end] == LEFT ? 0 : 1
+        end
+    end
+    i = -1
+    # TODO: Convert if-equals-check to function
+    while p.ptype == APPLICATION
+        p = p.func
+        i += 1
+    end
+    return i
+end
+
+# TODO: more unit tests
+function get_parent(path::Path, p::Program)
+    last_apply = nothing
+    while !isempty(path)
+        if is_initial_path(path, p)
+            break
+        elseif is_abstract_path(path, p)
+            path = tail(path)
+            p = p.func
+        elseif p.ptype != APPLICATION
+            break
+        elseif is_left_path(path, p)
+            last_apply = p
+            path = tail(path)
+            p = p.func
+        elseif is_right_path(path, p)
+            last_apply = p
+            path = tail(path)
+            p = p.args
+        else
+            error("invalid path sent to get_parent has no end")
+        end
+    end
+    return last_apply
+end
+
+# TODO: deprecated, remove once tests are updated
 function state_violates_symmetry(state::State)
     # TODO: convert recursion to iteration
     function r(p::Program)
@@ -625,6 +674,7 @@ function state_violates_symmetry(state::State)
     return r(state.skeleton)
 end
 
+# TODO: deprecated, remove once tests are updated
 function arg_violation(args::Array{Program,1}, orig_func::Program)
     for (index, f) in enumerate(args)
         if violates_symmetry(index - 1, orig_func, f)
@@ -680,9 +730,6 @@ function modify_skeleton(path::Path, p1::Program, p2::Program)
     elseif is_right_path(path, p1)
         return Application(p1.func, modify_skeleton(tail(path), p1.args, p2))
     else
-        println("DEBUG: path     = ", string(path))
-        println("DEBUG: program1 = ", string(p1))
-        println("DEBUG: program2 = ", string(p2))
         error("modify_skeleton(): unexpected state, unable to modify skeleton.")
     end
 end
@@ -699,8 +746,6 @@ function follow_path(path::Path, p::Program)::Program
     elseif is_right_path(path, p)
         return follow_path(tail(path), p.args)
     else
-        println("DEBUG: path    = ", string(path))
-        println("DEBUG: program = ", string(p))
         error("follow_path(): unexpected state, unable to resolve path.")
     end
 end

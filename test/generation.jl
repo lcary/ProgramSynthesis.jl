@@ -22,7 +22,8 @@ using DreamCore.Generation: generator,
                             State,
                             Path,
                             LEFT,
-                            RIGHT
+                            RIGHT,
+                            get_parent
 using DreamCore.Types: tlist, tint, t0, t1, UNIFICATION_FAILURE
 using DreamCore.Utils: lse, allequal
 
@@ -452,8 +453,23 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
         )
         context = Context(3, [(2, tlist(tint)), (1, tint), (0, tint)])
         path = Path([tlist(tint), LEFT, RIGHT, RIGHT, RIGHT])
-        state = DreamCore.Generation.State(skeleton, context, path, 11.9894, 94)
+        state = State(skeleton, context, path, 11.9894, 94)
         result = state_violates_symmetry(state)
+        @test !result
+
+        parent = get_parent(path, skeleton)
+        @test isa(parent, Program)
+        @test str(parent) == "(car ?)"
+
+        child = Application(
+            parse_program("cons", primitives),
+            Unknown(t0)
+        )
+        result = state_violates_symmetry(state, child)
+        @test result
+
+        child = parse_program("+", primitives)
+        result = state_violates_symmetry(state, child)
         @test !result
 
         skeleton = Abstraction(
@@ -470,8 +486,27 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
         )
         context = Context(0, [])
         path = Path()
-        state = DreamCore.Generation.State(skeleton, context, path, 5.9894, 96)
+        state = State(skeleton, context, path, 5.9894, 96)
         result = state_violates_symmetry(state)
+        @test result
+
+        skeleton = Abstraction(
+            Application(
+                Application(
+                    parse_program("*", primitives),
+                    Unknown(tint)
+                ),
+                Application(
+                    parse_program("length", primitives),
+                    DeBruijnIndex(0)
+                )
+            )
+        )
+        child = parse_program("1", primitives)
+        context = Context(0, [])
+        path = Path([tlist(tint), LEFT, LEFT, RIGHT])
+        state = State(skeleton, context, path, 5.9894, 96)
+        result = state_violates_symmetry(state, child)
         @test result
     end
     @testset "test modify_skeleton complete program" begin
