@@ -655,7 +655,6 @@ end
 
 # TODO: deprecated, remove once tests are updated
 function state_violates_symmetry(state::State)
-    # TODO: convert recursion to iteration
     function r(p::Program)
         if p.ptype == ABSTRACTION
             return r(p.func)
@@ -729,20 +728,19 @@ function modify_skeleton(path::Path, p1::Program, p2::Program)
     end
 end
 
-# TODO: unit tests
-# TODO: convert recursion to iteration
 function follow_path(path::Path, p::Program)::Program
-    if is_initial_path(path, p)
-        return p
-    elseif is_abstract_path(path, p)
-        return follow_path(tail(path), p.func)
-    elseif is_left_path(path, p)
-        return follow_path(tail(path), p.func)
-    elseif is_right_path(path, p)
-        return follow_path(tail(path), p.args)
-    else
-        error("follow_path(): unexpected state, unable to resolve path.")
+    for i in path
+        if is_abstract_path(i, p)
+            p = p.func
+        elseif is_left_path(i, p)
+            p = p.func
+        elseif is_right_path(i, p)
+            p = p.args
+        else
+            error("follow_path(): unexpected state, unable to resolve path.")
+        end
     end
+    return p
 end
 
 function is_initial_path(path::Path, p::Program)
@@ -759,6 +757,18 @@ end
 
 function is_right_path(path::Path, p::Program)
     return path[1] == RIGHT && p.ptype == APPLICATION
+end
+
+function is_abstract_path(pathi::PathType, p::Program)
+    return isa(pathi, TypeField) && p.ptype == ABSTRACTION
+end
+
+function is_left_path(pathi::PathType, p::Program)
+    return pathi == LEFT && p.ptype == APPLICATION
+end
+
+function is_right_path(pathi::PathType, p::Program)
+    return pathi == RIGHT && p.ptype == APPLICATION
 end
 
 function bounds_check(lower_bound::Float64, cost::Float64, upper_bound::Float64)
