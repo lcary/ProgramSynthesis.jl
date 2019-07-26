@@ -408,8 +408,8 @@ end
 
 PathType = Union{TypeField,PATH}
 
-isLeft(i::PathType) = i == LEFT
-isRight(i::PathType) = i == RIGHT
+is_left(i::PathType) = i == LEFT
+is_right(i::PathType) = i == RIGHT
 
 Path = Array{PathType,1}
 
@@ -588,7 +588,7 @@ function process_candidate(
 end
 
 function unwind_path(p::Path)
-    last = findlast(isLeft, p)
+    last = findlast(is_left, p)
     if isnothing(last)
         return Path(undef, 0)
     end
@@ -609,10 +609,10 @@ end
 
 function get_child_index(p::Program, path::Path)
     if p.ptype != APPLICATION
-        if length(path) == 0
+        if isempty(path)
             return 0
         else
-            return path[end] == LEFT ? 0 : 1
+            return is_left(path[end]) ? 0 : 1
         end
     end
     i = -1
@@ -632,10 +632,10 @@ function get_parent(path::Path, p::Program)
             p = p.func
         elseif p.ptype != APPLICATION
             break
-        elseif is_left_path(i, p)
+        elseif is_left(i)
             last_apply = p
             p = p.func
-        elseif is_right_path(i, p)
+        elseif is_right(i)
             last_apply = p
             p = p.args
         else
@@ -739,16 +739,18 @@ function is_initial_path(path::Path, p::Program)
     return isempty(path) && p.ptype == UNKNOWN
 end
 
+# TODO: convert if-equals-checks to function calls for below funcs
+
 function is_abstract_path(path::Path, p::Program)
     return isa(path[1], TypeField) && p.ptype == ABSTRACTION
 end
 
 function is_left_path(path::Path, p::Program)
-    return path[1] == LEFT && p.ptype == APPLICATION
+    return is_left(path[1]) && p.ptype == APPLICATION
 end
 
 function is_right_path(path::Path, p::Program)
-    return path[1] == RIGHT && p.ptype == APPLICATION
+    return is_right(path[1]) && p.ptype == APPLICATION
 end
 
 function is_abstract_path(pathi::PathType, p::Program)
@@ -756,11 +758,11 @@ function is_abstract_path(pathi::PathType, p::Program)
 end
 
 function is_left_path(pathi::PathType, p::Program)
-    return pathi == LEFT && p.ptype == APPLICATION
+    return is_left(pathi) && p.ptype == APPLICATION
 end
 
 function is_right_path(pathi::PathType, p::Program)
-    return pathi == RIGHT && p.ptype == APPLICATION
+    return is_right(pathi) && p.ptype == APPLICATION
 end
 
 function bounds_check(lower_bound::Float64, cost::Float64, upper_bound::Float64)
