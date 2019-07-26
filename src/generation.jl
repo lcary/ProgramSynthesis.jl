@@ -608,7 +608,7 @@ function state_violates_symmetry(state::State, child::Program)::Bool
 end
 
 function get_child_index(p::Program, path::Path)
-    if p.ptype != APPLICATION
+    if !is_application(p.ptype)
         if isempty(path)
             return 0
         else
@@ -616,8 +616,7 @@ function get_child_index(p::Program, path::Path)
         end
     end
     i = -1
-    # TODO: Convert if-equals-check to function
-    while p.ptype == APPLICATION
+    while is_application(p.ptype)
         p = p.func
         i += 1
     end
@@ -630,7 +629,7 @@ function get_parent(path::Path, p::Program)
     for i in path
         if is_abstract_path(i, p)
             p = p.func
-        elseif p.ptype != APPLICATION
+        elseif !is_application(p.ptype)
             break
         elseif is_left(i)
             last_apply = p
@@ -648,9 +647,9 @@ end
 # TODO: deprecated, remove once tests are updated
 function state_violates_symmetry(state::State)
     function r(p::Program)
-        if p.ptype == ABSTRACTION
+        if is_abstraction(p.ptype)
             return r(p.func)
-        elseif p.ptype == APPLICATION
+        elseif is_application(p.ptype)
             f, args = application_parse(p)
             return r(f) || any(r(a) for a in args) || arg_violation(args, f)
         else
@@ -673,8 +672,7 @@ end
 # TODO: move to programs.ml
 function application_parse(p::Program)
     args = Array{Program,1}()
-    # TODO: Convert if-equals-check to function
-    while p.ptype == APPLICATION
+    while is_application(p.ptype)
         pushfirst!(args, p.args)
         p = p.func
     end
@@ -736,33 +734,31 @@ function follow_path(path::Path, p::Program)::Program
 end
 
 function is_initial_path(path::Path, p::Program)
-    return isempty(path) && p.ptype == UNKNOWN
+    return isempty(path) && is_unknown(p.ptype)
 end
 
-# TODO: convert if-equals-checks to function calls for below funcs
-
 function is_abstract_path(path::Path, p::Program)
-    return isa(path[1], TypeField) && p.ptype == ABSTRACTION
+    return isa(path[1], TypeField) && is_abstraction(p.ptype)
 end
 
 function is_left_path(path::Path, p::Program)
-    return is_left(path[1]) && p.ptype == APPLICATION
+    return is_left(path[1]) && is_application(p.ptype)
 end
 
 function is_right_path(path::Path, p::Program)
-    return is_right(path[1]) && p.ptype == APPLICATION
+    return is_right(path[1]) && is_application(p.ptype)
 end
 
 function is_abstract_path(pathi::PathType, p::Program)
-    return isa(pathi, TypeField) && p.ptype == ABSTRACTION
+    return isa(pathi, TypeField) && is_abstraction(p.ptype)
 end
 
 function is_left_path(pathi::PathType, p::Program)
-    return is_left(pathi) && p.ptype == APPLICATION
+    return is_left(pathi) && is_application(p.ptype)
 end
 
 function is_right_path(pathi::PathType, p::Program)
-    return is_right(pathi) && p.ptype == APPLICATION
+    return is_right(pathi) && is_application(p.ptype)
 end
 
 function bounds_check(lower_bound::Float64, cost::Float64, upper_bound::Float64)

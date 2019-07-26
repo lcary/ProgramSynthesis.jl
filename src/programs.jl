@@ -25,7 +25,13 @@ export Program,
        json_format,
        evaluate,
        str,
-       getfunc
+       getfunc,
+       is_abstraction,
+       is_application,
+       is_index,
+       is_invented,
+       is_primitive,
+       is_unknown
 
 @enum PROGRAMTYPE begin
     PROGRAM = 0
@@ -79,15 +85,28 @@ function Unknown(type::TypeField)::Program
     return Program("?", type, nothing, nothing, -1, UNKNOWN)
 end
 
+is_abstraction(t::PROGRAMTYPE) = t == ABSTRACTION
+is_application(t::PROGRAMTYPE) = t == APPLICATION
+is_index(t::PROGRAMTYPE) = t == INDEX
+is_invented(t::PROGRAMTYPE) = t == INVENTED
+is_primitive(t::PROGRAMTYPE) = t == PRIMITIVE
+is_unknown(t::PROGRAMTYPE) = t == UNKNOWN
+is_abstraction(p::Program) = is_abstraction(p.ptype)
+is_application(p::Program) = is_application(p.ptype)
+is_index(p::Program) = is_index(p.ptype)
+is_invented(p::Program) = is_invented(p.ptype)
+is_primitive(p::Program) = is_primitive(p.ptype)
+is_unknown(p::Program) = is_unknown(p.ptype)
+
 function str(p::Program, isfunc::Bool=false)::String
     t = p.ptype
-    if t == ABSTRACTION
+    if is_abstraction(t)
         return abstraction_str(p, isfunc)
-    elseif t == APPLICATION
+    elseif is_application(t)
         return application_str(p, isfunc)
-    elseif t == INVENTED
+    elseif is_invented(t)
         return invented_str(p, isfunc)
-    elseif t == INDEX
+    elseif is_index(t)
         return index_str(p, isfunc)
     else
         return p.name
@@ -114,9 +133,9 @@ json_format(p::Program)::String = str(p)
 # TODO: use iteration instead of recursion
 function getfunc(p::Program)::Program
     t = p.ptype
-    if t == ABSTRACTION
+    if is_abstraction(t)
         return getfunc(p.func)
-    elseif t == APPLICATION
+    elseif is_application(t)
         return getfunc(p.func)
     # TODO: what about invented?
     # elseif t == INVENTED
@@ -129,13 +148,13 @@ end
 # TODO: use iteration instead of recursion
 function evaluate(p::Program, env)
     t = p.ptype
-    if t == ABSTRACTION
+    if is_abstraction(t)
         return evaluate_abstraction(p, env)
-    elseif t == APPLICATION
+    elseif is_application(t)
         return evaluate_application(p, env)
-    elseif t == INVENTED
+    elseif is_invented(t)
         return evaluate_invented(p, env)
-    elseif t == INDEX
+    elseif is_index(t)
         return evaluate_index(p, env)
     else
         return p.func
@@ -169,11 +188,11 @@ end
 # TODO: add unit test
 function is_conditional(p::Program)
     return (isa(p.func, Program)
-            && p.func.ptype == APPLICATION
+            && is_application(p.func.ptype)
             && isa(p.func.func, Program)
-            && p.func.func.ptype == APPLICATION
+            && is_application(p.func.func.ptype)
             && isa(p.func.func.func, Program)
-            && p.func.func.func.ptype == PRIMITIVE
+            && is_primitive(p.func.func.func.ptype)
             && p.func.func.func.name == "if")
 end
 
