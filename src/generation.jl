@@ -630,21 +630,16 @@ end
 # TODO: more unit tests
 function get_parent(path::Path, p::Program)
     last_apply = nothing
-    while !isempty(path)
-        if is_initial_path(path, p)
-            break
-        elseif is_abstract_path(path, p)
-            path = tail(path)
+    for i in path
+        if is_abstract_path(i, p)
             p = p.func
         elseif p.ptype != APPLICATION
             break
-        elseif is_left_path(path, p)
+        elseif is_left_path(i, p)
             last_apply = p
-            path = tail(path)
             p = p.func
-        elseif is_right_path(path, p)
+        elseif is_right_path(i, p)
             last_apply = p
-            path = tail(path)
             p = p.args
         else
             error("invalid path sent to get_parent has no end")
