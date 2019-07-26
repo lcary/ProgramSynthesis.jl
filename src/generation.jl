@@ -554,18 +554,16 @@ function add_children!(
         env = get_env(path)
         depth = depth - 1
         for c in build_candidates(grammar, type, context, env)
-            process_candidate!(stack, c, state, depth, env)
+            if !state_violates_symmetry(state, c.program)
+                push!(stack, process_candidate(c, state, depth, env))
+            end
         end
     end
 end
 
-function process_candidate!(
-        stack::Stack{State},
-        c::Candidate, state::State, new_depth::Int, env::Array{TypeField,1})
-
-    if state_violates_symmetry(state, c.program)
-        return
-    end
+function process_candidate(
+        c::Candidate, state::State, new_depth::Int,
+        env::Array{TypeField,1})::State
 
     skeleton = state.skeleton
     context = state.context
@@ -582,8 +580,7 @@ function process_candidate!(
         path = get_new_path(path, func_args[2:end])
     end
     cost = cost - c.log_probability
-    state = State(skeleton, c.context, path, cost, new_depth)
-    push!(stack, state)
+    return State(skeleton, c.context, path, cost, new_depth)
 end
 
 # TODO: unit tests
