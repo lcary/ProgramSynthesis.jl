@@ -409,6 +409,8 @@ end
 PathType = Union{TypeField,PATH}
 Path = Array{PathType,1}
 
+tail(path::Path)::Path = path[2:end]
+
 function get_env(path::Path)::Array{TypeField,1}
     env = Array{TypeField,1}()
     for p in path
@@ -672,11 +674,11 @@ function modify_skeleton(path::Path, p1::Program, p2::Program)
     if is_initial_path(path, p1)
         return p2
     elseif is_abstract_path(path, p1)
-        return Abstraction(modify_skeleton(path[2:end], p1.func, p2))
+        return Abstraction(modify_skeleton(tail(path), p1.func, p2))
     elseif is_left_path(path, p1)
-        return Application(modify_skeleton(path[2:end], p1.func, p2), p1.args)
+        return Application(modify_skeleton(tail(path), p1.func, p2), p1.args)
     elseif is_right_path(path, p1)
-        return Application(p1.func, modify_skeleton(path[2:end], p1.args, p2))
+        return Application(p1.func, modify_skeleton(tail(path), p1.args, p2))
     else
         println("DEBUG: path     = ", string(path))
         println("DEBUG: program1 = ", string(p1))
@@ -691,11 +693,11 @@ function follow_path(path::Path, p::Program)::Program
     if is_initial_path(path, p)
         return p
     elseif is_abstract_path(path, p)
-        return follow_path(path[2:end], p.func)
+        return follow_path(tail(path), p.func)
     elseif is_left_path(path, p)
-        return follow_path(path[2:end], p.func)
+        return follow_path(tail(path), p.func)
     elseif is_right_path(path, p)
-        return follow_path(path[2:end], p.args)
+        return follow_path(tail(path), p.args)
     else
         println("DEBUG: path    = ", string(path))
         println("DEBUG: program = ", string(p))
