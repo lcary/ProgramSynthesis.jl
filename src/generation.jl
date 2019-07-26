@@ -407,6 +407,10 @@ end
 @enum PATH LEFT=0 RIGHT=1
 
 PathType = Union{TypeField,PATH}
+
+isLeft(i::PathType) = i == LEFT
+isRight(i::PathType) = i == RIGHT
+
 Path = Array{PathType,1}
 
 tail(path::Path)::Path = path[2:end]
@@ -584,25 +588,18 @@ function process_candidate(
 end
 
 function unwind_path(p::Path)
-    unwound = Path()
-    counter = length(p)
-    hitleft = false
-    while counter > 0
-        i = p[counter]
-        if hitleft
-            pushfirst!(unwound, i)
-        elseif i == LEFT
-            pushfirst!(unwound, RIGHT)
-            hitleft = true
-        end
-        counter -= 1
+    last = findlast(isLeft, p)
+    if isnothing(last)
+        return Path(undef, 0)
     end
-    return unwound
+    p = p[1:last-1]
+    push!(p, RIGHT)
+    return p
 end
 
 function state_violates_symmetry(state::State, child::Program)::Bool
     parent = get_parent(state.path, state.skeleton)
-    if parent == nothing
+    if isnothing(parent)
         return false
     else
         index = get_child_index(parent, state.path)
