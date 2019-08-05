@@ -18,10 +18,8 @@ problems = map(Problem, data["tasks"])
 type = problems[1].type
 
 # precompile
-env = Array{TypeField}([])
-gen = generator(grammar, env, type, 10.5, 9.0, 99, false)
+gen = program_generator(grammar, type, 10.5, 9.0, 99)
 @time [i for i in gen]
 
-# env = Array{TypeField}([])
-# gen = generator(grammar, env, type, 10.5, 9.0, 99, false)
-# @time [i for i in gen]
+gen = program_generator(grammar, type, 10.5, 9.0, 99)
+@time [i for i in gen]

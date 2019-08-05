@@ -17,13 +17,11 @@ problems = map(Problem, data["tasks"])
 type = problems[1].type
 
 # precompile
-env = Array{TypeField}([])
-gen = program_generator(grammar, env, type, 10.5, 9.0, 99)
+gen = program_generator(grammar, type, 10.5, 9.0, 99)
 [i for i in gen]
 
 Profile.clear()  # in case we have any previous profiling data
-env = Array{TypeField}([])
-gen = program_generator(grammar, env, type, 10.5, 9.0, 99)
+gen = program_generator(grammar, type, 10.5, 9.0, 99)
 @profile [i for i in gen]
 
 out = "messages/prof.txt"

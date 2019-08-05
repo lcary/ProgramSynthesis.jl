@@ -1,3 +1,66 @@
+"""
+Program Generator as Iterative Model
+------------------------------------
+
+Do a depth-first search of programs that can be generated for a
+given request type within some upper and lower description length bounds.
+
+To do iteration, we use a stack of partial/hole programs, finalizing once both
+(1) the description length of the program has exceeded the bounds, and
+(2) all partial/incomplete parts of the program have been completed.
+
+As a point of reference, a similar algorithm is implemented by
+the `best_first_enumeration` function in dreamcoder's solvers/enumeration.ml
+code, where a partial program is represented by the `best_first_state`.
+
+Terms:
+  - `skeleton::Program`: skeleton structure of program being created.
+  - `context::Context`: type context for program.
+  - `path::Array{TypeField}`: path to next "?"/partial part of program.
+  - `cost::Float64`: negative log probability of program.
+
+Example: (λ (+ ? ?))
+
+Steps to solve (`log_p` = log probability, `+??`=`(+??)`=`(App(+,?),?)`):
+  1.  ?     log_p=0
+  2a. 1     log_p=-log2
+  2b. + ? ?     log_p=-log2
+  3.  + ? ?     log_p=-log2
+  4a. + 1 ?     log_p=-log2-log2
+  4b. + (+ ? ?) ?       log_p=-log2-log2
+  5a. + 1 1             log_p=-log2-log2-log2
+  5b. + 1 (+ ? ?)       log_p=-log2-log2-log2
+  5c. + (+ ? ?) ?       log_p=-log2-log2
+
+From the above steps, each step of adding a concrete program (e.g. "1")
+adds to the log probability. Each step of adding a partial program ("?")
+means a skeleton is added back to the stack for additional exploration,
+in which other programs will be inserted to the space occupied by the "?"
+in subsequent iterations.
+
+In graphical form:
+         ?
+        /  \\
+       / \\  x
+      /\\ \\
+     /\\/\\\\
+  [ x /\\/\\ x ]  <-- yield all x's (leafs)
+
+From the above small graph of "/\\"s which represents the search space,
+when all of the partial/hole ("?") programs are completed for a skeleton,
+we consider the skeleton program to be complete. Completed programs are
+considered leaf nodes in the graph that is the search space. The brackets
+in the graph depict the point at which the bounds for the mean description
+length of the programs have been passed, and is the point where all completed
+programs should be returned to the outside world.
+
+In this enumeration algorithm, programs are returned via a `Channel`
+in order to avoid running out of memory, since accumulating the programs
+in an array would be infeasable in the case where we are searching over
+billions of programs. Assumption: the stack size should grow logarithmically
+with the depth of the search space, so it would require absurdly deep spaces
+to run out of memory during iteration.
+"""
 module Generation
 
 using DataStructures
@@ -8,7 +71,7 @@ using ..Grammars
 using ..Programs
 using ..Utils
 
-export generator, Result, generator, program_generator
+export Result, program_generator
 
 struct Result
     prior::Float64
@@ -43,7 +106,10 @@ function get_candidate(
     l = production.log_probability
     p = production.program
     new_context, t = instantiate(p.type, context)
+
+    # TODO: check might unify
     new_context = unify(new_context, returns(t), request)
+
     if new_context == UNIFICATION_FAILURE
         return UNIFICATION_FAILURE
     end
@@ -146,14 +212,12 @@ function build_candidates(
     return candidates
 end
 
-# TODO: rename log_probability
 function valid(candidate::Candidate, upper_bound::Float64)::Bool
     return -candidate.log_probability < upper_bound
 end
 
 struct InvalidStateType <: Exception end
 
-# TODO: unit tests
 function violates_symmetry(
         argument_index::Int, original_func::Program,
         program::Program)::Bool
@@ -212,199 +276,6 @@ function violates_symmetry(
     return false
 end
 
-function stop(upper_bound::Float64, depth::Int)::Bool
-    if upper_bound < 0.0 || depth <= 1
-        return true
-    else
-        return false
-    end
-end
-
-function generator(
-        grammar::Grammar, env::Array{TypeField,1},
-        type::TypeField, upper_bound::Float64,
-        lower_bound::Float64, max_depth::Int)
-    return Channel((channel) -> generator(
-        channel, grammar, Context(), env,
-        type, upper_bound, lower_bound, max_depth))
-end
-
-# TODO: deprecate in favor of iteration
-function generator(
-        channel::Channel,
-        grammar::Grammar,
-        context::Context, env::Array{TypeField,1},
-        type::TypeField, upper_bound::Float64,
-        lower_bound::Float64, depth::Int)
-    if !stop(upper_bound, depth)
-        if Types.is_arrow(type)
-            process_arrow(
-                channel, grammar, context, env,
-                type, upper_bound, lower_bound, depth)
-        else
-            process_candidates(
-                channel, grammar, context, env,
-                type, upper_bound, lower_bound, depth)
-        end
-    end
-end
-
-function get_new_env(type::TypeField, env::Array{TypeField,1})
-    new_env = Array{TypeField,1}(undef, length(env) + 1)
-    new_env[1] = type
-    new_env[2:end] = env
-    return new_env
-end
-
-function abstract_result(r::Result)::Result
-    return Result(r.prior, Abstraction(r.program), r.context)
-end
-
-# TODO: deprecate in favor of iteration
-function process_arrow(
-        channel::Channel,
-        grammar::Grammar,
-        context::Context, env::Array{TypeField,1},
-        type::TypeField, upper_bound::Float64,
-        lower_bound::Float64, depth::Int)
-    env = get_new_env(type.arguments[1], env)
-    gen = Channel((c) -> generator(
-        c, grammar, context, env,
-        type.arguments[2], upper_bound, lower_bound, depth))
-    for result in gen
-        put!(channel, abstract_result(result))
-    end
-end
-
-# TODO: deprecate in favor of iteration
-function process_candidates(
-        channel::Channel,
-        grammar::Grammar,
-        context::Context, env::Array{TypeField,1},
-        type::TypeField, upper_bound::Float64,
-        lower_bound::Float64, depth::Int)
-    for candidate in build_candidates(grammar, type, context, env)
-        if valid(candidate, upper_bound)
-            process_candidate(
-                channel, grammar, context, env,
-                type, upper_bound, lower_bound, depth, candidate)
-        end
-    end
-end
-
-function candidate_result(r::Result, c::Candidate)::Result
-    l = r.prior + c.log_probability
-    return Result(l, r.program, r.context)
-end
-
-# TODO: deprecate in favor of iteration
-function process_candidate(
-        channel::Channel,
-        grammar::Grammar,
-        context::Context, env::Array{TypeField,1},
-        type::TypeField, upper_bound::Float64,
-        lower_bound::Float64, depth::Int,
-        candidate::Candidate)
-    func_args = function_arguments(candidate.type)
-    new_upper = upper_bound + candidate.log_probability
-    new_lower = lower_bound + candidate.log_probability
-    new_depth = depth - 1
-    arg_index = 0
-
-    gen = Channel((c) -> appgenerator(
-        c, grammar, candidate.context, env,
-        candidate.program, func_args, new_upper, new_lower,
-        new_depth, arg_index, candidate.program))
-    for result in gen
-        put!(channel, candidate_result(result, candidate))
-    end
-end
-
-function end_result(func::Program, context::Context)::Result
-    return Result(0.0, func, context)
-end
-
-function bounds_check(lower_bound::Float64, upper_bound::Float64)
-    return lower_bound <= 0.0 && upper_bound > 0.0
-end
-
-# TODO: deprecate in favor of iteration
-function appgenerator(
-        channel::Channel,
-        grammar::Grammar,
-        context::Context, env::Array{TypeField,1},
-        func::Program, func_args::Array{TypeField,1},
-        upper_bound::Float64, lower_bound::Float64,
-        depth::Int, argument_index::Int,
-        original_func::Program)
-    if !stop(upper_bound, depth)
-        if isempty(func_args)
-            if bounds_check(lower_bound, upper_bound)
-                put!(channel, end_result(func, context))
-            end
-        else
-            recurse_generator(
-                channel, grammar, context, env,
-                func, func_args, upper_bound, lower_bound,
-                depth, argument_index, original_func)
-        end
-    end
-end
-
-
-function recurse_generator(
-        channel::Channel,
-        grammar::Grammar,
-        context::Context, env::Array{TypeField,1},
-        func::Program, func_args::Array{TypeField,1},
-        upper_bound::Float64, lower_bound::Float64,
-        depth::Int, argument_index::Int,
-        original_func::Program)
-    arg_request = apply(func_args[1], context)
-    outer_args = func_args[2:end]
-
-    gen = Channel((c) -> generator(
-        c, grammar, context, env,
-        arg_request, upper_bound, 0.0, depth))
-    for result in gen
-        recurse_appgenerator(
-            channel, grammar, context, env, func,
-            func_args, upper_bound, lower_bound, depth, argument_index,
-            original_func, outer_args, result)
-    end
-end
-
-function combined_result(prev_result::Result, new_result::Result)::Result
-    l = new_result.prior + prev_result.prior
-    return Result(l, new_result.program, new_result.context)
-end
-
-# TODO: deprecate in favor of iteration
-function recurse_appgenerator(
-        channel::Channel,
-        grammar::Grammar,
-        context::Context, env::Array{TypeField,1},
-        func::Program, func_args::Array{TypeField,1},
-        upper_bound::Float64, lower_bound::Float64,
-        depth::Int, argument_index::Int,
-        original_func::Program, outer_args::Array{TypeField,1},
-        prev_result::Result)
-    if !violates_symmetry(argument_index, original_func, prev_result.program)
-        new_func = Application(func, prev_result.program)
-        new_upper = upper_bound + prev_result.prior
-        new_lower = lower_bound + prev_result.prior
-        new_arg_index = argument_index + 1
-
-        gen = Channel((c) -> appgenerator(
-            c, grammar, prev_result.context, env,
-            new_func, outer_args, new_upper, new_lower,
-            depth, new_arg_index, func))
-        for new_result in gen
-            put!(channel, combined_result(prev_result, new_result))
-        end
-    end
-end
-
 @enum PATH LEFT=0 RIGHT=1
 
 PathType = Union{TypeField,PATH}
@@ -434,73 +305,9 @@ struct State
     depth::Int
 end
 
-"""
-Program Generator as Iterative Model
-------------------------------------
-
-Do a depth-first search of programs that can be generated for a
-given request type within some upper and lower description length bounds.
-
-To do iteration, we use a stack of partial/hole programs, finalizing once both
-(1) the description length of the program has exceeded the bounds, and
-(2) all partial/incomplete parts of the program have been completed.
-
-As a point of reference, a similar algorithm is implemented by
-the `best_first_enumeration` function in dreamcoder's solvers/enumeration.ml
-code, where a partial program is represented by the `best_first_state`.
-
-Terms:
-  - `skeleton::Program`: skeleton structure of program being created.
-  - `context::Context`: type context for program.
-  - `path::Array{TypeField}`: path to next "?"/partial part of program.
-  - `cost::Float64`: negative log probability of program.
-
-Example: (λ (+ ? ?))
-
-Steps to solve (`log_p` = log probability, `+??`=`(+??)`=`(App(+,?),?)`):
-  1.  ?     log_p=0
-  2a. 1     log_p=-log2
-  2b. + ? ?     log_p=-log2
-  3.  + ? ?     log_p=-log2
-  4a. + 1 ?     log_p=-log2-log2
-  4b. + (+ ? ?) ?       log_p=-log2-log2
-  5a. + 1 1             log_p=-log2-log2-log2
-  5b. + 1 (+ ? ?)       log_p=-log2-log2-log2
-  5c. + (+ ? ?) ?       log_p=-log2-log2
-
-From the above steps, each step of adding a concrete program (e.g. "1")
-adds to the log probability. Each step of adding a partial program ("?")
-means a skeleton is added back to the stack for additional exploration,
-in which other programs will be inserted to the space occupied by the "?"
-in subsequent iterations.
-
-In graphical form:
-         ?
-        /  \\
-       / \\  x
-      /\\ \\
-     /\\/\\\\
-  [ x /\\/\\ x ]  <-- yield all x's (leafs)
-
-From the above small graph of "/\\"s which represents the search space,
-when all of the partial/hole ("?") programs are completed for a skeleton,
-we consider the skeleton program to be complete. Completed programs are
-considered leaf nodes in the graph that is the search space. The brackets
-in the graph depict the point at which the bounds for the mean description
-length of the programs have been passed, and is the point where all completed
-programs should be returned to the outside world.
-
-In this enumeration algorithm, programs are returned via a `Channel`
-in order to avoid running out of memory, since accumulating the programs
-in an array would be infeasable in the case where we are searching over
-billions of programs. Assumption: the stack size should grow logarithmically
-with the depth of the search space, so it would require absurdly deep spaces
-to run out of memory during iteration.
-"""
-# TODO: remove unused env arg
 @resumable function program_generator(
         grammar::Grammar,
-        context::Context, env::Array{TypeField,1},
+        context::Context,
         type::TypeField, upper_bound::Float64,
         lower_bound::Float64, max_depth::Int)
 
@@ -624,7 +431,6 @@ function get_child_index(p::Program, path::Path)
     return i
 end
 
-# TODO: more unit tests
 function get_parent(path::Path, p::Program)
     last_apply = nothing
     for i in path
@@ -643,31 +449,6 @@ function get_parent(path::Path, p::Program)
         end
     end
     return last_apply
-end
-
-# TODO: deprecated, remove once tests are updated
-function state_violates_symmetry(state::State)
-    function r(p::Program)
-        if is_abstraction(p.ptype)
-            return r(p.func)
-        elseif is_application(p.ptype)
-            f, args = application_parse(p)
-            return r(f) || any(r(a) for a in args) || arg_violation(args, f)
-        else
-            return false
-        end
-    end
-    return r(state.skeleton)
-end
-
-# TODO: deprecated, remove once tests are updated
-function arg_violation(args::Array{Program,1}, orig_func::Program)
-    for (index, f) in enumerate(args)
-        if violates_symmetry(index - 1, orig_func, f)
-            return true
-        end
-    end
-    return false
 end
 
 # TODO: move to programs.ml
@@ -703,7 +484,6 @@ function get_new_path(path::Path, typearray::Array{TypeField,1})
     return new_path
 end
 
-# TODO: unit tests
 # TODO: convert recursion to iteration
 function modify_skeleton(path::Path, p1::Program, p2::Program)
     if is_initial_path(path, p1)
@@ -779,13 +559,12 @@ function program_is_finished(
     return isempty(path) && program.ptype != UNKNOWN
 end
 
-# TODO: remove unused env arg
 @resumable function program_generator(
-        grammar::Grammar, env::Array{TypeField,1},
+        grammar::Grammar,
         type::TypeField, upper_bound::Float64,
         lower_bound::Float64, max_depth::Int)
     for i in program_generator(
-            grammar, Context(), env,
+            grammar, Context(),
             type, upper_bound, lower_bound, max_depth)
         @yield i
     end
