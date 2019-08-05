@@ -17,11 +17,11 @@
 └ @ dict.jl:389
 ┌ Warning: dynamic dispatch to (Core.UnionAll)(
     $(Expr(:invoke, MethodInstance for TypeVar(::Symbol, ::Any),
-           :(Core.TypeVar), Symbol("#s13"), :(DreamCore.Types.AbstractType))),
-           (Core.apply_type)(DreamCore.Types.Array,
+           :(Core.TypeVar), Symbol("#s13"), :(ProgramSynthesis.Types.AbstractType))),
+           (Core.apply_type)(ProgramSynthesis.Types.Array,
            $(Expr(:invoke, MethodInstance for TypeVar(::Symbol, ::Any),
-           :(Core.TypeVar), Symbol("#s13"), :(DreamCore.Types.AbstractType)))))
-└ @ ~/w/mit/DreamCore.jl/src/types.jl:39
+           :(Core.TypeVar), Symbol("#s13"), :(ProgramSynthesis.Types.AbstractType)))))
+└ @ ~/w/mit/ProgramSynthesis.jl/src/types.jl:39
 ┌ Warning: getindex returns Union{TypeConstructor, TypeVariable}
 └ @ array.jl:729
 ┌ Warning: getindex returns Union{Int64, TypeVariable}
@@ -39,31 +39,31 @@
 ┌ Warning: y is assigned as Union{Nothing, Tuple{Bool,Int64}}
 └ @ array.jl:606
 ┌ Warning: context is assigned as Context
-└ @ ~/w/mit/DreamCore.jl/src/types.jl:212
+└ @ ~/w/mit/ProgramSynthesis.jl/src/types.jl:212
 ┌ Warning: context is assigned as Union{Context, TypeConstructor, TypeVariable}
-└ @ ~/w/mit/DreamCore.jl/src/types.jl:217
+└ @ ~/w/mit/ProgramSynthesis.jl/src/types.jl:217
 ┌ Warning: new_type is assigned as Union{Context, TypeConstructor, TypeVariable}
-└ @ ~/w/mit/DreamCore.jl/src/types.jl:217
-┌ Warning: dynamic dispatch to (DreamCore.Types.instantiate)(φ (%26 => %22, %171 => %166), φ (%26 => _3, %171 => %86), bindings)
-└ @ ~/w/mit/DreamCore.jl/src/types.jl:217
-┌ Warning: dynamic dispatch to (Base.convert)(Tuple{Context,TypeConstructor}, (Core.tuple)(φ (%170 => %86, %26 => _3), $(Expr(:invoke, MethodInstance for TypeConstructor(::String, ::Array{Union{TypeConstructor, TypeVariable},1}, ::Nothing), :(DreamCore.Types.TypeConstructor), :((Base.getfield)(type, constructor)), :($(Expr(:invoke, MethodInstance for split_arguments(::Array{Union{TypeConstructor, TypeVariable},1}), :(DreamCore.Types.split_arguments), :($(Expr(:invoke, MethodInstance for copyto!(::IndexLinear, ::Array{Union{TypeConstructor, TypeVariable},1}, ::IndexLinear, ::Array{Any,1}), :(Base.copyto!), IndexLinear(), :($(Expr(:foreigncall, :jl_alloc_array_1d, Array{Union{TypeConstructor, TypeVariable},1}, svec(Any, Int64), :ccall, 2, Array{Union{TypeConstructor, TypeVariable},1}, :((Base.arraysize)($(Expr(:foreigncall, :jl_alloc_array_1d, Array{Any,1}, svec(Any, Int64), :ccall, 2, Array{Any,1}, 0, 0)), 1)), :((Base.arraysize)($(Expr(:foreigncall, :jl_alloc_array_1d, Array{Any,1}, svec(Any, Int64), :ccal
-l, 2, Array{Any,1}, 0, 0)), 1))))), IndexLinear(), :($(Expr(:foreigncall, :jl_alloc_array_1d, Array{Any,1}, svec(Any, Int64), :ccall, 2, Array{Any,1}, 0, 0))))))))), :(DreamCore.Types.nothing)))))
-└ @ ~/w/mit/DreamCore.jl/src/types.jl:220
+└ @ ~/w/mit/ProgramSynthesis.jl/src/types.jl:217
+┌ Warning: dynamic dispatch to (ProgramSynthesis.Types.instantiate)(φ (%26 => %22, %171 => %166), φ (%26 => _3, %171 => %86), bindings)
+└ @ ~/w/mit/ProgramSynthesis.jl/src/types.jl:217
+┌ Warning: dynamic dispatch to (Base.convert)(Tuple{Context,TypeConstructor}, (Core.tuple)(φ (%170 => %86, %26 => _3), $(Expr(:invoke, MethodInstance for TypeConstructor(::String, ::Array{Union{TypeConstructor, TypeVariable},1}, ::Nothing), :(ProgramSynthesis.Types.TypeConstructor), :((Base.getfield)(type, constructor)), :($(Expr(:invoke, MethodInstance for split_arguments(::Array{Union{TypeConstructor, TypeVariable},1}), :(ProgramSynthesis.Types.split_arguments), :($(Expr(:invoke, MethodInstance for copyto!(::IndexLinear, ::Array{Union{TypeConstructor, TypeVariable},1}, ::IndexLinear, ::Array{Any,1}), :(Base.copyto!), IndexLinear(), :($(Expr(:foreigncall, :jl_alloc_array_1d, Array{Union{TypeConstructor, TypeVariable},1}, svec(Any, Int64), :ccall, 2, Array{Union{TypeConstructor, TypeVariable},1}, :((Base.arraysize)($(Expr(:foreigncall, :jl_alloc_array_1d, Array{Any,1}, svec(Any, Int64), :ccall, 2, Array{Any,1}, 0, 0)), 1)), :((Base.arraysize)($(Expr(:foreigncall, :jl_alloc_array_1d, Array{Any,1}, svec(Any, Int64), :ccal
+l, 2, Array{Any,1}, 0, 0)), 1))))), IndexLinear(), :($(Expr(:foreigncall, :jl_alloc_array_1d, Array{Any,1}, svec(Any, Int64), :ccall, 2, Array{Any,1}, 0, 0))))))))), :(ProgramSynthesis.Types.nothing)))))
+└ @ ~/w/mit/ProgramSynthesis.jl/src/types.jl:220
 ┌ Warning: getindex returns Union{Int64, TypeConstructor}
 └ @ tuple.jl:24
-┌ Warning: dynamic dispatch to (DreamCore.Types.returns)((Base.arrayref)(true, (Base.getfield)(t, arguments), 2))
-└ @ ~/w/mit/DreamCore.jl/src/types.jl:228
-┌ Warning: DreamCore.Types.returns returns Union{TypeConstructor, TypeVariable}
-└ @ ~/w/mit/DreamCore.jl/src/types.jl:228
+┌ Warning: dynamic dispatch to (ProgramSynthesis.Types.returns)((Base.arrayref)(true, (Base.getfield)(t, arguments), 2))
+└ @ ~/w/mit/ProgramSynthesis.jl/src/types.jl:228
+┌ Warning: ProgramSynthesis.Types.returns returns Union{TypeConstructor, TypeVariable}
+└ @ ~/w/mit/ProgramSynthesis.jl/src/types.jl:228
 ┌ Warning: dynamic dispatch to (Base.getindex)((Base.getfield)(context, substitution), 1)
-└ @ ~/w/mit/DreamCore.jl/src/types.jl:705
-4-element┌ Warning: dynamic dispatch to (DreamCore.Types.apply)((Base.getfield)(φ (%16 => %12, %56 => %51), 2), context)
-└ @ ~/w/mit/DreamCore.jl/src/types.jl:170
+└ @ ~/w/mit/ProgramSynthesis.jl/src/types.jl:705
+4-element┌ Warning: dynamic dispatch to (ProgramSynthesis.Types.apply)((Base.getfield)(φ (%16 => %12, %56 => %51), 2), context)
+└ @ ~/w/mit/ProgramSynthesis.jl/src/types.jl:170
 ┌ Warning: dynamic dispatch to (Base.getindex)((Base.getfield)(context, substitution), φ (%16 => %13, %56 => %52))
-└ @ ~/w/mit/DreamCore.jl/src/types.jl:705
-┌ Warning: DreamCore.Types.apply returns Union{TypeConstructor, TypeVariable}
-└ @ ~/w/mit/DreamCore.jl/src/types.jl:168
-┌ Warning: getfield(DreamCore.Types, Symbol("##3#4")){Context}(Context(next=2, {})) returns Union{TypeConstructor, TypeVariable}
+└ @ ~/w/mit/ProgramSynthesis.jl/src/types.jl:705
+┌ Warning: ProgramSynthesis.Types.apply returns Union{TypeConstructor, TypeVariable}
+└ @ ~/w/mit/ProgramSynthesis.jl/src/types.jl:168
+┌ Warning: getfield(ProgramSynthesis.Types, Symbol("##3#4")){Context}(Context(next=2, {})) returns Union{TypeConstructor, TypeVariable}
 └ @ none:0
 ┌ Warning: y is assigned as Union{Nothing, Tuple{AbstractType,Int64}}
 └ @ generator.jl:44
@@ -73,7 +73,7 @@ Array┌ Warning: y is assigned as Tuple{AbstractType,Int64}
 └ @ generator.jl:47
 {┌ Warning: y is assigned as Union{Nothing, Tuple{AbstractType,Int64}}
 └ @ generator.jl:44
-┌ Warning: y is assigned as Tuple{AbstracDreamCore.GenerationtType,Int64}
+┌ Warning: y is assigned as Tuple{AbstracProgramSynthesis.GenerationtType,Int64}
 └ @ generator.jl:46
 ┌ Warning: dynamic dispatch to ((Base.getfield)(g, f))(φ (%13 => %11))
 └ @ generator.jl:47
@@ -99,102 +99,102 @@ Candidate┌ Warning: dynamic dispatch to ((Base.getfield)(itr, f))(φ (%16 => %
 └ @ array.jl:47
 :┌ Warning: dynamic dispatch to (Base._array_for)((Base.typeof)(φ (%24 => %23)), (Base.getfield)(itr, iter), Base.HasShape{1}())
 └ @ array.jl:611
-┌ Warning: dynamic dispatch to (Core.UnionAll)($(Expr(:invoke, MethodInstance for TypeVar(::Symbol, ::Any), :(Core.TypeVar), Symbol("#s13"), :(DreamCore.Types.AbstractType))), (Core.apply_type)(DreamCore.Types.Array, $(Expr(:invoke, MethodInstance for TypeVar(::Symbol, ::Any), :(Core.TypeVar), Symbol("#s13"), :(DreamCore.Types.AbstractType)))))
-└ @ ~/w/mit/DreamCore.jl/src/types.jl:39
+┌ Warning: dynamic dispatch to (Core.UnionAll)($(Expr(:invoke, MethodInstance for TypeVar(::Symbol, ::Any), :(Core.TypeVar), Symbol("#s13"), :(ProgramSynthesis.Types.AbstractType))), (Core.apply_type)(ProgramSynthesis.Types.Array, $(Expr(:invoke, MethodInstance for TypeVar(::Symbol, ::Any), :(Core.TypeVar), Symbol("#s13"), :(ProgramSynthesis.Types.AbstractType)))))
+└ @ ~/w/mit/ProgramSynthesis.jl/src/types.jl:39
 ┌ Warning: y is assigned as Union{Nothing, Tuple{TypeVariable,Int64}}
 └ @ generator.jl:44
-┌ Warning: y is assigned as Tuple{DreamCore.Types.TypeVariable,Int64}
+┌ Warning: y is assigned as Tuple{ProgramSynthesis.Types.TypeVariable,Int64}
 └ @ generator.jl:46
 ┌ Warning: y is assigned as Union{Nothing, Tuple{TypeVariable,Int64}}
 └ @ generator.jl:44
-┌ Warning: y is assigned as Tuple{DreamCore.Types.TypeVariable,Int64}
+┌ Warning: y is assigned as Tuple{ProgramSynthesis.Types.TypeVariable,Int64}
 └ @ generator.jl:46
 ┌ Warning: y is assigned as Union{Nothing, Tuple{Bool,Int64}}
 └ @ array.jl:651
 ┌ Warning: y is assigned as Union{Nothing, Tuple{Bool,Int64}}
 └ @ array.jl:606
-┌ Warning: dynamic dispatch to (DreamCore.Types.TypeConstructor)((Base.getfield)(type, constructor), $(Expr(:invoke, MethodInstance for collect(::Base.Generator{Array{AbstractType,1},getfield(DreamCore.Types, Symbol("##3#4")){Context}}), :(Base.collect), :(%new(Base.Generator{Array{AbstractType,1},getfield(DreamCore.Types, Symbol("##3#4")){Context}}, %new(getfield(DreamCore.Types, Symbol("##3#4")){Context}, context), (Base.getfield)(type, arguments))))))
-└ @ ~/w/mit/DreamCore.jl/src/types.jl:181
-┌ Warning: dynamic dispatch to (DreamCore.Types.hash)((Base.arrayref)(true, (Base.getfield)(t, arguments), 1), h)
-└ @ ~/w/mit/DreamCore.jl/src/types.jl:113
-DreamCore.Generation.Candidate(-1.3862943611198906, int -> list(list(int) -> int) -> list(int) -> int, index, Context(next=1, {t0 ||> list(int) -> int}))┌ Warning: dynamic dispatch to (DreamCore.Types.hash)((Base.arrayref)(true, (Base.getfield)(t, arguments), 2), h)
-└ @ ~/w/mit/DreamCore.jl/src/types.jl:115
-┌ Warning: dynamic dispatch to (DreamCore.Types.hash)((Base.arrayref)(true, (Base.getfield)(t, arguments), 1), φ (%133 => %132, %182 => %181, %184 => %183))
-└ @ ~/w/mit/DreamCore.jl/src/types.jl:115
-┌ Warning: dynamic dispatch to (Base.convert)(DreamCore.Types.UInt, nothing)
-└ @ ~/w/mit/DreamCore.jl/src/types.jl:115
+┌ Warning: dynamic dispatch to (ProgramSynthesis.Types.TypeConstructor)((Base.getfield)(type, constructor), $(Expr(:invoke, MethodInstance for collect(::Base.Generator{Array{AbstractType,1},getfield(ProgramSynthesis.Types, Symbol("##3#4")){Context}}), :(Base.collect), :(%new(Base.Generator{Array{AbstractType,1},getfield(ProgramSynthesis.Types, Symbol("##3#4")){Context}}, %new(getfield(ProgramSynthesis.Types, Symbol("##3#4")){Context}, context), (Base.getfield)(type, arguments))))))
+└ @ ~/w/mit/ProgramSynthesis.jl/src/types.jl:181
+┌ Warning: dynamic dispatch to (ProgramSynthesis.Types.hash)((Base.arrayref)(true, (Base.getfield)(t, arguments), 1), h)
+└ @ ~/w/mit/ProgramSynthesis.jl/src/types.jl:113
+ProgramSynthesis.Generation.Candidate(-1.3862943611198906, int -> list(list(int) -> int) -> list(int) -> int, index, Context(next=1, {t0 ||> list(int) -> int}))┌ Warning: dynamic dispatch to (ProgramSynthesis.Types.hash)((Base.arrayref)(true, (Base.getfield)(t, arguments), 2), h)
+└ @ ~/w/mit/ProgramSynthesis.jl/src/types.jl:115
+┌ Warning: dynamic dispatch to (ProgramSynthesis.Types.hash)((Base.arrayref)(true, (Base.getfield)(t, arguments), 1), φ (%133 => %132, %182 => %181, %184 => %183))
+└ @ ~/w/mit/ProgramSynthesis.jl/src/types.jl:115
+┌ Warning: dynamic dispatch to (Base.convert)(ProgramSynthesis.Types.UInt, nothing)
+└ @ ~/w/mit/ProgramSynthesis.jl/src/types.jl:115
 ┌ Warning: getindex returns Union{String, TypeConstructor}
 └ @ tuple.jl:24
 ┌ Warning: y is assigned as Union{Nothing, Tuple{AbstractType,Int64}}
 └ @ generator.jl:44
 ┌ Warning: y is assigned as Tuple{AbstractType,Int64}
 └ @ generator.jl:46
-┌ Warning: dynamic dispatch to (DreamCore.Types.tostr)(φ (%9 => %8))
+┌ Warning: dynamic dispatch to (ProgramSynthesis.Types.tostr)(φ (%9 => %8))
 └ @ generator.jl:47
 ┌ Warning: y is assigned as Union{Nothing, Tuple{AbstractType,Int64}}
 └ @ generator.jl:44
 ┌ Warning: y is assigned as Tuple{AbstractType,Int64}
 └ @ generator.jl:46
-┌ Warning: dynamic dispatch to (DreamCore.Types.tostr)(φ (%13 => %11))
+┌ Warning: dynamic dispatch to (ProgramSynthesis.Types.tostr)(φ (%13 => %11))
 └ @ generator.jl:47
 ┌ Warning: y is assigned as Union{Nothing, Tuple{String,Int64}}
 └ @ array.jl:651
-┌ Warning: dynamic dispatch to (DreamCore.Types.tostr)(φ (%16 => %14))
+┌ Warning: dynamic dispatch to (ProgramSynthesis.Types.tostr)(φ (%16 => %14))
 └ @ array.jl:47
 ┌ Warning: y is assigned as Union{Nothing, Tuple{String,Int64}}
 └ @ array.jl:606
-┌ Warning: dynamic dispatch to (DreamCore.Types.tostr)(φ (%14 => %13))
+┌ Warning: dynamic dispatch to (ProgramSynthesis.Types.tostr)(φ (%14 => %13))
 └ @ array.jl:47
-┌ Warning: dynamic dispatch to (DreamCore.Types.tostr)((Base.arrayref)(true, (Base.getfield)(t, arguments), 1))
-└ @ ~/w/mit/DreamCore.jl/src/types.jl:127
-┌ Warning: dynamic dispatch to (DreamCore.Types.tostr)((Base.arrayref)(true, (Base.getfield)(t, arguments), 2))
-└ @ ~/w/mit/DreamCore.jl/src/types.jl:128
+┌ Warning: dynamic dispatch to (ProgramSynthesis.Types.tostr)((Base.arrayref)(true, (Base.getfield)(t, arguments), 1))
+└ @ ~/w/mit/ProgramSynthesis.jl/src/types.jl:127
+┌ Warning: dynamic dispatch to (ProgramSynthesis.Types.tostr)((Base.arrayref)(true, (Base.getfield)(t, arguments), 2))
+└ @ ~/w/mit/ProgramSynthesis.jl/src/types.jl:128
 ┌ Warning: x is assigned as Union{String, TypeConstructor}
 └ @ strings/io.jl:122
 ┌ Warning: x is assigned as Union{String, TypeConstructor}
 └ @ strings/io.jl:117
 ┌ Warning: k is assigned as Context
-└ @ ~/w/mit/DreamCore.jl/src/types.jl:278
+└ @ ~/w/mit/ProgramSynthesis.jl/src/types.jl:278
 ┌ Warning: k is assigned as Union{Float64, Context}
-└ @ ~/w/mit/DreamCore.jl/src/types.jl:280
-┌ Warning: dynamic dispatch to (DreamCore.Types.unify)(φ (%118 => _2, %182 => %124), φ (%118 => %112, %182 => %174), φ (%118 => %113, %182 => %175))
-└ @ ~/w/mit/DreamCore.jl/src/types.jl:280
-┌ Warning: DreamCore.Types.unify returns Union{Float64, Context}
-└ @ ~/w/mit/DreamCore.jl/src/types.jl:251
+└ @ ~/w/mit/ProgramSynthesis.jl/src/types.jl:280
+┌ Warning: dynamic dispatch to (ProgramSynthesis.Types.unify)(φ (%118 => _2, %182 => %124), φ (%118 => %112, %182 => %174), φ (%118 => %113, %182 => %175))
+└ @ ~/w/mit/ProgramSynthesis.jl/src/types.jl:280
+┌ Warning: ProgramSynthesis.Types.unify returns Union{Float64, Context}
+└ @ ~/w/mit/ProgramSynthesis.jl/src/types.jl:251
 ┌ Warning: new_context is assigned as Context
-└ @ ~/w/mit/DreamCore.jl/src/generation.jl:134
+└ @ ~/w/mit/ProgramSynthesis.jl/src/generation.jl:134
 ┌ Warning: new_context is assigned as Union{Float64, Context}
-└ @ ~/w/mit/DreamCore.jl/src/generation.jl:135
-┌ Warning: dynamic dispatch to (DreamCore.Generation.instantiate)((Base.getfield)((Base.getfield)(production, program), type), (Base.getfield)(state, context))
-└ @ ~/w/mit/DreamCore.jl/src/generation.jl:134
-┌ Warning: dynamic dispatch to (DreamCore.Generation.unify)((Base.getfield)(φ (%11 => %10, %13 => %12), 1), $(Expr(:invoke, MethodInstance for returns(::TypeConstructor), :(DreamCore.Generation.returns), :((Base.getfield)(φ (%11 => %10, %13 => %12), 2)))), (Base.getfield)(state, type))
-└ @ ~/w/mit/DreamCore.jl/src/generation.jl:135
-┌ Warning: dynamic dispatch to (DreamCore.Generation.apply)((Base.getfield)(φ (%11 => %10, %13 => %12), 2), (DreamCore.Generation.unify)((Base.getfield)(φ (%11 => %10, %13 => %12), 1), $(Expr(:invoke, MethodInstance for returns(::TypeConstructor), :(DreamCore.Generation.returns), :((Base.getfield)(φ (%11 => %10, %13 => %12), 2)))), (Base.getfield)(state, type)))
-└ @ ~/w/mit/DreamCore.jl/src/generation.jl:139
-DreamCore.Generation.Candidate(-1.3862943611198906, bool -> list(int) -> int -> list(int) -> int -> list(int) -> int, if, Context(next=1, {t0 ||> list(int) -> int}))┌ Warning: DreamCore.Generation.get_candidate returns Union{Float64, Candidate}
-└ @ ~/w/mit/DreamCore.jl/src/generation.jl:130
+└ @ ~/w/mit/ProgramSynthesis.jl/src/generation.jl:135
+┌ Warning: dynamic dispatch to (ProgramSynthesis.Generation.instantiate)((Base.getfield)((Base.getfield)(production, program), type), (Base.getfield)(state, context))
+└ @ ~/w/mit/ProgramSynthesis.jl/src/generation.jl:134
+┌ Warning: dynamic dispatch to (ProgramSynthesis.Generation.unify)((Base.getfield)(φ (%11 => %10, %13 => %12), 1), $(Expr(:invoke, MethodInstance for returns(::TypeConstructor), :(ProgramSynthesis.Generation.returns), :((Base.getfield)(φ (%11 => %10, %13 => %12), 2)))), (Base.getfield)(state, type))
+└ @ ~/w/mit/ProgramSynthesis.jl/src/generation.jl:135
+┌ Warning: dynamic dispatch to (ProgramSynthesis.Generation.apply)((Base.getfield)(φ (%11 => %10, %13 => %12), 2), (ProgramSynthesis.Generation.unify)((Base.getfield)(φ (%11 => %10, %13 => %12), 1), $(Expr(:invoke, MethodInstance for returns(::TypeConstructor), :(ProgramSynthesis.Generation.returns), :((Base.getfield)(φ (%11 => %10, %13 => %12), 2)))), (Base.getfield)(state, type)))
+└ @ ~/w/mit/ProgramSynthesis.jl/src/generation.jl:139
+ProgramSynthesis.Generation.Candidate(-1.3862943611198906, bool -> list(int) -> int -> list(int) -> int -> list(int) -> int, if, Context(next=1, {t0 ||> list(int) -> int}))┌ Warning: ProgramSynthesis.Generation.get_candidate returns Union{Float64, Candidate}
+└ @ ~/w/mit/ProgramSynthesis.jl/src/generation.jl:130
 ┌ Warning: dynamic dispatch to (Base.setindex!)(dest, (Base.arrayref)(false, src, φ (%45 => %41, %63 => %57)), φ (%45 => %41, %63 => %57))
 └ @ abstractarray.jl:753
 ┌ Warning: dynamic dispatch to (Base.setindex!)(dest, (Base.arrayref)(false, src, (Base.add_int)(sstart, φ (%63 => %60, %80 => %75))), (Base.add_int)(dstart, φ (%63 => %60, %80 => %75)))
 └ @ abstractarray.jl:788
-┌ Warning: dynamic dispatch to (DreamCore.Types.append!)($(Expr(:invoke, MethodInstance for copyto!(::IndexLinear, ::Array{Tuple{Int64,Union{TypeConstructor, TypeVariable}},1}, ::IndexLinear, ::Array{Any,1}), :(Base.copyto!), IndexLinear(), :($(Expr(:foreigncall, :jl_alloc_array_1d, Array{Tuple{Int64,Union{TypeConstructor, TypeVariable}},1}, svec
+┌ Warning: dynamic dispatch to (ProgramSynthesis.Types.append!)($(Expr(:invoke, MethodInstance for copyto!(::IndexLinear, ::Array{Tuple{Int64,Union{TypeConstructor, TypeVariable}},1}, ::IndexLinear, ::Array{Any,1}), :(Base.copyto!), IndexLinear(), :($(Expr(:foreigncall, :jl_alloc_array_1d, Array{Tuple{Int64,Union{TypeConstructor, TypeVariable}},1}, svec
 (Any, Int64), :ccall, 2, Array{Tuple{Int64,Union{TypeConstructor, TypeVariable}},1}, :((Base.arraysize)($(Expr(:foreigncall, :jl_alloc_array_1d, Array{Any,1}, svec(Any, Int64), :ccall, 2, Array{Any,1}, 0, 0)), 1)), :((Base.arraysize)($(Expr(:foreigncall, :jl_alloc_array_1d, Array{Any,1}, svec(Any, Int64), :ccall, 2, Array{Any,1}, 0, 0)), 1))))), IndexLinear(), :($(Expr(:foreigncall, :jl_alloc_array_1d, Array{Any,1}, svec(Any, Int64), :ccall, 2, Array{Any,1}, 0, 0))))), (Base.getfield)(context, substitution))
-└ @ ~/w/mit/DreamCore.jl/src/types.jl:246
-┌ Warning: t1 is assigned as DreamCore.Types.TypeVariable
-└ @ ~/w/mit/DreamCore.jl/src/types.jl:251
+└ @ ~/w/mit/ProgramSynthesis.jl/src/types.jl:246
+┌ Warning: t1 is assigned as ProgramSynthesis.Types.TypeVariable
+└ @ ~/w/mit/ProgramSynthesis.jl/src/types.jl:251
 ┌ Warning: t1 is assigned as Union{TypeConstructor, TypeVariable}
-└ @ ~/w/mit/DreamCore.jl/src/types.jl:251
+└ @ ~/w/mit/ProgramSynthesis.jl/src/types.jl:251
 ┌ Warning: k is assigned as Context
-└ @ ~/w/mit/DreamCore.jl/src/types.jl:278
+└ @ ~/w/mit/ProgramSynthesis.jl/src/types.jl:278
 ┌ Warning: k is assigned as Union{Float64, Context}
-└ @ ~/w/mit/DreamCore.jl/src/types.jl:280
+└ @ ~/w/mit/ProgramSynthesis.jl/src/types.jl:280
 ┌ Warning: dynamic dispatch to !φ (%71 => %70, %76 => %75)
-└ @ ~/w/mit/DreamCore.jl/src/types.jl:256
-┌ Warning: dynamic dispatch to (DreamCore.Types.unify)(φ (%274 => _2, %338 => %280), φ (%274 => %268, %338 => %330), φ (%274 => %269, %338 => %331))
-└ @ ~/w/mit/DreamCore.jl/src/types.jl:280
-┌ Warning: DreamCore.Types.unify returns Union{Float64, Context}
-└ @ ~/w/mit/DreamCore.jl/src/types.jl:251
-DreamCore.Generation.Candidate(-1.3862943611198906, list(list(int) -> int) -> list(int) -> int, car, Context(next=1, {t0 ||> list(int) -> int}))┌ Warning: y is assigned as Union{Nothing, Tuple{Union{TypeConstructor, TypeVariable},Int64}}
+└ @ ~/w/mit/ProgramSynthesis.jl/src/types.jl:256
+┌ Warning: dynamic dispatch to (ProgramSynthesis.Types.unify)(φ (%274 => _2, %338 => %280), φ (%274 => %268, %338 => %330), φ (%274 => %269, %338 => %331))
+└ @ ~/w/mit/ProgramSynthesis.jl/src/types.jl:280
+┌ Warning: ProgramSynthesis.Types.unify returns Union{Float64, Context}
+└ @ ~/w/mit/ProgramSynthesis.jl/src/types.jl:251
+ProgramSynthesis.Generation.Candidate(-1.3862943611198906, list(list(int) -> int) -> list(int) -> int, car, Context(next=1, {t0 ||> list(int) -> int}))┌ Warning: y is assigned as Union{Nothing, Tuple{Union{TypeConstructor, TypeVariable},Int64}}
 └ @ array.jl:651
 ┌ Warning: el is assigned as Union{TypeCo                                                     nstructor, TypeVariable}
 └ @ array.jl:653
@@ -208,9 +208,9 @@ DreamCore.Generation.Candidate(-1.3862943611198906, list(list(int) -> int) -> li
 └ @ array.jl:649
 ┌ Warning: Base.collect_to_with_first! returns Union{Array{AbstractType,1}, Array{TypeConstructor,1}}
 └ @ array.jl:628
-┌ Warning: dynamic dispatch to (Core.UnionAll)($(Expr(:invoke, MethodInstance for TypeVar(::Symbol, ::Any), :(Core.TypeVar), Symbol("#s13"), :(DreamCore.Types.AbstractType))), (Core.apply_type)(DreamCore.Types.Array, $(Expr(:invoke, MethodInstance for TypeVar(::Symbol, ::Any), :(Core.TypeVar), Symbol("#s13"
-), :(DreamCore.Types.AbstractType)))))
-└ @ ~/w/mit/DreamCore.jl/src/types.jl:39
+┌ Warning: dynamic dispatch to (Core.UnionAll)($(Expr(:invoke, MethodInstance for TypeVar(::Symbol, ::Any), :(Core.TypeVar), Symbol("#s13"), :(ProgramSynthesis.Types.AbstractType))), (Core.apply_type)(ProgramSynthesis.Types.Array, $(Expr(:invoke, MethodInstance for TypeVar(::Symbol, ::Any), :(Core.TypeVar), Symbol("#s13"
+), :(ProgramSynthesis.Types.AbstractType)))))
+└ @ ~/w/mit/ProgramSynthesis.jl/src/types.jl:39
 ┌ Warning: y is assigned as Union{Nothing, Tuple{TypeConstructor,Int64}}
 └ @ generator.jl:44
 ┌ Warning: y is assigned as Tuple{TypeConstructor,Int64}
@@ -223,7 +223,7 @@ DreamCore.Generation.Candidate(-1.3862943611198906, list(list(int) -> int) -> li
 └ @ array.jl:651
 ┌ Warning: y is assigned as Union{Nothing, Tuple{Bool,Int64}}
 └ @ array.jl:606
-┌ Warning: a is assigned as Type{DreamCore.Types.TypeVariable}
+┌ Warning: a is assigned as Type{ProgramSynthesis.Types.TypeVariable}
 └ @ promotion.jl:17
 ┌ Warning: a is assigned as Any
 └ @ promotion.jl:84
@@ -301,12 +301,12 @@ DreamCore.Generation.Candidate(-1.3862943611198906, list(list(int) -> int) -> li
 └ @ array.jl:653
 ┌ Warning: dynamic dispatch to ((Base.getfield)(itr, f))(φ (%16 => %14))
 └ @ array.jl:47
-┌ Warning: dynamic dispatch to (Core.UnionAll)($(Expr(:invoke, MethodInstance for TypeVar(::Symbol, ::Any), :(Core.TypeVar), Symbol("#s13"), :(DreamCore.Types.AbstractType))), (Core.apply_type)(DreamCore.Types.Array, $(Expr(:invoke, MethodInstance for TypeVar(::Symbol, ::Any), :(Core.TypeVar), Symbol("#s13"), :(DreamCore.Types.AbstractType)))))
-└ @ ~/w/mit/DreamCore.jl/src/types.jl:39
+┌ Warning: dynamic dispatch to (Core.UnionAll)($(Expr(:invoke, MethodInstance for TypeVar(::Symbol, ::Any), :(Core.TypeVar), Symbol("#s13"), :(ProgramSynthesis.Types.AbstractType))), (Core.apply_type)(ProgramSynthesis.Types.Array, $(Expr(:invoke, MethodInstance for TypeVar(::Symbol, ::Any), :(Core.TypeVar), Symbol("#s13"), :(ProgramSynthesis.Types.AbstractType)))))
+└ @ ~/w/mit/ProgramSynthesis.jl/src/types.jl:39
 ┌ Warning: dynamic dispatch to (Base.vect)((Base.arrayref)(true, a, 1), $(Expr(:foreigncall, :jl_alloc_array_1d, Array{AbstractType,1}, svec(Any, Int64), :ccall, 2, Array{AbstractType,1}, :((Base.getfield)((Base.Checked.checked_sadd_int)((Base.getfield)((Base.Checked.checked_ssub_int)((Base.ifelse)((Base.sle_int)(2, (Base.ifelse)((Base.slt_int)((Base.arraysize)(a, 1), 0), 0, (Base.arraysize)(a, 1))), (Base.ifelse)((Base.slt_int)((Base.arraysize)(a, 1), 0), 0, (Base.arraysize)(a, 1)), 1), 2), 1), 1), 1)), :((Base.getfield)((Base.Checked.checked_sadd_int)((Base.getfield)((Base.Checked.checked_ssub_int)((Base.ifelse)((Base.sle_int)(2, (Base.ifelse)((Base.slt_int)((Base.arraysize)(a, 1), 0), 0, (Base.arraysize)(a, 1))), (Base.ifelse)((Base.slt_int)((Base.arraysize)(a, 1), 0), 0, (Base.arraysize)(a, 1)), 1), 2), 1), 1), 1)))))
-└ @ ~/w/mit/DreamCore.jl/src/types.jl:40
-┌ Warning: dynamic dispatch to (Base.convert)((Core.UnionAll)($(Expr(:invoke, MethodInstance for TypeVar(::Symbol, ::Any), :(Core.TypeVar), Symbol("#s13"), :(DreamCore.Types.AbstractType))), (Core.apply_type)(DreamCore.Types.Array, $(Expr(:invoke, MethodInstance for TypeVar(::Symbol, ::Any), :(Core.TypeVar), Symbol("#s13"), :(DreamCore.Types.AbstractType))))), (Base.vect)((Base.arrayref)(true, a, 1), $(Expr(:foreigncall, :jl_alloc_array_1d, Array{AbstractType,1}, svec(Any, Int64), :ccall, 2, Array{AbstractType,1}, :((Base.getfield)((Base.Checked.checked_sadd_int)((Base.getfield)((Base.Checked.checked_ssub_int)((Base.ifelse)((Base.sle_int)(2, (Base.ifelse)((Base.slt_int)((Base.arraysize)(a, 1), 0), 0, (Base.arraysize)(a, 1))), (Base.ifelse)((Base.slt_int)((Base.arraysize)(a, 1), 0), 0, (Base.arraysize)(a, 1)), 1), 2), 1), 1), 1)), :((Base.getfield)((Base.Checked.checked_sadd_int)((Base.getfield)((Base.Checked.checked_ssub_int)((Base.ifelse)((Base.sle_int)(2, (Base.ifelse)((Base.slt_int)((Base.arraysize)(a, 1), 0), 0, (Base.arraysize)(a, 1))), (Base.ifelse)((Base.slt_int)((Base.arraysize)(a, 1), 0), 0, (Base.arraysize)(a, 1)), 1), 2), 1), 1), 1))))))
-└ @ ~/w/mit/DreamCore.jl/src/types.jl:40
+└ @ ~/w/mit/ProgramSynthesis.jl/src/types.jl:40
+┌ Warning: dynamic dispatch to (Base.convert)((Core.UnionAll)($(Expr(:invoke, MethodInstance for TypeVar(::Symbol, ::Any), :(Core.TypeVar), Symbol("#s13"), :(ProgramSynthesis.Types.AbstractType))), (Core.apply_type)(ProgramSynthesis.Types.Array, $(Expr(:invoke, MethodInstance for TypeVar(::Symbol, ::Any), :(Core.TypeVar), Symbol("#s13"), :(ProgramSynthesis.Types.AbstractType))))), (Base.vect)((Base.arrayref)(true, a, 1), $(Expr(:foreigncall, :jl_alloc_array_1d, Array{AbstractType,1}, svec(Any, Int64), :ccall, 2, Array{AbstractType,1}, :((Base.getfield)((Base.Checked.checked_sadd_int)((Base.getfield)((Base.Checked.checked_ssub_int)((Base.ifelse)((Base.sle_int)(2, (Base.ifelse)((Base.slt_int)((Base.arraysize)(a, 1), 0), 0, (Base.arraysize)(a, 1))), (Base.ifelse)((Base.slt_int)((Base.arraysize)(a, 1), 0), 0, (Base.arraysize)(a, 1)), 1), 2), 1), 1), 1)), :((Base.getfield)((Base.Checked.checked_sadd_int)((Base.getfield)((Base.Checked.checked_ssub_int)((Base.ifelse)((Base.sle_int)(2, (Base.ifelse)((Base.slt_int)((Base.arraysize)(a, 1), 0), 0, (Base.arraysize)(a, 1))), (Base.ifelse)((Base.slt_int)((Base.arraysize)(a, 1), 0), 0, (Base.arraysize)(a, 1)), 1), 2), 1), 1), 1))))))
+└ @ ~/w/mit/ProgramSynthesis.jl/src/types.jl:40
 ┌ Warning: y is assigned as Union{Nothing, Tuple{AbstractType,Int64}}
 └ @ generator.jl:44
 ┌ Warning: y is assigned as Tuple{AbstractType,Int64}
@@ -328,22 +328,22 @@ DreamCore.Generation.Candidate(-1.3862943611198906, list(list(int) -> int) -> li
 ┌ Warning: dynamic dispatch to (Base.collect_to_with_first!)((Base._array_for)((Base.typeof)(φ (%23 => %22)), (Base.getfield)(itr, iter), Base.HasShape{1}()), φ (%23 => %22), itr, φ (%23 => %18))
 └ @ array.jl:611
 ┌ Warning: is_polymorphic is assigned as Union{Missing, Bool}
-└ @ ~/w/mit/DreamCore.jl/src/types.jl:47
-┌ Warning: dynamic dispatch to (DreamCore.Types.any)($(Expr(:invoke, MethodInstance for collect(::Base.Generator{Array{AbstractType,1},getfield(DreamCore.Types, Symbol("##1#2"))}), :(Base.collect), :(%new(Base.Generator{Array{AbstractType,1},getfield(DreamCore.Types, Symbol("##1#2"))}, getfield(DreamCore.Types, Symbol("##1#2"))(), args)))))
-└ @ ~/w/mit/DreamCore.jl/src/types.jl:47
-┌ Warning: dynamic dispatch to (DreamCore.Types.TypeConstructor)(c, $(Expr(:invoke, MethodInstance for split_arguments(::Array{AbstractType,1}), :(DreamCore.Types.split_arguments), :a)), DreamCore.Types.nothing)
-└ @ ~/w/mit/DreamCore.jl/src/types.jl:53
+└ @ ~/w/mit/ProgramSynthesis.jl/src/types.jl:47
+┌ Warning: dynamic dispatch to (ProgramSynthesis.Types.any)($(Expr(:invoke, MethodInstance for collect(::Base.Generator{Array{AbstractType,1},getfield(ProgramSynthesis.Types, Symbol("##1#2"))}), :(Base.collect), :(%new(Base.Generator{Array{AbstractType,1},getfield(ProgramSynthesis.Types, Symbol("##1#2"))}, getfield(ProgramSynthesis.Types, Symbol("##1#2"))(), args)))))
+└ @ ~/w/mit/ProgramSynthesis.jl/src/types.jl:47
+┌ Warning: dynamic dispatch to (ProgramSynthesis.Types.TypeConstructor)(c, $(Expr(:invoke, MethodInstance for split_arguments(::Array{AbstractType,1}), :(ProgramSynthesis.Types.split_arguments), :a)), ProgramSynthesis.Types.nothing)
+└ @ ~/w/mit/ProgramSynthesis.jl/src/types.jl:53
 ┌ Warning: n is assigned as Union{Nothing, Tuple{AbstractType,Int64}}
 └ @ iterators.jl:139
 ┌ Warning: getindex returns Union{Int64, Candidate}
 └ @ tuple.jl:24
 ┌ Warning: y is assigned as Union{Nothing, Tuple{Candidate,Int64}}
 └ @ generator.jl:44
-┌ Warning: y is assigned as Tuple{DreamCore.Generation.Candidate,Int64}
+┌ Warning: y is assigned as Tuple{ProgramSynthesis.Generation.Candidate,Int64}
 └ @ generator.jl:46
 ┌ Warning: y is assigned as Union{Nothing, Tuple{Candidate,Int64}}
 └ @ generator.jl:44
-┌ Warning: y is assigned as Tuple{DreamCore.Generation.Candidate,Int64}
+┌ Warning: y is assigned as Tuple{ProgramSynthesis.Generation.Candidate,Int64}
 └ @ generator.jl:46
 ┌ Warning: y is assigned as Union{Nothing, Tuple{Float64,Int64}}
 └ @ array.jl:651
@@ -367,29 +367,29 @@ DreamCore.Generation.Candidate(-1.3862943611198906, list(list(int) -> int) -> li
 └ @ reduce.jl:55
 ┌ Warning: y is assigned as Union{Nothing, Tuple{Candidate,Int64}}
 └ @ generator.jl:44
-┌ Warning: y is assigned as Tuple{DreamCore.Generation.Candidate,Int64}
+┌ Warning: y is assigned as Tuple{ProgramSynthesis.Generation.Candidate,Int64}
 └ @ generator.jl:46
 ┌ Warning: y is assigned as Union{Nothing, Tuple{Candidate,Int64}}
 └ @ generator.jl:44
-┌ Warning: y is assigned as Tuple{DreamCore.Generation.Candidate,Int64}
+┌ Warning: y is assigned as Tuple{ProgramSynthesis.Generation.Candidate,Int64}
 └ @ generator.jl:46
 ┌ Warning: y is assigned as Union{Nothing, Tuple{Candidate,Int64}}
 └ @ array.jl:651
 ┌ Warning: y is assigned as Union{Nothing, Tuple{Candidate,Int64}}
 └ @ array.jl:619
 ┌ Warning: r is assigned as Union{Float64, VariableCandidate}
-└ @ ~/w/mit/DreamCore.jl/src/generation.jl:188
+└ @ ~/w/mit/ProgramSynthesis.jl/src/generation.jl:188
 ┌ Warning: r is assigned as Union{Float64, Candidate}
-└ @ ~/w/mit/DreamCore.jl/src/generation.jl:174
+└ @ ~/w/mit/ProgramSynthesis.jl/src/generation.jl:174
 ┌ Warning: dynamic dispatch to (Base.getindex)((Base.getfield)(grammar, productions), 1)
-└ @ ~/w/mit/DreamCore.jl/src/generation.jl:705
+└ @ ~/w/mit/ProgramSynthesis.jl/src/generation.jl:705
 ┌ Warning: dynamic dispatch to (Base.getindex)((Base.getfield)(grammar, productions), φ (%24 => %21, %120 => %116))
-└ @ ~/w/mit/DreamCore.jl/src/generation.jl:705
-┌ Warning: dynamic dispatch to (DreamCore.Generation.enumerate)((Base.getfield)(φ (%119 => %100, %24 => _3), env))
-└ @ ~/w/mit/DreamCore.jl/src/generation.jl:186
-┌ Warning: dynamic dispatch to (Base.iterate)((DreamCore.Generation.enumerate)((Base.getfield)(φ (%119 => %100, %24 => _3), env)), (1,))
-└ @ ~/w/mit/DreamCore.jl/src/generation.jl:138
-┌ Warning: dynamic dispatch to (DreamCore.Generation.get_variable_candidate)(φ (%131 => %122, %219 => %212), (Base.getfield)((Core.getfield)(π (%136, Tuple{Tuple{Int64,Any},Tuple{Int64,Any}}), 1), 2), (Base.sub_int)((Base.getfield)((Core.getfield)(π (%136, Tuple{Tuple{Int64,Any},Tuple{Int64,Any}}), 1), 1), 1))
-└ @ ~/w/mit/DreamCore.jl/src/generation.jl:188
-┌ Warning: dynamic dispatch to (Base.iterate)((DreamCore.Generation.enumerate)((Base.getfield)(φ (%119 => %100, %24 => _3), env)), (Core.getfield)(π (%136, Tuple{Tuple{Int64,Any},Tuple{Int64,Any}}), 2))
-└ @ ~/w/mit/DreamCore.jl/src/generation.jl:195
+└ @ ~/w/mit/ProgramSynthesis.jl/src/generation.jl:705
+┌ Warning: dynamic dispatch to (ProgramSynthesis.Generation.enumerate)((Base.getfield)(φ (%119 => %100, %24 => _3), env))
+└ @ ~/w/mit/ProgramSynthesis.jl/src/generation.jl:186
+┌ Warning: dynamic dispatch to (Base.iterate)((ProgramSynthesis.Generation.enumerate)((Base.getfield)(φ (%119 => %100, %24 => _3), env)), (1,))
+└ @ ~/w/mit/ProgramSynthesis.jl/src/generation.jl:138
+┌ Warning: dynamic dispatch to (ProgramSynthesis.Generation.get_variable_candidate)(φ (%131 => %122, %219 => %212), (Base.getfield)((Core.getfield)(π (%136, Tuple{Tuple{Int64,Any},Tuple{Int64,Any}}), 1), 2), (Base.sub_int)((Base.getfield)((Core.getfield)(π (%136, Tuple{Tuple{Int64,Any},Tuple{Int64,Any}}), 1), 1), 1))
+└ @ ~/w/mit/ProgramSynthesis.jl/src/generation.jl:188
+┌ Warning: dynamic dispatch to (Base.iterate)((ProgramSynthesis.Generation.enumerate)((Base.getfield)(φ (%119 => %100, %24 => _3), env)), (Core.getfield)(π (%136, Tuple{Tuple{Int64,Any},Tuple{Int64,Any}}), 2))
+└ @ ~/w/mit/ProgramSynthesis.jl/src/generation.jl:195

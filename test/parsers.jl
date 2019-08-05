@@ -1,10 +1,10 @@
 using Test
 
-using DreamCore
-using DreamCore.Parsers: parse_s_expression,
+using ProgramSynthesis
+using ProgramSynthesis.Parsers: parse_s_expression,
                          ParseSExprFailure,
                          ParseFailure
-using DreamCore.Programs: DeBruijnIndex,
+using ProgramSynthesis.Programs: DeBruijnIndex,
                           Abstraction,
                           Application,
                           Invented,

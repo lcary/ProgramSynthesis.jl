@@ -1,7 +1,7 @@
-DreamCore
+ProgramSynthesis
 =========
 
-DreamCore is a library of program induction and synthesis routines.
+ProgramSynthesis is a library of program induction and synthesis routines.
 
 Checklist
 ---------
