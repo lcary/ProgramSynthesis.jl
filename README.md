@@ -114,7 +114,7 @@ Checklist
  - [ ] Use [Timer](https://docs.julialang.org/en/v1/base/base/index.html#Base.Timer-Tuple{Function,Real}) for timeouts.
  - [ ] Multicore Enumeration
  - [ ] Add package documentation
- - [ ] Make repo public / upload to julia pkgs
+ - [x] Make repo public
 
 References
 ----------
@@ -122,9 +122,11 @@ References
 This repository implements enumeration algorithms from the following "ec"/"dreamcoder" codebase:
 https://github.com/ellisk42/ec
 
+Program synthesis wiki:
+https://en.wikipedia.org/wiki/Program_synthesis
+
 The representation of solutions relies on Lambda Calculus:
 https://en.wikipedia.org/wiki/Lambda_calculus
-
 
 The construction of programs in enumeration uses unification:
 https://en.wikipedia.org/wiki/Unification_(computer_science)
