@@ -4,7 +4,7 @@ https://github.com/JuliaLang/PackageCompiler.jl#building-an-executable
 
 To compile, clone the repo, cd into, add its deps via julia CLI and then run:
 
-    julia --project=~/w/mit/DreamCore.jl ./juliac.jl -aeq ../DreamCore.jl/bin/executable.jl --outname dreamcore
+    julia --project=~/w/mit/ProgramSynthesis.jl ./juliac.jl -aeq ../ProgramSynthesis.jl/bin/executable.jl --outname dreamcore
 
 To call the executable after building:
 
@@ -15,9 +15,9 @@ must be present in the same directory wherever they need to be executed.
 
 Tested with PackageCompiler@602f2b093308ac6cb6385d2dc5f4bf9f6a8e514e
 """
-module DreamCoreExecutable
+module ProgramSynthesisExecutable
 
-using DreamCore
+using ProgramSynthesis
 
 Base.@ccallable function julia_main(ARGS::Vector{String})::Cint
     command = ARGS[1]
@@ -26,7 +26,7 @@ Base.@ccallable function julia_main(ARGS::Vector{String})::Cint
             error("Missing required path to JSON file.")
         end
         request_message_file = ARGS[2]
-        response_message_file = DreamCore.run_enumeration(request_message_file)
+        response_message_file = ProgramSynthesis.run_enumeration(request_message_file)
         println(response_message_file)
     else
         error("unknown command")

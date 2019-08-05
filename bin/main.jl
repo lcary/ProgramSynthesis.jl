@@ -1,14 +1,14 @@
 """
-Main entry point for DreamCore.
+Main entry point for ProgramSynthesis.
 
 Usage:
 
     julia --project=PROJECT_DIR PROJECT_DIR/bin/main.jl enumerate msg.json
 
 """
-module DreamCoreMain
+module ProgramSynthesisMain
 
-using DreamCore
+using ProgramSynthesis
 
 command = ARGS[1]
 if command == "enumerate"

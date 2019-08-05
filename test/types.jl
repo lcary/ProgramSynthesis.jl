@@ -1,8 +1,8 @@
 using Test
 using JSON
 
-using DreamCore
-using DreamCore.Types: function_arguments,
+using ProgramSynthesis
+using ProgramSynthesis.Types: function_arguments,
                        instantiate,
                        arrow,
                        Context,
@@ -17,7 +17,7 @@ using DreamCore.Types: function_arguments,
                        extend,
                        returns,
                        apply
-using DreamCore.Utils: allsame
+using ProgramSynthesis.Utils: allsame
 
 @testset "types.jl" begin
     @testset "test function_arguments" begin

@@ -1,7 +1,7 @@
 using JSON
 
-using DreamCore
-using DreamCore.Generation: program_generator
+using ProgramSynthesis
+using ProgramSynthesis.Generation: program_generator
 
 get_resource(filename) = abspath(@__DIR__, "..", "test", "resources", filename)
 

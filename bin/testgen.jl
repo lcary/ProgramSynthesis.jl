@@ -5,8 +5,8 @@ module TestGenerator
 
 using JSON
 
-using DreamCore
-using DreamCore.Types: tint, tlist, arrow, tbool
+using ProgramSynthesis
+using ProgramSynthesis.Types: tint, tlist, arrow, tbool
 
 filename = "request_enumeration_example_2.json"
 filepath = abspath(@__DIR__, "..", "test", "resources", filename)

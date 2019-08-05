@@ -3,10 +3,10 @@ using BenchmarkTools
 using JSON
 using Test
 
-using DreamCore
-using DreamCore.Programs
-using DreamCore.Types: Context, TypeField
-using DreamCore.Generation: application_parse
+using ProgramSynthesis
+using ProgramSynthesis.Programs
+using ProgramSynthesis.Types: Context, TypeField
+using ProgramSynthesis.Generation: application_parse
 
 f = "../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID26993_20190719_T155300.json"
 

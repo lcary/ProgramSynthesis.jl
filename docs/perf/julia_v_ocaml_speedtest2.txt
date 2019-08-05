@@ -39,63 +39,63 @@ Currently using this much memory: 123572224
 Currently using this much memory: 123572224
 Using a waking task batch of size: 5
 (python) Launching list(int) -> list(int) (2 tasks) w/ 1 CPUs. 0.000000 <= MDL < 1.500000. Timeout 360.000000.
-['julia', '--project=/om2/user/lcary/ec/bin/../dreamcoder/../../DreamCore.jl', '/om2/user/lcary/ec/bin/../dreamcoder/../../DreamCore.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec/bin/../dreamcoder/../messages/julia_request_enumeration_PID518_20190719_T155258.json']
+['julia', '--project=/om2/user/lcary/ec/bin/../dreamcoder/../../ProgramSynthesis.jl', '/om2/user/lcary/ec/bin/../dreamcoder/../../ProgramSynthesis.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec/bin/../dreamcoder/../messages/julia_request_enumeration_PID518_20190719_T155258.json']
 response file:  b'/om2/user/lcary/ec/messages/response_enumeration_PID519_20190719_T155349.json'
 response data:
 {'reverse': [], 'repeat_n_n_times': []}
 (python) Launching list(int) -> int (3 tasks) w/ 1 CPUs. 0.000000 <= MDL < 1.500000. Timeout 360.000000.
-['julia', '--project=/om2/user/lcary/ec/bin/../dreamcoder/../../DreamCore.jl', '/om2/user/lcary/ec/bin/../dreamcoder/../../DreamCore.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec/bin/../dreamcoder/../messages/julia_request_enumeration_PID597_20190719_T155349.json']
+['julia', '--project=/om2/user/lcary/ec/bin/../dreamcoder/../../ProgramSynthesis.jl', '/om2/user/lcary/ec/bin/../dreamcoder/../../ProgramSynthesis.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec/bin/../dreamcoder/../messages/julia_request_enumeration_PID597_20190719_T155349.json']
 response file:  b'/om2/user/lcary/ec/messages/response_enumeration_PID598_20190719_T155431.json'
 response data:
 {'length': [], 'last_element_of_list': [], 'headth_element_of_tail': []}
 (python) Launching list(int) -> list(int) (2 tasks) w/ 1 CPUs. 1.500000 <= MDL < 3.000000. Timeout 308.808493.
-['julia', '--project=/om2/user/lcary/ec/bin/../dreamcoder/../../DreamCore.jl', '/om2/user/lcary/ec/bin/../dreamcoder/../../DreamCore.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec/bin/../dreamcoder/../messages/julia_request_enumeration_PID662_20190719_T155431.json']
+['julia', '--project=/om2/user/lcary/ec/bin/../dreamcoder/../../ProgramSynthesis.jl', '/om2/user/lcary/ec/bin/../dreamcoder/../../ProgramSynthesis.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec/bin/../dreamcoder/../messages/julia_request_enumeration_PID662_20190719_T155431.json']
 response file:  b'/om2/user/lcary/ec/messages/response_enumeration_PID663_20190719_T155524.json'
 response data:
 {'reverse': [], 'repeat_n_n_times': []}
 (python) Launching list(int) -> int (3 tasks) w/ 1 CPUs. 1.500000 <= MDL < 3.000000. Timeout 317.499444.
-['julia', '--project=/om2/user/lcary/ec/bin/../dreamcoder/../../DreamCore.jl', '/om2/user/lcary/ec/bin/../dreamcoder/../../DreamCore.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec/bin/../dreamcoder/../messages/julia_request_enumeration_PID986_20190719_T155525.json']
+['julia', '--project=/om2/user/lcary/ec/bin/../dreamcoder/../../ProgramSynthesis.jl', '/om2/user/lcary/ec/bin/../dreamcoder/../../ProgramSynthesis.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec/bin/../dreamcoder/../messages/julia_request_enumeration_PID986_20190719_T155525.json']
 response file:  b'/om2/user/lcary/ec/messages/response_enumeration_PID987_20190719_T155534.json'
 response data:
 {'length': [], 'last_element_of_list': [], 'headth_element_of_tail': []}
 (python) Launching list(int) -> list(int) (2 tasks) w/ 1 CPUs. 3.000000 <= MDL < 4.500000. Timeout 255.309990.
-['julia', '--project=/om2/user/lcary/ec/bin/../dreamcoder/../../DreamCore.jl', '/om2/user/lcary/ec/bin/../dreamcoder/../../DreamCore.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec/bin/../dreamcoder/../messages/julia_request_enumeration_PID1003_20190719_T155535.json']
+['julia', '--project=/om2/user/lcary/ec/bin/../dreamcoder/../../ProgramSynthesis.jl', '/om2/user/lcary/ec/bin/../dreamcoder/../../ProgramSynthesis.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec/bin/../dreamcoder/../messages/julia_request_enumeration_PID1003_20190719_T155535.json']
 response file:  b'/om2/user/lcary/ec/messages/response_enumeration_PID1004_20190719_T155617.json'
 response data:
 {'reverse': [], 'repeat_n_n_times': []}
 (python) Launching list(int) -> int (3 tasks) w/ 1 CPUs. 3.000000 <= MDL < 4.500000. Timeout 307.502721.
-['julia', '--project=/om2/user/lcary/ec/bin/../dreamcoder/../../DreamCore.jl', '/om2/user/lcary/ec/bin/../dreamcoder/../../DreamCore.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec/bin/../dreamcoder/../messages/julia_request_enumeration_PID1065_20190719_T155617.json']
+['julia', '--project=/om2/user/lcary/ec/bin/../dreamcoder/../../ProgramSynthesis.jl', '/om2/user/lcary/ec/bin/../dreamcoder/../../ProgramSynthesis.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec/bin/../dreamcoder/../messages/julia_request_enumeration_PID1065_20190719_T155617.json']
 response file:  b'/om2/user/lcary/ec/messages/response_enumeration_PID1066_20190719_T155646.json'
 response data:
 {'length': [], 'last_element_of_list': [], 'headth_element_of_tail': []}
 (python) Launching list(int) -> list(int) (2 tasks) w/ 1 CPUs. 4.500000 <= MDL < 6.000000. Timeout 212.938134.
-['julia', '--project=/om2/user/lcary/ec/bin/../dreamcoder/../../DreamCore.jl', '/om2/user/lcary/ec/bin/../dreamcoder/../../DreamCore.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec/bin/../dreamcoder/../messages/julia_request_enumeration_PID1102_20190719_T155646.json']
+['julia', '--project=/om2/user/lcary/ec/bin/../dreamcoder/../../ProgramSynthesis.jl', '/om2/user/lcary/ec/bin/../dreamcoder/../../ProgramSynthesis.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec/bin/../dreamcoder/../messages/julia_request_enumeration_PID1102_20190719_T155646.json']
 response file:  b'/om2/user/lcary/ec/messages/response_enumeration_PID1103_20190719_T155723.json'
 response data:
 {'reverse': [], 'repeat_n_n_times': []}
 (python) Launching list(int) -> int (3 tasks) w/ 1 CPUs. 4.500000 <= MDL < 6.000000. Timeout 278.225324.
-['julia', '--project=/om2/user/lcary/ec/bin/../dreamcoder/../../DreamCore.jl', '/om2/user/lcary/ec/bin/../dreamcoder/../../DreamCore.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec/bin/../dreamcoder/../messages/julia_request_enumeration_PID1151_20190719_T155723.json']
+['julia', '--project=/om2/user/lcary/ec/bin/../dreamcoder/../../ProgramSynthesis.jl', '/om2/user/lcary/ec/bin/../dreamcoder/../../ProgramSynthesis.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec/bin/../dreamcoder/../messages/julia_request_enumeration_PID1151_20190719_T155723.json']
 response file:  b'/om2/user/lcary/ec/messages/response_enumeration_PID1152_20190719_T155804.json'
 response data:
 {'length': [{'program': '(lambda (length $0))', 'time': 4.071675062179565, 'logLikelihood': 0.0, 'logPrior': -4.795790545596741}], 'last_element_of_list': [], 'headth_element_of_tail': []}
 solutions to length:  1
 (python) Launching list(int) -> list(int) (2 tasks) w/ 1 CPUs. 6.000000 <= MDL < 7.500000. Timeout 176.176279.
-['julia', '--project=/om2/user/lcary/ec/bin/../dreamcoder/../../DreamCore.jl', '/om2/user/lcary/ec/bin/../dreamcoder/../../DreamCore.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec/bin/../dreamcoder/../messages/julia_request_enumeration_PID1284_20190719_T155805.json']
+['julia', '--project=/om2/user/lcary/ec/bin/../dreamcoder/../../ProgramSynthesis.jl', '/om2/user/lcary/ec/bin/../dreamcoder/../../ProgramSynthesis.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec/bin/../dreamcoder/../messages/julia_request_enumeration_PID1284_20190719_T155805.json']
 response file:  b'/om2/user/lcary/ec/messages/response_enumeration_PID1285_20190719_T155923.json'
 response data:
 {'reverse': [], 'repeat_n_n_times': []}
 (python) Launching list(int) -> int (3 tasks) w/ 1 CPUs. 6.000000 <= MDL < 7.500000. Timeout 236.887013.
-['julia', '--project=/om2/user/lcary/ec/bin/../dreamcoder/../../DreamCore.jl', '/om2/user/lcary/ec/bin/../dreamcoder/../../DreamCore.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec/bin/../dreamcoder/../messages/julia_request_enumeration_PID1438_20190719_T155923.json']
+['julia', '--project=/om2/user/lcary/ec/bin/../dreamcoder/../../ProgramSynthesis.jl', '/om2/user/lcary/ec/bin/../dreamcoder/../../ProgramSynthesis.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec/bin/../dreamcoder/../messages/julia_request_enumeration_PID1438_20190719_T155923.json']
 response file:  b'/om2/user/lcary/ec/messages/response_enumeration_PID1439_20190719_T160027.json'
 response data:
 {'length': [], 'last_element_of_list': [], 'headth_element_of_tail': []}
 (python) Launching list(int) -> list(int) (2 tasks) w/ 1 CPUs. 7.500000 <= MDL < 9.000000. Timeout 97.879162.
-['julia', '--project=/om2/user/lcary/ec/bin/../dreamcoder/../../DreamCore.jl', '/om2/user/lcary/ec/bin/../dreamcoder/../../DreamCore.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec/bin/../dreamcoder/../messages/julia_request_enumeration_PID1553_20190719_T160028.json']
+['julia', '--project=/om2/user/lcary/ec/bin/../dreamcoder/../../ProgramSynthesis.jl', '/om2/user/lcary/ec/bin/../dreamcoder/../../ProgramSynthesis.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec/bin/../dreamcoder/../messages/julia_request_enumeration_PID1553_20190719_T160028.json']
 response file:  b'/om2/user/lcary/ec/messages/response_enumeration_PID1554_20190719_T160239.json'
 response data:
 {'reverse': [], 'repeat_n_n_times': []}
 (python) Launching list(int) -> int (3 tasks) w/ 1 CPUs. 7.500000 <= MDL < 9.000000. Timeout 171.908763.
-['julia', '--project=/om2/user/lcary/ec/bin/../dreamcoder/../../DreamCore.jl', '/om2/user/lcary/ec/bin/../dreamcoder/../../DreamCore.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec/bin/../dreamcoder/../messages/julia_request_enumeration_PID1778_20190719_T160239.json']
+['julia', '--project=/om2/user/lcary/ec/bin/../dreamcoder/../../ProgramSynthesis.jl', '/om2/user/lcary/ec/bin/../dreamcoder/../../ProgramSynthesis.jl/bin/main.jl', 'enumerate', '/om2/user/lcary/ec/bin/../dreamcoder/../messages/julia_request_enumeration_PID1778_20190719_T160239.json']
 
 ========================================================
 OCAML (commit: 0f0bd72278e24715dd30fdbc2518df5ef5f65035)
