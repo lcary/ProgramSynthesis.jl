@@ -1,20 +1,21 @@
 ProgramSynthesis.jl
 ===================
 
-`ProgramSynthesis.jl` is a library of program synthesis routines and tools.
+`ProgramSynthesis.jl` is a library of program synthesis routines and tools. This
+project aims to introduce a library written in Julia that can be imported and used
+to automatically generate programs via enumeration, and filter those programs based on
+their ability to solve given problem sets (or sets of input-output examples).
+
+Build Status
+------------
+
+[![Build Status](https://travis-ci.com/lcary/ProgramSynthesis.jl.svg?branch=master)](https://travis-ci.com/lcary/ProgramSynthesis.jl)
 
 What is Program Synthesis?
 --------------------------
 
 The term "program synthesis" refers to the automatic construction or synthesizing of programs
 that match a given specification.
-
-Overview
---------
-
-This project aims to introduce a library written in Julia that can be imported and used
-to automatically generate programs via enumeration, and filter those programs based on
-their ability to solve given problem sets (or sets of input-output examples).
 
 Usage
 -----
