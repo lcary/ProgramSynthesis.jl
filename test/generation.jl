@@ -1,29 +1,29 @@
+using Base.Iterators
 using Test
 using JSON
 
 using ProgramSynthesis
 using ProgramSynthesis.Primitives: base_primitives
 using ProgramSynthesis.Enumeration: Request
-using ProgramSynthesis.Generation: generator,
-                            program_generator,
-                            Result,
-                            Candidate,
-                            InvalidStateException,
-                            update_log_probability,
-                            finalize_candidates!,
-                            get_candidate,
-                            get_variable_candidate,
-                            update_log_probability,
-                            unwind_path,
-                            state_violates_symmetry,
-                            modify_skeleton,
-                            follow_path,
-                            application_parse,
-                            State,
-                            Path,
-                            LEFT,
-                            RIGHT,
-                            get_parent
+using ProgramSynthesis.Generation: program_generator,
+                                   Result,
+                                   Candidate,
+                                   InvalidStateException,
+                                   update_log_probability,
+                                   finalize_candidates!,
+                                   get_candidate,
+                                   get_variable_candidate,
+                                   update_log_probability,
+                                   unwind_path,
+                                   state_violates_symmetry,
+                                   modify_skeleton,
+                                   follow_path,
+                                   application_parse,
+                                   State,
+                                   Path,
+                                   LEFT,
+                                   RIGHT,
+                                   get_parent
 using ProgramSynthesis.Types: tlist, tint, t0, t1, UNIFICATION_FAILURE
 using ProgramSynthesis.Utils: lse, allequal
 
@@ -32,56 +32,6 @@ get_resource(filename) = abspath(@__DIR__, "resources", filename)
 const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
 
 @testset "generation.jl" begin
-    # TODO: remove when old-style generator is deprecated
-    @testset "run program generation file2 bounds1 OLD" begin
-        data = JSON.parsefile(TEST_FILE2)
-        log_probability = 0.0
-        data["DSL"]["productions"] = [
-            Dict(
-                "expression" => "index",
-                "logProbability" => log_probability
-            ),
-            Dict(
-                "expression" => "length",
-                "logProbability" => log_probability
-            ),
-            Dict(
-                "expression" => "0",
-                "logProbability" => log_probability
-            )
-        ]
-        grammar = Grammar(data["DSL"], base_primitives())
-        problems = map(Problem, data["tasks"])
-        type = problems[1].type
-        env = Array{TypeField}([])
-        r = generator(grammar, env, type, 3.0, 1.5, 99)
-        @test isa(take!(r), Result)
-    end
-    # TODO: remove when old-style generator is deprecated
-    @testset "run program generation file2 bounds2 OLD" begin
-        data = JSON.parsefile(TEST_FILE2)
-        log_probability = 0.0
-        data["DSL"]["productions"] = [
-            Dict(
-                "expression" => "index",
-                "logProbability" => log_probability
-            ),
-            Dict(
-                "expression" => "length",
-                "logProbability" => log_probability
-            ),
-            Dict(
-                "expression" => "0",
-                "logProbability" => log_probability
-            )
-        ]
-        grammar = Grammar(data["DSL"], base_primitives())
-        problems = map(Problem, data["tasks"])
-        type = problems[1].type
-        env = Array{TypeField}([])
-        r = generator(grammar, env, type, 6.0, 4.5, 99)
-        @test isa(take!(r), Result)
-    end
     @testset "run program_generator file2 bounds1" begin
         data = JSON.parsefile(TEST_FILE2)
         log_probability = 0.0
@@ -102,9 +52,9 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
         grammar = Grammar(data["DSL"], base_primitives())
         problems = map(Problem, data["tasks"])
         type = problems[1].type
-        env = Array{TypeField}([])
-        r = program_generator(grammar, env, type, 3.0, 1.5, 99)
-        @test isa(take!(r), Result)
+
+        r = program_generator(grammar, type, 3.0, 1.5, 99)
+        @test isa(collect(Iterators.take(r, 1))[1], Result)
     end
     @testset "run program_generator file2 bounds2" begin
         data = JSON.parsefile(TEST_FILE2)
@@ -126,9 +76,9 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
         grammar = Grammar(data["DSL"], base_primitives())
         problems = map(Problem, data["tasks"])
         type = problems[1].type
-        env = Array{TypeField}([])
-        r = program_generator(grammar, env, type, 6.0, 4.5, 99)
-        @test isa(take!(r), Result)
+
+        r = program_generator(grammar, type, 6.0, 4.5, 99)
+        @test isa(collect(Iterators.take(r, 1))[1], Result)
     end
     @testset "test get_candidate 1" begin
         data = JSON.parsefile(TEST_FILE2)
@@ -454,8 +404,6 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
         context = Context(3, [(2, tlist(tint)), (1, tint), (0, tint)])
         path = Path([tlist(tint), LEFT, RIGHT, RIGHT, RIGHT])
         state = State(skeleton, context, path, 11.9894, 94)
-        result = state_violates_symmetry(state)
-        @test !result
 
         parent = get_parent(path, skeleton)
         @test isa(parent, Program)
@@ -487,8 +435,6 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
         context = Context(0, [])
         path = Path()
         state = State(skeleton, context, path, 5.9894, 96)
-        result = state_violates_symmetry(state)
-        @test result
 
         skeleton = Abstraction(
             Application(

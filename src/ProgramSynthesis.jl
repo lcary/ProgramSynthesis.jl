@@ -36,7 +36,7 @@ export run_enumeration,
        priority,
        json_format,
        is_explored,
-       generator,
+       program_generator,
        base_primitives,
        evaluate,
        parse_program

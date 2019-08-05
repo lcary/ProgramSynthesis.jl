@@ -117,9 +117,8 @@ function run_enumeration(request::Request)::Dict{String,Any}
         !is_explored(solutions, max_solutions)
         && budget <= request.upper_bound
     )
-        env = Array{TypeField,1}([])
         args = (
-            request.grammar, env, type, budget,
+            request.grammar, type, budget,
             previous_budget, request.max_depth
         )
         timeout_exceeded = false
