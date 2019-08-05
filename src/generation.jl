@@ -64,7 +64,6 @@ to run out of memory during iteration.
 module Generation
 
 using DataStructures
-using ResumableFunctions
 
 using ..Types
 using ..Grammars
@@ -305,8 +304,8 @@ struct State
     depth::Int
 end
 
-@resumable function program_generator(
-        grammar::Grammar,
+function program_generator(
+        channel::Channel, grammar::Grammar,
         context::Context,
         type::TypeField, upper_bound::Float64,
         lower_bound::Float64, max_depth::Int)
@@ -337,7 +336,7 @@ end
 
         if program_is_finished(path, skeleton)
             if bounds_check(lower_bound, cost, upper_bound)
-                @yield Result(-cost, skeleton, context)
+                put!(channel, Result(-cost, skeleton, context))
             end
             continue
         end
@@ -559,15 +558,13 @@ function program_is_finished(
     return isempty(path) && program.ptype != UNKNOWN
 end
 
-@resumable function program_generator(
+function program_generator(
         grammar::Grammar,
         type::TypeField, upper_bound::Float64,
         lower_bound::Float64, max_depth::Int)
-    for i in program_generator(
-            grammar, Context(),
-            type, upper_bound, lower_bound, max_depth)
-        @yield i
-    end
+    return Channel((channel) -> program_generator(
+        channel, grammar, Context(),
+        type, upper_bound, lower_bound, max_depth))
 end
 
 end

@@ -1,4 +1,3 @@
-using Base.Iterators
 using Test
 using JSON
 
@@ -54,7 +53,7 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
         type = problems[1].type
 
         r = program_generator(grammar, type, 3.0, 1.5, 99)
-        @test isa(collect(Iterators.take(r, 1))[1], Result)
+        @test isa(take!(r), Result)
     end
     @testset "run program_generator file2 bounds2" begin
         data = JSON.parsefile(TEST_FILE2)
@@ -78,7 +77,7 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
         type = problems[1].type
 
         r = program_generator(grammar, type, 6.0, 4.5, 99)
-        @test isa(collect(Iterators.take(r, 1))[1], Result)
+        @test isa(take!(r), Result)
     end
     @testset "test get_candidate 1" begin
         data = JSON.parsefile(TEST_FILE2)
