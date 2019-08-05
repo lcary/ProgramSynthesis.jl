@@ -31,7 +31,33 @@ Example:
 /Users/lcary/w/mit/ProgramSynthesis.jl/messages/response_enumeration_PID4341_20190805_T104049.json
 ```
 
-Problem format:
+Testing
+-------
+
+To run the unit tests, clone the repo and run:
+```
+./runtests
+```
+
+References
+----------
+
+This repository implements enumeration algorithms from the following "ec"/"dreamcoder" codebase:
+https://github.com/ellisk42/ec
+
+Program synthesis wiki:
+https://en.wikipedia.org/wiki/Program_synthesis
+
+The representation of solutions relies on Lambda Calculus:
+https://en.wikipedia.org/wiki/Lambda_calculus
+
+The construction of programs in enumeration uses unification:
+https://en.wikipedia.org/wiki/Unification_(computer_science)
+
+Request Formats
+---------------
+
+Problem request format:
 ```
 {
   "DSL": {
@@ -75,7 +101,7 @@ Problem format:
 }
 ```
 
-Solution format:
+Solution response format:
 ```
 {
   "length-test": [
@@ -88,26 +114,3 @@ Solution format:
   ]
 }
 ```
-
-Testing
--------
-
-To run the unit tests, clone the repo and run:
-```
-./runtests
-```
-
-References
-----------
-
-This repository implements enumeration algorithms from the following "ec"/"dreamcoder" codebase:
-https://github.com/ellisk42/ec
-
-Program synthesis wiki:
-https://en.wikipedia.org/wiki/Program_synthesis
-
-The representation of solutions relies on Lambda Calculus:
-https://en.wikipedia.org/wiki/Lambda_calculus
-
-The construction of programs in enumeration uses unification:
-https://en.wikipedia.org/wiki/Unification_(computer_science)
