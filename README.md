@@ -14,6 +14,7 @@ Checklist
  - [x] Implement Program Evaluation
  - [x] Implement Program Parsing for complex programs (abstraction, application)
  - [x] Implement Program Parsing for other program types (invented)
+ - [ ] Performance: Implement Iterative Depth-First Program Search
  - [ ] Implement Type Inference
  - [ ] Accept JSON stream as input
  - [ ] Add docstrings (See TODOs)
