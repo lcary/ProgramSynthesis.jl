@@ -1,6 +1,6 @@
 module Utils
 
-export getoptional, lse, curry, allequal
+export getoptional, lse, curry, allsame
 
 function getoptional(
     data::Dict{String,Any},
@@ -18,7 +18,11 @@ function getoptional(
     end
 end
 
-allequal(x) = all(y -> isequal(y, x[1]), x)
+allsame(x) = all(y -> isequal(y, x[1]), x)
+
+function allequal(x, y)
+    return length(x) == length(y) && all(isequal(i, j) for (i, j) in zip(x, y))
+end
 
 curry(f, x) = (xs...) -> f(x, xs...)
 

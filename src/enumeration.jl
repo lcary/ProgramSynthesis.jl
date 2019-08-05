@@ -106,7 +106,7 @@ function run_enumeration(request::Request)::Dict{String,Any}
     max_solutions = [p.max_solutions for p in problems]
     solutions = SolutionSet(length(problems))
 
-    if !Utils.allequal([p.type for p in problems])
+    if !Utils.allsame([p.type for p in problems])
         throw(TypeMismatchError("Types differ in problem set."))
     end
     type = problems[1].type
@@ -123,7 +123,7 @@ function run_enumeration(request::Request)::Dict{String,Any}
             previous_budget, request.max_depth
         )
         timeout_exceeded = false
-        for result in generator(args...)
+        for result in program_generator(args...)
             for (index, problem) in enumerate(problems)
                 # TODO: run with program timeout
                 solve!(solutions, result, problem, index, start)

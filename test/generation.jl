@@ -5,6 +5,7 @@ using DreamCore
 using DreamCore.Primitives: base_primitives
 using DreamCore.Enumeration: Request
 using DreamCore.Generation: generator,
+                            program_generator,
                             Result,
                             Candidate,
                             InvalidStateException,
@@ -12,16 +13,27 @@ using DreamCore.Generation: generator,
                             finalize_candidates!,
                             get_candidate,
                             get_variable_candidate,
-                            update_log_probability
+                            update_log_probability,
+                            unwind_path,
+                            state_violates_symmetry,
+                            modify_skeleton,
+                            follow_path,
+                            application_parse,
+                            State,
+                            Path,
+                            LEFT,
+                            RIGHT,
+                            get_parent
 using DreamCore.Types: tlist, tint, t0, t1, UNIFICATION_FAILURE
-using DreamCore.Utils: lse
+using DreamCore.Utils: lse, allequal
 
 get_resource(filename) = abspath(@__DIR__, "resources", filename)
 
 const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
 
 @testset "generation.jl" begin
-    @testset "run program generation file2 bounds1" begin
+    # TODO: remove when old-style generator is deprecated
+    @testset "run program generation file2 bounds1 OLD" begin
         data = JSON.parsefile(TEST_FILE2)
         log_probability = 0.0
         data["DSL"]["productions"] = [
@@ -45,7 +57,8 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
         r = generator(grammar, env, type, 3.0, 1.5, 99)
         @test isa(take!(r), Result)
     end
-    @testset "run program generation file2 bounds2" begin
+    # TODO: remove when old-style generator is deprecated
+    @testset "run program generation file2 bounds2 OLD" begin
         data = JSON.parsefile(TEST_FILE2)
         log_probability = 0.0
         data["DSL"]["productions"] = [
@@ -67,6 +80,54 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
         type = problems[1].type
         env = Array{TypeField}([])
         r = generator(grammar, env, type, 6.0, 4.5, 99)
+        @test isa(take!(r), Result)
+    end
+    @testset "run program_generator file2 bounds1" begin
+        data = JSON.parsefile(TEST_FILE2)
+        log_probability = 0.0
+        data["DSL"]["productions"] = [
+            Dict(
+                "expression" => "index",
+                "logProbability" => log_probability
+            ),
+            Dict(
+                "expression" => "length",
+                "logProbability" => log_probability
+            ),
+            Dict(
+                "expression" => "0",
+                "logProbability" => log_probability
+            )
+        ]
+        grammar = Grammar(data["DSL"], base_primitives())
+        problems = map(Problem, data["tasks"])
+        type = problems[1].type
+        env = Array{TypeField}([])
+        r = program_generator(grammar, env, type, 3.0, 1.5, 99)
+        @test isa(take!(r), Result)
+    end
+    @testset "run program_generator file2 bounds2" begin
+        data = JSON.parsefile(TEST_FILE2)
+        log_probability = 0.0
+        data["DSL"]["productions"] = [
+            Dict(
+                "expression" => "index",
+                "logProbability" => log_probability
+            ),
+            Dict(
+                "expression" => "length",
+                "logProbability" => log_probability
+            ),
+            Dict(
+                "expression" => "0",
+                "logProbability" => log_probability
+            )
+        ]
+        grammar = Grammar(data["DSL"], base_primitives())
+        problems = map(Problem, data["tasks"])
+        type = problems[1].type
+        env = Array{TypeField}([])
+        r = program_generator(grammar, env, type, 6.0, 4.5, 99)
         @test isa(take!(r), Result)
     end
     @testset "test get_candidate 1" begin
@@ -347,5 +408,193 @@ const TEST_FILE2 = get_resource("request_enumeration_example_2.json")
 
         finalize_candidates!(candidates)
         @test length(candidates) == 999
+    end
+    @testset "test unwind_path" begin
+        path = Path([tlist(tint), LEFT, RIGHT, LEFT, RIGHT,
+                     RIGHT, LEFT, LEFT, RIGHT, RIGHT])
+        result = unwind_path(path)
+        @test allequal(
+            result,
+            [tlist(tint), LEFT, RIGHT, LEFT, RIGHT, RIGHT, LEFT, RIGHT])
+
+        path = Path([tlist(tint), LEFT, RIGHT, RIGHT, RIGHT])
+        result = unwind_path(path)
+        @test allequal(
+            result,
+            [tlist(tint), RIGHT])
+
+        path = Path()
+        result = unwind_path(path)
+        @test result == []
+    end
+    @testset "test state_violates_symmetry" begin
+        primitives = base_primitives()
+
+        skeleton = Abstraction(
+            Application(
+                Application(
+                    parse_program("+", primitives),
+                    Application(
+                        Application(
+                            parse_program("index", primitives),
+                            Application(
+                                parse_program("car", primitives),
+                                DeBruijnIndex(0)
+                            )
+                        ),
+                        Application(
+                            parse_program("car", primitives),
+                            Unknown(t0)
+                        )
+                    )
+                ),
+                Unknown(t0)
+            )
+        )
+        context = Context(3, [(2, tlist(tint)), (1, tint), (0, tint)])
+        path = Path([tlist(tint), LEFT, RIGHT, RIGHT, RIGHT])
+        state = State(skeleton, context, path, 11.9894, 94)
+        result = state_violates_symmetry(state)
+        @test !result
+
+        parent = get_parent(path, skeleton)
+        @test isa(parent, Program)
+        @test str(parent) == "(car ?)"
+
+        child = Application(
+            parse_program("cons", primitives),
+            Unknown(t0)
+        )
+        result = state_violates_symmetry(state, child)
+        @test result
+
+        child = parse_program("+", primitives)
+        result = state_violates_symmetry(state, child)
+        @test !result
+
+        skeleton = Abstraction(
+            Application(
+                Application(
+                    parse_program("*", primitives),
+                    parse_program("1", primitives)
+                ),
+                Application(
+                    parse_program("length", primitives),
+                    DeBruijnIndex(0)
+                )
+            )
+        )
+        context = Context(0, [])
+        path = Path()
+        state = State(skeleton, context, path, 5.9894, 96)
+        result = state_violates_symmetry(state)
+        @test result
+
+        skeleton = Abstraction(
+            Application(
+                Application(
+                    parse_program("*", primitives),
+                    Unknown(tint)
+                ),
+                Application(
+                    parse_program("length", primitives),
+                    DeBruijnIndex(0)
+                )
+            )
+        )
+        child = parse_program("1", primitives)
+        context = Context(0, [])
+        path = Path([tlist(tint), LEFT, LEFT, RIGHT])
+        state = State(skeleton, context, path, 5.9894, 96)
+        result = state_violates_symmetry(state, child)
+        @test result
+    end
+    @testset "test modify_skeleton complete program" begin
+        primitives = base_primitives()
+
+        path1 = Path([tlist(tint), LEFT, RIGHT, RIGHT, RIGHT])
+        skeleton1 = Abstraction(
+            Application(
+                Application(
+                    parse_program("+", primitives),
+                    Application(
+                        Application(
+                            parse_program("index", primitives),
+                            Application(
+                                parse_program("car", primitives),
+                                DeBruijnIndex(0)
+                            )
+                        ),
+                        Application(
+                            parse_program("car", primitives),
+                            Unknown(tlist(tint))
+                        )
+                    )
+                ),
+                Unknown(tint)
+            )
+        )
+        p1 = DeBruijnIndex(0)
+        skeleton2 = modify_skeleton(path1, skeleton1, p1)
+        @test str(skeleton2) == "(lambda (+ (index (car \$0) (car \$0)) ?))"
+
+        path2 = Path([tlist(tint), RIGHT])
+        p2 = parse_program("1", primitives)
+        result = modify_skeleton(path2, skeleton2, p2)
+        @test str(result) == "(lambda (+ (index (car \$0) (car \$0)) 1))"
+    end
+    @testset "test follow_path" begin
+        primitives = base_primitives()
+
+        path = Path([tlist(tint), LEFT, RIGHT, RIGHT, RIGHT])
+        skeleton = Abstraction(
+            Application(
+                Application(
+                    parse_program("+", primitives),
+                    Application(
+                        Application(
+                            parse_program("index", primitives),
+                            Application(
+                                parse_program("car", primitives),
+                                DeBruijnIndex(0)
+                            )
+                        ),
+                        Application(
+                            parse_program("car", primitives),
+                            Unknown(tlist(tint))
+                        )
+                    )
+                ),
+                Unknown(tint)
+            )
+        )
+        result = follow_path(path, skeleton)
+
+        # TODO: implement isequal / hash for program similar to TypeField
+        @test isa(result, Program)
+        @test result.name == "?"
+        @test result.func == nothing
+        @test isequal(result.type, tlist(tint))
+    end
+    @testset "test application_parse" begin
+        primitives = base_primitives()
+
+        p = Application(
+            Application(
+                parse_program("cons", primitives),
+                parse_program("1", primitives),
+            ),
+            Application(
+                parse_program("cdr", primitives),
+                DeBruijnIndex(0)
+            )
+        )
+        f, args = application_parse(p)
+        @test str(f) == "cons"
+        @test length(args) == 2
+        @test isa(args[1], Program)
+        @test str(args[1]) == "1"
+        @test isa(args[2], Program)
+        @test str(args[2]) == "(cdr \$0)"
     end
 end

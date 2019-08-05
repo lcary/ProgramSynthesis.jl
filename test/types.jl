@@ -17,7 +17,7 @@ using DreamCore.Types: function_arguments,
                        extend,
                        returns,
                        apply
-using DreamCore.Utils: allequal
+using DreamCore.Utils: allsame
 
 @testset "types.jl" begin
     @testset "test function_arguments" begin
@@ -73,7 +73,7 @@ using DreamCore.Utils: allequal
         @test isequal(t1, t2)
         @test isequal(t2, t3)
         @test isequal(t1, t3)
-        @test allequal([t for t in [t1, t2, t3]])
+        @test allsame([t for t in [t1, t2, t3]])
 
         d2 = Dict(
             "constructor" => "->", "arguments" => [

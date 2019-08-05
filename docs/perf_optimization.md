@@ -9,7 +9,7 @@ tested with:
 ❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID26993_20190719_T155300.json
 ```
 
-total originally 6 seconds in julia, <1s in ocaml (see julia_v_ocaml_speedtest2.txt)
+originally total of 6 seconds in julia, <1s in ocaml (see julia_v_ocaml_speedtest2.txt)
 
 before optimizations, results for T1 `@time for result in generator(args...)`:
 ```
@@ -136,6 +136,11 @@ e8d997c:
 0.942853 seconds (2.22 M allocations: 110.496 MiB, 3.55% gc time)
 3.307319 seconds (8.23 M allocations: 408.895 MiB, 5.71% gc time)
 ```
+8bec2eb (recursion->iteration):
+```
+1.155526 seconds (2.54 M allocations: 126.229 MiB, 2.95% gc time)
+3.652880 seconds (8.55 M allocations: 424.423 MiB, 4.67% gc time)
+```
 
 ocaml_request_enumeration_PID27008_20190719_T155300
 ---------------------------------------------------
@@ -145,7 +150,7 @@ test command:
 ❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID27008_20190719_T155300.json
 ```
 
-total 12 seconds in julia, <1s in ocaml (see julia_v_ocaml_speedtest2.txt)
+originally total 12 seconds in julia, <1s in ocaml (see julia_v_ocaml_speedtest2.txt)
 
 before any optimizations, `@time for result in generator(args...)` T1:
 ```
@@ -256,6 +261,11 @@ e8d997c:
 2.121765 seconds (10.22 M allocations: 659.305 MiB, 5.85% gc time)
 4.271650 seconds (15.67 M allocations: 930.462 MiB, 5.87% gc time)
 ```
+8bec2eb (recursion->iteration):
+```
+2.516813 seconds (16.06 M allocations: 1.057 GiB, 6.04% gc time)
+4.925367 seconds (21.52 M allocations: 1.323 GiB, 5.56% gc time)
+```
 
 ocaml_request_enumeration_PID27034_20190719_T155304
 ---------------------------------------------------
@@ -265,7 +275,7 @@ command:
 ❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID27034_20190719_T155304.json
 ```
 
->6min in julia, <2s in ocaml (see julia_v_ocaml_speedtest2.txt)
+originally >6min in julia, <2s in ocaml (see julia_v_ocaml_speedtest2.txt)
 
 before any optimizations (note, running with ocaml_request_enumeration_PID27039_20190719_T155306 in parallel), T2:
 ```
@@ -325,6 +335,11 @@ after a3d18f79b5dbaee4c750e2f74a49cac73992213b, T2:
 66.886507 seconds (516.50 M allocations: 36.477 GiB, 8.57% gc time)
 69.265900 seconds (522.36 M allocations: 36.761 GiB, 8.45% gc time)
 ```
+8bec2eb (recursion->iteration):
+```
+77.851674 seconds (989.33 M allocations: 73.903 GiB, 10.42% gc time)
+80.278852 seconds (995.19 M allocations: 74.187 GiB, 10.25% gc time)
+```
 
 ocaml_request_enumeration_PID27039_20190719_T155306
 ---------------------------------------------------
@@ -334,7 +349,7 @@ test command:
 ❯ julia --project bin/main.jl enumerate ../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID27039_20190719_T155306.json
 ```
 
->6min in julia, 8s in ocaml (see julia_v_ocaml_speedtest2.txt)
+originally >6min in julia, 8s in ocaml (see julia_v_ocaml_speedtest2.txt)
 
 before any optimizations (note, running with ocaml_request_enumeration_PID27034_20190719_T155304 in parallel), T2:
 ```

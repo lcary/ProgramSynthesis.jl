@@ -11,13 +11,13 @@ using DreamCore.Utils
         @test getoptional(data, "c") == nothing
         @test getoptional(data, "c", "foo") == "foo"
     end
-    @testset "allequal" begin
-        @test !allequal([1, 2, 3, 4, 5, 6])
-        @test allequal([1, 1, 1, 1, 1, 1])
-        @test !allequal([true, true, false, true, true, true])
-        @test allequal([true, true, true, true, true, true])
-        @test !allequal(["a", "b", "a", "ca", "a", "a"])
-        @test allequal(["a", "a", "a", "a", "a", "a"])
+    @testset "allsame" begin
+        @test !allsame([1, 2, 3, 4, 5, 6])
+        @test allsame([1, 1, 1, 1, 1, 1])
+        @test !allsame([true, true, false, true, true, true])
+        @test allsame([true, true, true, true, true, true])
+        @test !allsame(["a", "b", "a", "ca", "a", "a"])
+        @test allsame(["a", "a", "a", "a", "a", "a"])
     end
     @testset "lse" begin
         z1 = lse([2.0, -2.3, -2.2, -2.32])
