@@ -1,111 +1,111 @@
-2444	./channels.jl:110; (::getfield(Base, Symbol("##597#598")){getfield(DreamCore.Generation, Symbol("##11#12")){Grammar,Bool,ProgramState},Channel{Any}})()
-2159	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:332; #3
-2073	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:372; generator(::Channel{Any}, ::Grammar, ::ProgramState, ::Bool)
-2000	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:174; build_candidates(::Grammar, ::ProgramState)
-1710	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:217; instantiate(::TypeConstructor, ::Context, ::Dict{String,DreamCore.Types.TypeVariable})
-1185	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:180; apply(::TypeConstructor, ::Context)
-942	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:134; get_candidate(::ProgramState, ::DreamCore.Grammars.Production)
-934	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:224; instantiate
+2444	./channels.jl:110; (::getfield(Base, Symbol("##597#598")){getfield(ProgramSynthesis.Generation, Symbol("##11#12")){Grammar,Bool,ProgramState},Channel{Any}})()
+2159	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:332; #3
+2073	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:372; generator(::Channel{Any}, ::Grammar, ::ProgramState, ::Bool)
+2000	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:174; build_candidates(::Grammar, ::ProgramState)
+1710	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:217; instantiate(::TypeConstructor, ::Context, ::Dict{String,ProgramSynthesis.Types.TypeVariable})
+1185	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:180; apply(::TypeConstructor, ::Context)
+942	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:134; get_candidate(::ProgramState, ::ProgramSynthesis.Grammars.Production)
+934	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:224; instantiate
 848	./strings/io.jl:156; string
-712	./array.jl:611; collect(::Base.Generator{Array{AbstractType,1},getfield(DreamCore.Types, Symbol("##3#4")){Context}})
-649	./none:0; (::getfield(DreamCore.Types, Symbol("##3#4")){Context})(::DreamCore.Types.TypeVariable)
-555	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:139; get_candidate(::ProgramState, ::DreamCore.Grammars.Production)
-518	./array.jl:651; collect_to!(::Array{TypeConstructor,1}, ::Base.Generator{Array{AbstractType,1},getfield(DreamCore.Types, Symbol("##3#4")){Context}}, ::Int64, ::Int64)
-515	./generator.jl:47; iterate(::Base.Generator{Array{AbstractType,1},getfield(DreamCore.Types, Symbol("##3#4")){Context}}, ::Int64)
-495	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:135; get_candidate(::ProgramState, ::DreamCore.Grammars.Production)
-466	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:220; instantiate(::TypeConstructor, ::Context, ::Dict{String,DreamCore.Types.TypeVariable})
-452	./array.jl:606; collect(::Base.Generator{Array{AbstractType,1},getfield(DreamCore.Types, Symbol("##3#4")){Context}})
-448	./generator.jl:47; iterate(::Base.Generator{Array{AbstractType,1},getfield(DreamCore.Types, Symbol("##3#4")){Context}})
-433	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:181; apply(::TypeConstructor, ::Context)
-418	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:141; show
-393	./array.jl:630; collect_to_with_first!(::Array{DreamCore.Types.TypeVariable,1}, ::DreamCore.Types.TypeVariable, ::Base.Generator{Array{AbstractType,1},getfield(DreamCore.Types, Symbol("##3#4")){Context}}, ::Int64)
-312	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:197; instantiate
-288	./strings/io.jl:123; print_to_string(::DreamCore.Types.TypeVariable)
-280	./strings/io.jl:31; print(::Base.GenericIOBuffer{Array{UInt8,1}}, ::DreamCore.Types.TypeVariable)
-280	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:52; Type
-279	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:39; split_arguments(::Array{Union{TypeConstructor, TypeVariable},1})
-278	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:139; tostr
+712	./array.jl:611; collect(::Base.Generator{Array{AbstractType,1},getfield(ProgramSynthesis.Types, Symbol("##3#4")){Context}})
+649	./none:0; (::getfield(ProgramSynthesis.Types, Symbol("##3#4")){Context})(::ProgramSynthesis.Types.TypeVariable)
+555	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:139; get_candidate(::ProgramState, ::ProgramSynthesis.Grammars.Production)
+518	./array.jl:651; collect_to!(::Array{TypeConstructor,1}, ::Base.Generator{Array{AbstractType,1},getfield(ProgramSynthesis.Types, Symbol("##3#4")){Context}}, ::Int64, ::Int64)
+515	./generator.jl:47; iterate(::Base.Generator{Array{AbstractType,1},getfield(ProgramSynthesis.Types, Symbol("##3#4")){Context}}, ::Int64)
+495	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:135; get_candidate(::ProgramState, ::ProgramSynthesis.Grammars.Production)
+466	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:220; instantiate(::TypeConstructor, ::Context, ::Dict{String,ProgramSynthesis.Types.TypeVariable})
+452	./array.jl:606; collect(::Base.Generator{Array{AbstractType,1},getfield(ProgramSynthesis.Types, Symbol("##3#4")){Context}})
+448	./generator.jl:47; iterate(::Base.Generator{Array{AbstractType,1},getfield(ProgramSynthesis.Types, Symbol("##3#4")){Context}})
+433	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:181; apply(::TypeConstructor, ::Context)
+418	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:141; show
+393	./array.jl:630; collect_to_with_first!(::Array{ProgramSynthesis.Types.TypeVariable,1}, ::ProgramSynthesis.Types.TypeVariable, ::Base.Generator{Array{AbstractType,1},getfield(ProgramSynthesis.Types, Symbol("##3#4")){Context}}, ::Int64)
+312	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:197; instantiate
+288	./strings/io.jl:123; print_to_string(::ProgramSynthesis.Types.TypeVariable)
+280	./strings/io.jl:31; print(::Base.GenericIOBuffer{Array{UInt8,1}}, ::ProgramSynthesis.Types.TypeVariable)
+280	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:52; Type
+279	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:39; split_arguments(::Array{Union{TypeConstructor, TypeVariable},1})
+278	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:139; tostr
 267	./strings/io.jl:121; print_to_string(::String, ::Vararg{Any,N} where N)
-256	./array.jl:630; collect_to_with_first!(::Array{TypeConstructor,1}, ::TypeConstructor, ::Base.Generator{Array{AbstractType,1},getfield(DreamCore.Types, Symbol("##3#4")){Context}}, ::Int64)
-249	./none:0; (::getfield(DreamCore.Types, Symbol("##3#4")){Context})(::TypeConstructor)
+256	./array.jl:630; collect_to_with_first!(::Array{TypeConstructor,1}, ::TypeConstructor, ::Base.Generator{Array{AbstractType,1},getfield(ProgramSynthesis.Types, Symbol("##3#4")){Context}}, ::Int64)
+249	./none:0; (::getfield(ProgramSynthesis.Types, Symbol("##3#4")){Context})(::TypeConstructor)
 210	./strings/io.jl:123; print_to_string(::String, ::Vararg{Any,N} where N)
 198	./channels.jl:395; iterate(::Channel{Any}, ::Nothing)
 190	./channels.jl:315; take!
 189	./boot.jl:402; Type
 169	./channels.jl:394; iterate
-166	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:380; #8
-158	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:275; unify(::Context, ::TypeConstructor, ::TypeConstructor)
-144	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:134; tostr(::TypeConstructor)
+166	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:380; #8
+158	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:275; unify(::Context, ::TypeConstructor, ::TypeConstructor)
+144	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:134; tostr(::TypeConstructor)
 143	./strings/io.jl:31; print(::Base.GenericIOBuffer{Array{UInt8,1}}, ::TypeConstructor)
-142	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:52; TypeConstructor(::String, ::Array{DreamCore.Types.TypeVariable,1})
-121	./generator.jl:47; collect_to!(::Array{DreamCore.Types.TypeVariable,1}, ::Base.Generator{Array{AbstractType,1},getfield(DreamCore.Types, Symbol("##3#4")){Context}}, ::Int64, ::Int64)
-120	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:39; split_arguments(::Array{AbstractType,1})
+142	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:52; TypeConstructor(::String, ::Array{ProgramSynthesis.Types.TypeVariable,1})
+121	./generator.jl:47; collect_to!(::Array{ProgramSynthesis.Types.TypeVariable,1}, ::Base.Generator{Array{AbstractType,1},getfield(ProgramSynthesis.Types, Symbol("##3#4")){Context}}, ::Int64, ::Int64)
+120	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:39; split_arguments(::Array{AbstractType,1})
 116	./boot.jl:411; Type
-105	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:252; unify(::Context, ::DreamCore.Types.TypeVariable, ::DreamCore.Types.TypeVariable)
+105	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:252; unify(::Context, ::ProgramSynthesis.Types.TypeVariable, ::ProgramSynthesis.Types.TypeVariable)
 105	./tuple.jl:63; indexed_iterate
 104	./channels.jl:109; Type
 103	./channels.jl:327; take_unbuffered(::Channel{Any})
 103	./channels.jl:125; check_channel_state
-99	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:39; split_arguments(::Array{TypeConstructor,1})
-98	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:362; #7
-92	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:251; unify(::Context, ::DreamCore.Types.TypeVariable, ::TypeConstructor)
-89	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:257; unify(::Context, ::TypeConstructor, ::TypeConstructor)
-86	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:52; TypeConstructor(::String, ::Array{TypeConstructor,1})
-83	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:333; appgenerator(::Channel{Any}, ::Grammar, ::DreamCore.Generation.ApplicationState, ::Bool)
+99	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:39; split_arguments(::Array{TypeConstructor,1})
+98	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:362; #7
+92	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:251; unify(::Context, ::ProgramSynthesis.Types.TypeVariable, ::TypeConstructor)
+89	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:257; unify(::Context, ::TypeConstructor, ::TypeConstructor)
+86	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:52; TypeConstructor(::String, ::Array{TypeConstructor,1})
+83	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:333; appgenerator(::Channel{Any}, ::Grammar, ::ProgramSynthesis.Generation.ApplicationState, ::Bool)
 83	./event.jl:255; wait()
 80	./channels.jl:338; take_unbuffered(::Channel{Any})
-77	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:39; split_arguments(::Array{DreamCore.Types.TypeVariable,1})
-72	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:52; TypeConstructor(::String, ::Array{AbstractType,1})
-70	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:381; generator(::Channel{Any}, ::Grammar, ::ProgramState, ::Bool)
-70	./array.jl:606; collect(::Base.Generator{Array{AbstractType,1},typeof(DreamCore.Types.tostr)})
-70	./generator.jl:47; iterate(::Base.Generator{Array{AbstractType,1},typeof(DreamCore.Types.tostr)})
+77	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:39; split_arguments(::Array{ProgramSynthesis.Types.TypeVariable,1})
+72	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:52; TypeConstructor(::String, ::Array{AbstractType,1})
+70	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:381; generator(::Channel{Any}, ::Grammar, ::ProgramState, ::Bool)
+70	./array.jl:606; collect(::Base.Generator{Array{AbstractType,1},typeof(ProgramSynthesis.Types.tostr)})
+70	./generator.jl:47; iterate(::Base.Generator{Array{AbstractType,1},typeof(ProgramSynthesis.Types.tostr)})
 68	./strings/io.jl:277; join
 68	./strings/io.jl:97; sprint
-67	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:380; generator(::Channel{Any}, ::Grammar, ::ProgramState, ::Bool)
-67	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:32; Type
+67	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:380; generator(::Channel{Any}, ::Grammar, ::ProgramState, ::Bool)
+67	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:32; Type
 66	./event.jl:196; try_yieldto(::typeof(Base.ensure_rescheduled), ::Base.RefValue{Task})
 66	./array.jl:705; iterate
 63	./array.jl:474; convert
-63	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:170; apply(::DreamCore.Types.TypeVariable, ::Context)
+63	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:170; apply(::ProgramSynthesis.Types.TypeVariable, ::Context)
 57	./strings/io.jl:156; tostr
 54	./abstractarray.jl:617; similar
 54	./abstractarray.jl:618; similar
-53	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:53; Type
+53	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:53; Type
 52	./array.jl:482; Type
 50	./strings/io.jl:118; print_to_string(::String, ::Vararg{Any,N} where N)
 49	./iobuffer.jl:114; #IOBuffer#316(::Bool, ::Bool, ::Nothing, ::Bool, ::Int64, ::Int64, ::Type)
-48	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:168; apply(::DreamCore.Types.TypeVariable, ::Context)
+48	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:168; apply(::ProgramSynthesis.Types.TypeVariable, ::Context)
 44	./strings/io.jl:97; #sprint#340(::Nothing, ::Int64, ::Function, ::Function, ::Array{String,1}, ::Vararg{Any,N} where N)
 37	./array.jl:598; _array_for
 36	./none:0; (::getfield(Core, Symbol("#kw#Type")))(::NamedTuple{(:sizehint,),Tuple{Int64}}, ::Type{Base.GenericIOBuffer{Array{UInt8,1}}})
-34	./dict.jl:91; Dict{String,DreamCore.Types.TypeVariable}()
+34	./dict.jl:91; Dict{String,ProgramSynthesis.Types.TypeVariable}()
 34	./array.jl:812; _growend!
-33	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:53; TypeConstructor(::String, ::Array{DreamCore.Types.TypeVariable,1})
+33	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:53; TypeConstructor(::String, ::Array{ProgramSynthesis.Types.TypeVariable,1})
 32	./none:0; Type
 31	./sysimg.jl:19; setproperty!(::Task, ::Symbol, ::Nothing)
-31	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:48; TypeConstructor(::String, ::Array{Union{TypeConstructor, TypeVariable},1}, ::Nothing)
-29	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:332; appgenerator(::Channel{Any}, ::Grammar, ::DreamCore.Generation.ApplicationState, ::Bool)
-28	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:53; TypeConstructor(::String, ::Array{AbstractType,1})
+31	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:48; TypeConstructor(::String, ::Array{Union{TypeConstructor, TypeVariable},1}, ::Nothing)
+29	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:332; appgenerator(::Channel{Any}, ::Grammar, ::ProgramSynthesis.Generation.ApplicationState, ::Bool)
+28	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:53; TypeConstructor(::String, ::Array{AbstractType,1})
 27	./task.jl:294; task_done_hook(::Task)
-27	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:215; instantiate(::TypeConstructor, ::Context, ::Dict{String,DreamCore.Types.TypeVariable})
+27	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:215; instantiate(::TypeConstructor, ::Context, ::Dict{String,ProgramSynthesis.Types.TypeVariable})
 27	./strings/string.jl:60; _string_n
 27	./strings/string.jl:71; StringVector
 26	./event.jl:169; yield(::Task, ::Any)
 26	./strings/io.jl:31; print(::Base.GenericIOBuffer{Array{UInt8,1}}, ::Int64)
 26	./boot.jl:353; UnionAll(::TypeVar, ::Any)
 26	./array.jl:854; push!
-25	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:188; build_candidates(::Grammar, ::ProgramState)
-25	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:331; appgenerator(::Channel{Any}, ::Grammar, ::DreamCore.Generation.ApplicationState, ::Bool)
+25	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:188; build_candidates(::Grammar, ::ProgramState)
+25	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:331; appgenerator(::Channel{Any}, ::Grammar, ::ProgramSynthesis.Generation.ApplicationState, ::Bool)
 25	./iobuffer.jl:31; StringVector
-24	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:146; get_variable_candidate(::ProgramState, ::DreamCore.Types.TypeVariable, ::Int64)
+24	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:146; get_variable_candidate(::ProgramState, ::ProgramSynthesis.Types.TypeVariable, ::Int64)
 24	./event.jl:166; yield
 24	./hashing.jl:18; hash
 24	./boot.jl:427; Type
 24	./boot.jl:421; Type
-24	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:48; TypeConstructor(::String, ::Array{DreamCore.Types.TypeVariable,1}, ::Nothing)
-23	./channels.jl:109; #Channel#596(::Type, ::Int64, ::Nothing, ::Type, ::getfield(DreamCore.Generation, Symbol("##8#10")){Grammar,Bool,DreamCore.Generation.ApplicationState})
-23	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:186; build_candidates(::Grammar, ::ProgramState)
-23	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:280; unify(::Context, ::TypeConstructor, ::TypeConstructor)
+24	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:48; TypeConstructor(::String, ::Array{ProgramSynthesis.Types.TypeVariable,1}, ::Nothing)
+23	./channels.jl:109; #Channel#596(::Type, ::Int64, ::Nothing, ::Type, ::getfield(ProgramSynthesis.Generation, Symbol("##8#10")){Grammar,Bool,ProgramSynthesis.Generation.ApplicationState})
+23	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:186; build_candidates(::Grammar, ::ProgramState)
+23	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:280; unify(::Context, ::TypeConstructor, ::TypeConstructor)
 23	./event.jl:199; try_yieldto(::typeof(Base.ensure_rescheduled), ::Base.RefValue{Task})
 23	./channels.jl:197; bind
 23	./compiler/typeinfer.jl:14; typeinf(::Core.Compiler.InferenceState)
@@ -117,81 +117,81 @@
 22	./loading.jl:1038; include_relative(::Module, ::String)
 22	./boot.jl:326; include
 22	./strings/io.jl:101; #sprint#340(::Nothing, ::Int64, ::Function, ::Function, ::Array{String,1}, ::Vararg{Any,N} where N)
-22	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:47; TypeConstructor(::String, ::Array{Union{TypeConstructor, TypeVariable},1}, ::Nothing)
-22	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:218; instantiate(::TypeConstructor, ::Context, ::Dict{String,DreamCore.Types.TypeVariable})
+22	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:47; TypeConstructor(::String, ::Array{Union{TypeConstructor, TypeVariable},1}, ::Nothing)
+22	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:218; instantiate(::TypeConstructor, ::Context, ::Dict{String,ProgramSynthesis.Types.TypeVariable})
 22	./compiler/abstractinterpretation.jl:890; abstract_eval(::Any, ::Array{Any,1}, ::Core.Compiler.InferenceState)
 22	./compiler/abstractinterpretation.jl:805; abstract_eval_call(::Array{Any,1}, ::Array{Any,1}, ::Array{Any,1}, ::Core.Compiler.InferenceState)
-21	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:386; generator(::Channel{Any}, ::Grammar, ::ProgramState, ::Bool)
+21	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:386; generator(::Channel{Any}, ::Grammar, ::ProgramState, ::Bool)
 21	./iterators.jl:138; iterate
 21	./intfuncs.jl:634; string(::Int64)
 21	./intfuncs.jl:642; #string#321(::Int64, ::Int64, ::Function, ::Int64)
 21	./compiler/abstractinterpretation.jl:776; abstract_call(::Any, ::Array{Any,1}, ::Array{Any,1}, ::Array{Any,1}, ::Core.Compiler.InferenceState)
-20	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:338; #4
-20	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:96; to_program_state(::DreamCore.Generation.ApplicationState)
+20	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:338; #4
+20	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:96; to_program_state(::ProgramSynthesis.Generation.ApplicationState)
 20	./array.jl:129; vect
 20	./boot.jl:384; Type
 20	./boot.jl:350; TypeVar(::Symbol, ::Any)
-19	./channels.jl:112; #Channel#596(::Type, ::Int64, ::Nothing, ::Type, ::getfield(DreamCore.Generation, Symbol("##8#10")){Grammar,Bool,DreamCore.Generation.ApplicationState})
+19	./channels.jl:112; #Channel#596(::Type, ::Int64, ::Nothing, ::Type, ::getfield(ProgramSynthesis.Generation, Symbol("##8#10")){Grammar,Bool,ProgramSynthesis.Generation.ApplicationState})
 19	./array.jl:729; getindex
 18	./abstractarray.jl:1866; foreach(::getfield(Base, Symbol("##453#454")){Task}, ::Array{Any,1})
 18	./iterators.jl:141; iterate(::Base.Iterators.Enumerate{Array{AbstractType,1}}, ::Tuple{Int64})
 17	./task.jl:294; (::getfield(Base, Symbol("##453#454")){Task})(::getfield(Base, Symbol("##599#600")){WeakRef})
 17	./channels.jl:197; #599
-17	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:228; returns(::TypeConstructor)
+17	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:228; returns(::TypeConstructor)
 17	./compiler/abstractinterpretation.jl:1135; typeinf_local(::Core.Compiler.InferenceState)
-17	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:53; TypeConstructor(::String, ::Array{TypeConstructor,1})
+17	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:53; TypeConstructor(::String, ::Array{TypeConstructor,1})
 17	./hashing2.jl:179; hash
 17	./sysimg.jl:18; getproperty
-16	./strings/io.jl:121; print_to_string(::DreamCore.Types.TypeVariable)
+16	./strings/io.jl:121; print_to_string(::ProgramSynthesis.Types.TypeVariable)
 15	./task.jl:273; register_taskdone_hook(::Task, ::Function)
-15	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:265; unify(::Context, ::DreamCore.Types.TypeVariable, ::TypeConstructor)
-15	./array.jl:611; collect(::Base.Generator{Array{Union{TypeConstructor, TypeVariable},1},getfield(DreamCore.Types, Symbol("##1#2"))})
+15	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:265; unify(::Context, ::ProgramSynthesis.Types.TypeVariable, ::TypeConstructor)
+15	./array.jl:611; collect(::Base.Generator{Array{Union{TypeConstructor, TypeVariable},1},getfield(ProgramSynthesis.Types, Symbol("##1#2"))})
 14	./iobuffer.jl:409; unsafe_write(::Base.GenericIOBuffer{Array{UInt8,1}}, ::Ptr{UInt8}, ::UInt64)
 14	./compiler/abstractinterpretation.jl:85; abstract_call_gf_by_type(::Any, ::Array{Any,1}, ::Any, ::Core.Compiler.InferenceState)
 14	./compiler/abstractinterpretation.jl:345; abstract_call_method(::Method, ::Any, ::Core.SimpleVector, ::Core.Compiler.InferenceState)
 14	./compiler/typeinfer.jl:497; typeinf_edge(::Method, ::Any, ::Core.SimpleVector, ::Core.Compiler.InferenceState)
 14	./dict.jl:169; hashindex
 14	./generator.jl:32; Type
-13	./channels.jl:111; #Channel#596(::Type, ::Int64, ::Nothing, ::Type, ::getfield(DreamCore.Generation, Symbol("##8#10")){Grammar,Bool,DreamCore.Generation.ApplicationState})
+13	./channels.jl:111; #Channel#596(::Type, ::Int64, ::Nothing, ::Type, ::getfield(ProgramSynthesis.Generation, Symbol("##8#10")){Grammar,Bool,ProgramSynthesis.Generation.ApplicationState})
 13	./channels.jl:236; close_chnl_on_taskdone(::Task, ::WeakRef)
 13	./intfuncs.jl:570; dec(::UInt64, ::Int64, ::Bool)
-13	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:47; TypeConstructor(::String, ::Array{TypeConstructor,1}, ::Nothing)
+13	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:47; TypeConstructor(::String, ::Array{TypeConstructor,1}, ::Nothing)
 13	./dict.jl:546; instantiate
-12	./channels.jl:110; #Channel#596(::Type, ::Int64, ::Nothing, ::Type, ::getfield(DreamCore.Generation, Symbol("##8#10")){Grammar,Bool,DreamCore.Generation.ApplicationState})
-12	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:47; TypeConstructor(::String, ::Array{DreamCore.Types.TypeVariable,1}, ::Nothing)
-12	./array.jl:598; _array_for(::Type{DreamCore.Types.TypeVariable}, ::Array{AbstractType,1}, ::Base.HasShape{1})
-12	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:48; TypeConstructor(::String, ::Array{TypeConstructor,1}, ::Nothing)
-11	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:339; appgenerator(::Channel{Any}, ::Grammar, ::DreamCore.Generation.ApplicationState, ::Bool)
-11	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:122; isequal
-11	./channels.jl:111; #Channel#596(::Type, ::Int64, ::Nothing, ::Type, ::getfield(DreamCore.Generation, Symbol("##3#5")){Grammar,Bool,ProgramState})
-11	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:47; TypeConstructor(::String, ::Array{AbstractType,1}, ::Nothing)
-10	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:253; unify(::Context, ::DreamCore.Types.TypeVariable, ::TypeConstructor)
+12	./channels.jl:110; #Channel#596(::Type, ::Int64, ::Nothing, ::Type, ::getfield(ProgramSynthesis.Generation, Symbol("##8#10")){Grammar,Bool,ProgramSynthesis.Generation.ApplicationState})
+12	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:47; TypeConstructor(::String, ::Array{ProgramSynthesis.Types.TypeVariable,1}, ::Nothing)
+12	./array.jl:598; _array_for(::Type{ProgramSynthesis.Types.TypeVariable}, ::Array{AbstractType,1}, ::Base.HasShape{1})
+12	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:48; TypeConstructor(::String, ::Array{TypeConstructor,1}, ::Nothing)
+11	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:339; appgenerator(::Channel{Any}, ::Grammar, ::ProgramSynthesis.Generation.ApplicationState, ::Bool)
+11	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:122; isequal
+11	./channels.jl:111; #Channel#596(::Type, ::Int64, ::Nothing, ::Type, ::getfield(ProgramSynthesis.Generation, Symbol("##3#5")){Grammar,Bool,ProgramState})
+11	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:47; TypeConstructor(::String, ::Array{AbstractType,1}, ::Nothing)
+10	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:253; unify(::Context, ::ProgramSynthesis.Types.TypeVariable, ::TypeConstructor)
 10	./channels.jl:140; close(::Channel{Any})
-10	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:344; appgenerator(::Channel{Any}, ::Grammar, ::DreamCore.Generation.ApplicationState, ::Bool)
+10	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:344; appgenerator(::Channel{Any}, ::Grammar, ::ProgramSynthesis.Generation.ApplicationState, ::Bool)
 10	./iobuffer.jl:98; #IOBuffer#315
 10	./iobuffer.jl:27; Type
 10	./iobuffer.jl:20; Type
 10	./abstractarray.jl:745; Type
-10	./array.jl:611; collect(::Base.Generator{Array{DreamCore.Types.TypeVariable,1},getfield(DreamCore.Types, Symbol("##1#2"))})
-10	./dict.jl:283; ht_keyindex(::Dict{String,DreamCore.Types.TypeVariable}, ::String)
-10	./array.jl:705; apply(::DreamCore.Types.TypeVariable, ::Context)
-10	./array.jl:610; collect(::Base.Generator{Array{AbstractType,1},getfield(DreamCore.Types, Symbol("##3#4")){Context}})
+10	./array.jl:611; collect(::Base.Generator{Array{ProgramSynthesis.Types.TypeVariable,1},getfield(ProgramSynthesis.Types, Symbol("##1#2"))})
+10	./dict.jl:283; ht_keyindex(::Dict{String,ProgramSynthesis.Types.TypeVariable}, ::String)
+10	./array.jl:705; apply(::ProgramSynthesis.Types.TypeVariable, ::Context)
+10	./array.jl:610; collect(::Base.Generator{Array{AbstractType,1},getfield(ProgramSynthesis.Types, Symbol("##3#4")){Context}})
 10	./tuple.jl:43; iterate
-9	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:181; build_candidates(::Grammar, ::ProgramState)
-9	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:379; generator(::Channel{Any}, ::Grammar, ::ProgramState, ::Bool)
-9	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:86; to_app_state1(::DreamCore.Generation.Candidate, ::ProgramState)
+9	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:181; build_candidates(::Grammar, ::ProgramState)
+9	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:379; generator(::Channel{Any}, ::Grammar, ::ProgramState, ::Bool)
+9	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:86; to_app_state1(::ProgramSynthesis.Generation.Candidate, ::ProgramState)
 9	./channels.jl:387; notify_error(::Channel{Any})
 9	./array.jl:449; zeros
 9	./array.jl:452; zeros
 9	./compiler/typeinfer.jl:613; typeinf_ext(::Core.MethodInstance, ::UInt64)
 9	./compiler/typeinfer.jl:576; typeinf_ext(::Core.MethodInstance, ::Core.Compiler.Params)
-9	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:161; Type
-9	./array.jl:611; collect(::Base.Generator{Array{AbstractType,1},getfield(DreamCore.Types, Symbol("##1#2"))})
-9	./array.jl:611; collect(::Base.Generator{Array{TypeConstructor,1},getfield(DreamCore.Types, Symbol("##1#2"))})
+9	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:161; Type
+9	./array.jl:611; collect(::Base.Generator{Array{AbstractType,1},getfield(ProgramSynthesis.Types, Symbol("##1#2"))})
+9	./array.jl:611; collect(::Base.Generator{Array{TypeConstructor,1},getfield(ProgramSynthesis.Types, Symbol("##1#2"))})
 9	./array.jl:1009; resize!
 8	./task.jl:295; task_done_hook(::Task)
-8	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:247; extend(::Context, ::Int64, ::TypeConstructor)
-8	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:251; unify(::Context, ::TypeConstructor, ::TypeConstructor)
+8	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:247; extend(::Context, ::Int64, ::TypeConstructor)
+8	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:251; unify(::Context, ::TypeConstructor, ::TypeConstructor)
 8	./event.jl:195; try_yieldto(::typeof(Base.ensure_rescheduled), ::Base.RefValue{Task})
 8	./strings/io.jl:167; print
 8	./strings/io.jl:165; write
@@ -201,38 +201,38 @@
 8	./abstractdict.jl:527; Type
 8	./abstractdict.jl:509; Type
 8	./array.jl:821; _deleteend!
-7	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:324; appgenerator(::Channel{Any}, ::Grammar, ::DreamCore.Generation.ApplicationState, ::Bool)
+7	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:324; appgenerator(::Channel{Any}, ::Grammar, ::ProgramSynthesis.Generation.ApplicationState, ::Bool)
 7	./channels.jl:260; put!
-7	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:338; appgenerator(::Channel{Any}, ::Grammar, ::DreamCore.Generation.ApplicationState, ::Bool)
+7	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:338; appgenerator(::Channel{Any}, ::Grammar, ::ProgramSynthesis.Generation.ApplicationState, ::Bool)
 7	./array.jl:604; collect(::Base.Generator{Channel{Any},getfield(Main, Symbol("##5#6"))})
 7	./array.jl:670; grow_to!(::Array{Any,1}, ::Base.Generator{Channel{Any},getfield(Main, Symbol("##5#6"))})
 7	./strings/io.jl:272; join(::Base.GenericIOBuffer{Array{UInt8,1}}, ::Array{String,1}, ::String)
-7	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:152; function_arguments(::TypeConstructor)
-7	./channels.jl:109; #Channel#596(::Type, ::Int64, ::Nothing, ::Type, ::getfield(DreamCore.Generation, Symbol("##3#5")){Grammar,Bool,ProgramState})
-7	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:202; instantiate
-7	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:199; instantiate
+7	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:152; function_arguments(::TypeConstructor)
+7	./channels.jl:109; #Channel#596(::Type, ::Int64, ::Nothing, ::Type, ::getfield(ProgramSynthesis.Generation, Symbol("##3#5")){Grammar,Bool,ProgramState})
+7	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:202; instantiate
+7	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:199; instantiate
 7	./gcutils.jl:87; print(::Base.GenericIOBuffer{Array{UInt8,1}}, ::String)
-7	./strings/io.jl:125; print_to_string(::DreamCore.Types.TypeVariable)
+7	./strings/io.jl:125; print_to_string(::ProgramSynthesis.Types.TypeVariable)
 6	./task.jl:309; task_done_hook(::Task)
-6	./array.jl:611; collect(::Base.Generator{Array{AbstractType,1},typeof(DreamCore.Types.tostr)})
+6	./array.jl:611; collect(::Base.Generator{Array{AbstractType,1},typeof(ProgramSynthesis.Types.tostr)})
 6	./array.jl:767; setindex!
-6	./array.jl:659; collect_to!(::Array{DreamCore.Types.TypeVariable,1}, ::Base.Generator{Array{AbstractType,1},getfield(DreamCore.Types, Symbol("##3#4")){Context}}, ::Int64, ::Int64)
+6	./array.jl:659; collect_to!(::Array{ProgramSynthesis.Types.TypeVariable,1}, ::Base.Generator{Array{AbstractType,1},getfield(ProgramSynthesis.Types, Symbol("##3#4")){Context}}, ::Int64, ::Int64)
 6	./event.jl:187; try_yieldto(::typeof(Base.ensure_rescheduled), ::Base.RefValue{Task})
 6	./generator.jl:47; iterate
 6	./compiler/abstractinterpretation.jl:107; abstract_call_gf_by_type(::Any, ::Array{Any,1}, ::Any, ::Core.Compiler.InferenceState)
 6	./compiler/abstractinterpretation.jl:198; abstract_call_method_with_const_args(::Any, ::Any, ::Array{Any,1}, ::Core.SimpleVector, ::Core.Compiler.InferenceState)
-5	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:363; generator(::Channel{Any}, ::Grammar, ::ProgramState, ::Bool)
-5	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:213; instantiate(::TypeConstructor, ::Context, ::Dict{String,DreamCore.Types.TypeVariable})
-5	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:178; build_candidates(::Grammar, ::ProgramState)
-5	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:252; unify(::Context, ::DreamCore.Types.TypeVariable, ::TypeConstructor)
-5	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:385; generator(::Channel{Any}, ::Grammar, ::ProgramState, ::Bool)
-5	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:323; appgenerator(::Channel{Any}, ::Grammar, ::DreamCore.Generation.ApplicationState, ::Bool)
-5	./channels.jl:112; #Channel#596(::Type, ::Int64, ::Nothing, ::Type, ::getfield(DreamCore.Generation, Symbol("##3#5")){Grammar,Bool,ProgramState})
+5	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:363; generator(::Channel{Any}, ::Grammar, ::ProgramState, ::Bool)
+5	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:213; instantiate(::TypeConstructor, ::Context, ::Dict{String,ProgramSynthesis.Types.TypeVariable})
+5	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:178; build_candidates(::Grammar, ::ProgramState)
+5	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:252; unify(::Context, ::ProgramSynthesis.Types.TypeVariable, ::TypeConstructor)
+5	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:385; generator(::Channel{Any}, ::Grammar, ::ProgramState, ::Bool)
+5	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:323; appgenerator(::Channel{Any}, ::Grammar, ::ProgramSynthesis.Generation.ApplicationState, ::Bool)
+5	./channels.jl:112; #Channel#596(::Type, ::Int64, ::Nothing, ::Type, ::getfield(ProgramSynthesis.Generation, Symbol("##3#5")){Grammar,Bool,ProgramState})
 5	./iobuffer.jl:320; ensureroom
 5	./intfuncs.jl:415; ndigits0z(::UInt64)
 5	./compiler/abstractinterpretation.jl:1121; typeinf_local(::Core.Compiler.InferenceState)
-5	./gcutils.jl:87; print(::Base.GenericIOBuffer{Array{UInt8,1}}, ::DreamCore.Types.TypeVariable)
-5	./dict.jl:382; setindex!(::Dict{String,DreamCore.Types.TypeVariable}, ::DreamCore.Types.TypeVariable, ::String)
+5	./gcutils.jl:87; print(::Base.GenericIOBuffer{Array{UInt8,1}}, ::ProgramSynthesis.Types.TypeVariable)
+5	./dict.jl:382; setindex!(::Dict{String,ProgramSynthesis.Types.TypeVariable}, ::ProgramSynthesis.Types.TypeVariable, ::String)
 5	./strings/string.jl:39; Type
 5	./strings/io.jl:125; print_to_string(::String, ::Vararg{Any,N} where N)
 5	./channels.jl:50; Channel{Any}(::Int64)
@@ -240,41 +240,41 @@
 5	./compiler/optimize.jl:164; optimize(::Core.Compiler.OptimizationState, ::Any)
 5	./array.jl:199; length
 5	./generator.jl:44; iterate
-4	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:111; hash(::TypeConstructor, ::UInt64)
-4	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:252; unify(::Context, ::TypeConstructor, ::TypeConstructor)
-4	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:98; to_program_state(::DreamCore.Generation.ApplicationState)
+4	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:111; hash(::TypeConstructor, ::UInt64)
+4	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:252; unify(::Context, ::TypeConstructor, ::TypeConstructor)
+4	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:98; to_program_state(::ProgramSynthesis.Generation.ApplicationState)
 4	./channels.jl:230; close_chnl_on_taskdone(::Task, ::WeakRef)
 4	./channels.jl:384; notify_error(::Channel{Any}, ::InvalidStateException)
-4	./channels.jl:280; put_unbuffered(::Channel{Any}, ::DreamCore.Generation.Result)
-4	./channels.jl:287; put_unbuffered(::Channel{Any}, ::DreamCore.Generation.Result)
-4	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:216; instantiate(::TypeConstructor, ::Context, ::Dict{String,DreamCore.Types.TypeVariable})
-4	./dict.jl:309; ht_keyindex2!(::Dict{String,DreamCore.Types.TypeVariable}, ::String)
+4	./channels.jl:280; put_unbuffered(::Channel{Any}, ::ProgramSynthesis.Generation.Result)
+4	./channels.jl:287; put_unbuffered(::Channel{Any}, ::ProgramSynthesis.Generation.Result)
+4	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:216; instantiate(::TypeConstructor, ::Context, ::Dict{String,ProgramSynthesis.Types.TypeVariable})
+4	./dict.jl:309; ht_keyindex2!(::Dict{String,ProgramSynthesis.Types.TypeVariable}, ::String)
 4	./promotion.jl:403; ==
-4	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:272; unify(::Context, ::TypeConstructor, ::DreamCore.Types.TypeVariable)
+4	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:272; unify(::Context, ::TypeConstructor, ::ProgramSynthesis.Types.TypeVariable)
 4	./intfuncs.jl:577; dec(::UInt64, ::Int64, ::Bool)
 4	./array.jl:598; _array_for(::Type{Bool}, ::Array{AbstractType,1}, ::Base.HasShape{1})
-4	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:334; appgenerator(::Channel{Any}, ::Grammar, ::DreamCore.Generation.ApplicationState, ::Bool)
-4	./dict.jl:280; ht_keyindex(::Dict{String,DreamCore.Types.TypeVariable}, ::String)
+4	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:334; appgenerator(::Channel{Any}, ::Grammar, ::ProgramSynthesis.Generation.ApplicationState, ::Bool)
+4	./dict.jl:280; ht_keyindex(::Dict{String,ProgramSynthesis.Types.TypeVariable}, ::String)
 4	./tuple.jl:24; getindex
 4	./none:0; #1
-4	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:177; apply(::TypeConstructor, ::Context)
+4	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:177; apply(::TypeConstructor, ::Context)
 4	./refpointer.jl:82; Type
 4	./refvalue.jl:10; Type
 4	./refvalue.jl:8; Type
 3	./channels.jl:260; generator(::Channel{Any}, ::Grammar, ::ProgramState, ::Bool)
-3	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:173; build_candidates(::Grammar, ::ProgramState)
-3	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:109; hash(::TypeConstructor, ::UInt64)
-3	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:211; build_candidates(::Grammar, ::ProgramState)
+3	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:173; build_candidates(::Grammar, ::ProgramState)
+3	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:109; hash(::TypeConstructor, ::UInt64)
+3	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:211; build_candidates(::Grammar, ::ProgramState)
 3	./channels.jl:332; take_unbuffered(::Channel{Any})
-3	./channels.jl:110; #Channel#596(::Type, ::Int64, ::Nothing, ::Type, ::getfield(DreamCore.Generation, Symbol("##3#5")){Grammar,Bool,ProgramState})
-3	./channels.jl:109; #Channel#596(::Type, ::Int64, ::Nothing, ::Type, ::getfield(DreamCore.Generation, Symbol("##4#6")){Grammar,Bool,DreamCore.Generation.ApplicationState})
+3	./channels.jl:110; #Channel#596(::Type, ::Int64, ::Nothing, ::Type, ::getfield(ProgramSynthesis.Generation, Symbol("##3#5")){Grammar,Bool,ProgramState})
+3	./channels.jl:109; #Channel#596(::Type, ::Int64, ::Nothing, ::Type, ::getfield(ProgramSynthesis.Generation, Symbol("##4#6")){Grammar,Bool,ProgramSynthesis.Generation.ApplicationState})
 3	./channels.jl:383; notify_error(::Channel{Any}, ::InvalidStateException)
 3	./abstractarray.jl:1866; foreach(::getfield(Base, Symbol("##617#619")){InvalidStateException}, ::Array{Task,1})
-3	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:212; instantiate(::TypeConstructor, ::Context, ::Dict{String,DreamCore.Types.TypeVariable})
+3	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:212; instantiate(::TypeConstructor, ::Context, ::Dict{String,ProgramSynthesis.Types.TypeVariable})
 3	./strings/io.jl:30; print(::Base.GenericIOBuffer{Array{UInt8,1}}, ::Int64)
-3	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:244; extend(::Context, ::Int64, ::TypeConstructor)
+3	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:244; extend(::Context, ::Int64, ::TypeConstructor)
 3	./array.jl:598; _array_for(::Type{TypeConstructor}, ::Array{AbstractType,1}, ::Base.HasShape{1})
-3	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:154; function_arguments(::TypeConstructor)
+3	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:154; function_arguments(::TypeConstructor)
 3	./array.jl:896; append!
 3	./abstractarray.jl:788; copyto!(::Array{Union{TypeConstructor, TypeVariable},1}, ::Int64, ::Array{AbstractType,1}, ::Int64, ::Int64)
 3	./compiler/ssair/driver.jl:123; run_passes(::Core.CodeInfo, ::Int64, ::Core.Compiler.OptimizationState)
@@ -282,41 +282,41 @@
 3	./iobuffer.jl:112; #IOBuffer#316(::Bool, ::Bool, ::Nothing, ::Bool, ::Int64, ::Int64, ::Type)
 3	./int.jl:427; <
 3	./iobuffer.jl:314; ensureroom
-3	./array.jl:606; collect(::Base.Generator{Array{Union{TypeConstructor, TypeVariable},1},getfield(DreamCore.Types, Symbol("##1#2"))})
-3	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:135; tostr(::TypeConstructor)
+3	./array.jl:606; collect(::Base.Generator{Array{Union{TypeConstructor, TypeVariable},1},getfield(ProgramSynthesis.Types, Symbol("##1#2"))})
+3	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:135; tostr(::TypeConstructor)
 3	./array.jl:896; extend(::Context, ::Int64, ::TypeConstructor)
 3	./abstractarray.jl:788; copyto!(::Array{Tuple{Int64,Union{TypeConstructor, TypeVariable}},1}, ::Int64, ::Array{Tuple{Int64,AbstractType},1}, ::Int64, ::Int64)
-3	./array.jl:630; collect_to_with_first!(::Array{Bool,1}, ::Bool, ::Base.Generator{Array{AbstractType,1},getfield(DreamCore.Types, Symbol("##1#2"))}, ::Int64)
+3	./array.jl:630; collect_to_with_first!(::Array{Bool,1}, ::Bool, ::Base.Generator{Array{AbstractType,1},getfield(ProgramSynthesis.Types, Symbol("##1#2"))}, ::Int64)
 3	./task.jl:93; current_task
 3	./dict.jl:171; isslotempty
-2	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:362; generator(::Channel{Any}, ::Grammar, ::ProgramState, ::Bool)
-2	./channels.jl:110; #Channel#596(::Type, ::Int64, ::Nothing, ::Type, ::getfield(DreamCore.Generation, Symbol("##7#9")){Grammar,Bool,ProgramState})
-2	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:130; get_candidate(::ProgramState, ::DreamCore.Grammars.Production)
-2	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:131; get_candidate(::ProgramState, ::DreamCore.Grammars.Production)
-2	./dict.jl:389; setindex!(::Dict{String,DreamCore.Types.TypeVariable}, ::DreamCore.Types.TypeVariable, ::String)
+2	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:362; generator(::Channel{Any}, ::Grammar, ::ProgramState, ::Bool)
+2	./channels.jl:110; #Channel#596(::Type, ::Int64, ::Nothing, ::Type, ::getfield(ProgramSynthesis.Generation, Symbol("##7#9")){Grammar,Bool,ProgramState})
+2	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:130; get_candidate(::ProgramState, ::ProgramSynthesis.Grammars.Production)
+2	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:131; get_candidate(::ProgramState, ::ProgramSynthesis.Grammars.Production)
+2	./dict.jl:389; setindex!(::Dict{String,ProgramSynthesis.Types.TypeVariable}, ::ProgramSynthesis.Types.TypeVariable, ::String)
 2	./dict.jl:355; _setindex!
 2	./iobuffer.jl:411; unsafe_write(::Base.GenericIOBuffer{Array{UInt8,1}}, ::Ptr{UInt8}, ::UInt64)
 2	./abstractarray.jl:753; copyto!(::IndexLinear, ::Array{AbstractType,1}, ::IndexLinear, ::Array{Union{TypeConstructor, TypeVariable},1})
-2	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:238; unify(::Context, ::DreamCore.Types.TypeVariable, ::TypeConstructor)
-2	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:169; apply(::DreamCore.Types.TypeVariable, ::Context)
-2	./array.jl:606; collect(::Base.Generator{Array{DreamCore.Types.TypeVariable,1},getfield(DreamCore.Types, Symbol("##1#2"))})
+2	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:238; unify(::Context, ::ProgramSynthesis.Types.TypeVariable, ::TypeConstructor)
+2	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:169; apply(::ProgramSynthesis.Types.TypeVariable, ::Context)
+2	./array.jl:606; collect(::Base.Generator{Array{ProgramSynthesis.Types.TypeVariable,1},getfield(ProgramSynthesis.Types, Symbol("##1#2"))})
 2	./strings/io.jl:30; print(::Base.GenericIOBuffer{Array{UInt8,1}}, ::TypeConstructor)
-2	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:274; unify(::Context, ::TypeConstructor, ::TypeConstructor)
+2	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:274; unify(::Context, ::TypeConstructor, ::TypeConstructor)
 2	./operators.jl:185; !=
 2	./strings/string.jl:104; ==
-2	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:252; unify(::Context, ::TypeConstructor, ::DreamCore.Types.TypeVariable)
-2	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:140; get_candidate(::ProgramState, ::DreamCore.Grammars.Production)
+2	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:252; unify(::Context, ::TypeConstructor, ::ProgramSynthesis.Types.TypeVariable)
+2	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:140; get_candidate(::ProgramState, ::ProgramSynthesis.Grammars.Production)
 2	./iterators.jl:139; iterate(::Base.Iterators.Enumerate{Array{AbstractType,1}}, ::Tuple{Int64})
-2	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:195; build_candidates(::Grammar, ::ProgramState)
-2	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:162; final_candidates(::Array{DreamCore.Generation.Candidate,1})
+2	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:195; build_candidates(::Grammar, ::ProgramState)
+2	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:162; final_candidates(::Array{ProgramSynthesis.Generation.Candidate,1})
 2	./channels.jl:52; Channel{Any}(::Int64)
 2	./abstractdict.jl:646; get!(::IdDict{Any,Any}, ::Any, ::Any)
 2	./abstractdict.jl:588; setindex!
 2	./channels.jl:196; bind
 2	./boot.jl:345; Type
 2	./channels.jl:394; iterate(::Channel{Any}, ::Nothing)
-2	./channels.jl:110; #Channel#596(::Type, ::Int64, ::Nothing, ::Type, ::getfield(DreamCore.Generation, Symbol("##4#6")){Grammar,Bool,DreamCore.Generation.ApplicationState})
-2	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:340; appgenerator(::Channel{Any}, ::Grammar, ::DreamCore.Generation.ApplicationState, ::Bool)
+2	./channels.jl:110; #Channel#596(::Type, ::Int64, ::Nothing, ::Type, ::getfield(ProgramSynthesis.Generation, Symbol("##4#6")){Grammar,Bool,ProgramSynthesis.Generation.ApplicationState})
+2	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:340; appgenerator(::Channel{Any}, ::Grammar, ::ProgramSynthesis.Generation.ApplicationState, ::Bool)
 2	./compiler/ssair/passes.jl:694; getfield_elim_pass!(::Core.Compiler.IRCode, ::Core.Compiler.DomTree)
 2	./compiler/ssair/ir.jl:1125; iterate(::Core.Compiler.IncrementalCompact, ::Tuple{Int64,Int64})
 2	./compiler/ssair/ir.jl:961; process_node!
@@ -325,22 +325,22 @@
 2	./compiler/ssair/ir.jl:263; userefs
 2	./channels.jl:384; #617
 2	./none:0; #schedule
-2	./abstractarray.jl:749; copyto!(::IndexLinear, ::Array{AbstractType,1}, ::IndexLinear, ::Array{DreamCore.Types.TypeVariable,1})
-2	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:170; build_candidates(::Grammar, ::ProgramState)
-2	./array.jl:0; instantiate(::TypeConstructor, ::Context, ::Dict{String,DreamCore.Types.TypeVariable})
-2	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:0; instantiate(::TypeConstructor, ::Context, ::Dict{String,DreamCore.Types.TypeVariable})
-2	./strings/io.jl:30; print(::Base.GenericIOBuffer{Array{UInt8,1}}, ::DreamCore.Types.TypeVariable)
+2	./abstractarray.jl:749; copyto!(::IndexLinear, ::Array{AbstractType,1}, ::IndexLinear, ::Array{ProgramSynthesis.Types.TypeVariable,1})
+2	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:170; build_candidates(::Grammar, ::ProgramState)
+2	./array.jl:0; instantiate(::TypeConstructor, ::Context, ::Dict{String,ProgramSynthesis.Types.TypeVariable})
+2	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:0; instantiate(::TypeConstructor, ::Context, ::Dict{String,ProgramSynthesis.Types.TypeVariable})
+2	./strings/io.jl:30; print(::Base.GenericIOBuffer{Array{UInt8,1}}, ::ProgramSynthesis.Types.TypeVariable)
 2	./iobuffer.jl:415; unsafe_write(::Base.GenericIOBuffer{Array{UInt8,1}}, ::Ptr{UInt8}, ::UInt64)
 2	./pointer.jl:105; unsafe_load
 2	./intfuncs.jl:569; dec(::UInt64, ::Int64, ::Bool)
 2	./boot.jl:0; _deleteend!
-2	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:204; instantiate
+2	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:204; instantiate
 2	./gcutils.jl:87; show(::Base.GenericIOBuffer{Array{UInt8,1}}, ::Int64)
 2	./strings/io.jl:117; print_to_string(::String, ::Vararg{Any,N} where N)
 2	./int.jl:53; +
 2	./int.jl:428; <=
-2	./array.jl:601; collect(::Base.Generator{Array{Union{TypeConstructor, TypeVariable},1},getfield(DreamCore.Types, Symbol("##1#2"))})
-2	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:113; hash(::TypeConstructor, ::UInt64)
+2	./array.jl:601; collect(::Base.Generator{Array{Union{TypeConstructor, TypeVariable},1},getfield(ProgramSynthesis.Types, Symbol("##1#2"))})
+2	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:113; hash(::TypeConstructor, ::UInt64)
 2	./strings/substring.jl:180; string(::String, ::String, ::Vararg{String,N} where N)
 2	./strings/io.jl:167; print(::Base.GenericIOBuffer{Array{UInt8,1}}, ::String)
 2	/Applications/Julia-1.1.app/Contents/Resources/julia/lib/julia/sys.dylib:?; ndigits0zpb(::UInt64, ::Int64)
@@ -361,27 +361,27 @@
 2	./compiler/ssair/driver.jl:109; just_construct_ssa(::Core.CodeInfo, ::Array{Any,1}, ::Int64, ::Core.Compiler.OptimizationState)
 2	./compiler/ssair/slot2ssa.jl:866; construct_ssa!(::Core.CodeInfo, ::Array{Any,1}, ::Core.Compiler.IRCode, ::Core.Compiler.DomTree, ::Array{Core.Compiler.SlotInfo,1}, ::Int64, ::Core.SimpleVector, ::Array{Any,1})
 2	./reflection.jl:790; abstract_call_gf_by_type(::Any, ::Array{Any,1}, ::Any, ::Core.Compiler.InferenceState)
-1	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:410; #11
-1	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:368; generator(::Channel{Any}, ::Grammar, ::ProgramState, ::Bool)
+1	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:410; #11
+1	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:368; generator(::Channel{Any}, ::Grammar, ::ProgramState, ::Bool)
 1	./event.jl:256; wait()
 1	./libuv.jl:100; process_events
-1	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:361; generator(::Channel{Any}, ::Grammar, ::ProgramState, ::Bool)
-1	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:47; convert_arrow(::ProgramState)
-1	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:169; build_candidates(::Grammar, ::ProgramState)
-1	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:132; get_candidate(::ProgramState, ::DreamCore.Grammars.Production)
+1	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:361; generator(::Channel{Any}, ::Grammar, ::ProgramState, ::Bool)
+1	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:47; convert_arrow(::ProgramState)
+1	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:169; build_candidates(::Grammar, ::ProgramState)
+1	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:132; get_candidate(::ProgramState, ::ProgramSynthesis.Grammars.Production)
 1	./iobuffer.jl:318; ensureroom
 1	./essentials.jl:355; cconvert
 1	./number.jl:7; convert
 1	./boot.jl:738; Type
 1	./boot.jl:708; toUInt64
 1	./boot.jl:597; check_top_bit
-1	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:203; instantiate
-1	./dict.jl:282; ht_keyindex(::Dict{String,DreamCore.Types.TypeVariable}, ::String)
+1	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:203; instantiate
+1	./dict.jl:282; ht_keyindex(::Dict{String,ProgramSynthesis.Types.TypeVariable}, ::String)
 1	./promotion.jl:364; min
 1	./promotion.jl:415; min
 1	./strings/io.jl:29; print(::Base.GenericIOBuffer{Array{UInt8,1}}, ::Int64)
 1	./iobuffer.jl:0; unsafe_write(::Base.GenericIOBuffer{Array{UInt8,1}}, ::Ptr{UInt8}, ::UInt64)
-1	./strings/io.jl:29; print(::Base.GenericIOBuffer{Array{UInt8,1}}, ::DreamCore.Types.TypeVariable)
+1	./strings/io.jl:29; print(::Base.GenericIOBuffer{Array{UInt8,1}}, ::ProgramSynthesis.Types.TypeVariable)
 1	./iobuffer.jl:410; unsafe_write(::Base.GenericIOBuffer{Array{UInt8,1}}, ::Ptr{UInt8}, ::UInt64)
 1	./array.jl:855; push!
 1	./sysimg.jl:0; getproperty
@@ -393,21 +393,21 @@
 1	./int.jl:434; <
 1	./operators.jl:333; >=
 1	./strings/string.jl:85; is_arrow
-1	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:0; unify(::Context, ::DreamCore.Types.TypeVariable, ::TypeConstructor)
-1	./array.jl:601; collect(::Base.Generator{Array{AbstractType,1},getfield(DreamCore.Types, Symbol("##9#10")){Int64}})
-1	./array.jl:606; collect(::Base.Generator{Array{AbstractType,1},getfield(DreamCore.Types, Symbol("##9#10")){Int64}})
-1	./generator.jl:43; iterate(::Base.Generator{Array{AbstractType,1},getfield(DreamCore.Types, Symbol("##9#10")){Int64}})
-1	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:0; apply(::DreamCore.Types.TypeVariable, ::Context)
+1	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:0; unify(::Context, ::ProgramSynthesis.Types.TypeVariable, ::TypeConstructor)
+1	./array.jl:601; collect(::Base.Generator{Array{AbstractType,1},getfield(ProgramSynthesis.Types, Symbol("##9#10")){Int64}})
+1	./array.jl:606; collect(::Base.Generator{Array{AbstractType,1},getfield(ProgramSynthesis.Types, Symbol("##9#10")){Int64}})
+1	./generator.jl:43; iterate(::Base.Generator{Array{AbstractType,1},getfield(ProgramSynthesis.Types, Symbol("##9#10")){Int64}})
+1	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:0; apply(::ProgramSynthesis.Types.TypeVariable, ::Context)
 1	./hashing2.jl:179; hash(::TypeConstructor, ::UInt64)
 1	./strings/string.jl:85; sizeof
-1	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:119; hash
+1	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:119; hash
 1	./float.jl:565; hash
 1	./float.jl:561; hx
 1	./hashing.jl:62; hash_uint64
 1	./int.jl:442; hash_64_64
-1	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:0; tostr(::TypeConstructor)
-1	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:130; tostr(::TypeConstructor)
-1	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:245; extend(::Context, ::Int64, ::TypeConstructor)
+1	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:0; tostr(::TypeConstructor)
+1	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:130; tostr(::TypeConstructor)
+1	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:245; extend(::Context, ::Int64, ::TypeConstructor)
 1	./pointer.jl:59; unsafe_convert
 1	./pointer.jl:155; +
 1	./strings/io.jl:122; print_to_string(::String, ::Vararg{Any,N} where N)
@@ -417,45 +417,45 @@
 1	./iobuffer.jl:315; ensureroom
 1	/Applications/Julia-1.1.app/Contents/Resources/julia/lib/julia/sys.dylib:?; print(::Base.GenericIOBuffer{Array{UInt8,1}}, ::Int64)
 1	./array.jl:1005; resize!
-1	./array.jl:630; collect_to_with_first!(::Array{String,1}, ::String, ::Base.Generator{Array{AbstractType,1},typeof(DreamCore.Types.tostr)}, ::Int64)
-1	./array.jl:651; collect_to!(::Array{String,1}, ::Base.Generator{Array{AbstractType,1},typeof(DreamCore.Types.tostr)}, ::Int64, ::Int64)
-1	./generator.jl:45; iterate(::Base.Generator{Array{AbstractType,1},typeof(DreamCore.Types.tostr)}, ::Int64)
+1	./array.jl:630; collect_to_with_first!(::Array{String,1}, ::String, ::Base.Generator{Array{AbstractType,1},typeof(ProgramSynthesis.Types.tostr)}, ::Int64)
+1	./array.jl:651; collect_to!(::Array{String,1}, ::Base.Generator{Array{AbstractType,1},typeof(ProgramSynthesis.Types.tostr)}, ::Int64, ::Int64)
+1	./generator.jl:45; iterate(::Base.Generator{Array{AbstractType,1},typeof(ProgramSynthesis.Types.tostr)}, ::Int64)
 1	/Applications/Julia-1.1.app/Contents/Resources/julia/lib/julia/sys.dylib:?; ndigits0zpb(::UInt128, ::Int64)
 1	./tuple.jl:0; print_to_string(::String, ::Vararg{Any,N} where N)
-1	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:253; unify(::Context, ::DreamCore.Types.TypeVariable, ::DreamCore.Types.TypeVariable)
-1	./array.jl:896; extend(::Context, ::Int64, ::DreamCore.Types.TypeVariable)
-1	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:244; extend(::Context, ::Int64, ::DreamCore.Types.TypeVariable)
-1	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:245; extend(::Context, ::Int64, ::DreamCore.Types.TypeVariable)
+1	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:253; unify(::Context, ::ProgramSynthesis.Types.TypeVariable, ::ProgramSynthesis.Types.TypeVariable)
+1	./array.jl:896; extend(::Context, ::Int64, ::ProgramSynthesis.Types.TypeVariable)
+1	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:244; extend(::Context, ::Int64, ::ProgramSynthesis.Types.TypeVariable)
+1	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:245; extend(::Context, ::Int64, ::ProgramSynthesis.Types.TypeVariable)
 1	./abstractarray.jl:783; copyto!(::Array{Tuple{Int64,Union{TypeConstructor, TypeVariable}},1}, ::Int64, ::Array{Tuple{Int64,AbstractType},1}, ::Int64, ::Int64)
-1	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:136; get_candidate(::ProgramState, ::DreamCore.Grammars.Production)
-1	./array.jl:0; collect(::Base.Generator{Array{AbstractType,1},getfield(DreamCore.Types, Symbol("##3#4")){Context}})
-1	./generator.jl:43; iterate(::Base.Generator{Array{AbstractType,1},getfield(DreamCore.Types, Symbol("##3#4")){Context}})
+1	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:136; get_candidate(::ProgramState, ::ProgramSynthesis.Grammars.Production)
+1	./array.jl:0; collect(::Base.Generator{Array{AbstractType,1},getfield(ProgramSynthesis.Types, Symbol("##3#4")){Context}})
+1	./generator.jl:43; iterate(::Base.Generator{Array{AbstractType,1},getfield(ProgramSynthesis.Types, Symbol("##3#4")){Context}})
 1	./sysimg.jl:18; collect_to_with_first!
-1	./generator.jl:44; iterate(::Base.Generator{Array{AbstractType,1},getfield(DreamCore.Types, Symbol("##3#4")){Context}}, ::Int64)
-1	./generator.jl:44; iterate(::Base.Generator{Array{AbstractType,1},getfield(DreamCore.Types, Symbol("##3#4")){Context}})
-1	./array.jl:628; collect_to_with_first!(::Array{TypeConstructor,1}, ::TypeConstructor, ::Base.Generator{Array{AbstractType,1},getfield(DreamCore.Types, Symbol("##3#4")){Context}}, ::Int64)
-1	./generator.jl:43; iterate(::Base.Generator{Array{AbstractType,1},getfield(DreamCore.Types, Symbol("##3#4")){Context}}, ::Int64)
-1	./array.jl:649; collect_to!(::Array{DreamCore.Types.TypeVariable,1}, ::Base.Generator{Array{AbstractType,1},getfield(DreamCore.Types, Symbol("##3#4")){Context}}, ::Int64, ::Int64)
-1	./array.jl:658; collect_to!(::Array{DreamCore.Types.TypeVariable,1}, ::Base.Generator{Array{AbstractType,1},getfield(DreamCore.Types, Symbol("##3#4")){Context}}, ::Int64, ::Int64)
+1	./generator.jl:44; iterate(::Base.Generator{Array{AbstractType,1},getfield(ProgramSynthesis.Types, Symbol("##3#4")){Context}}, ::Int64)
+1	./generator.jl:44; iterate(::Base.Generator{Array{AbstractType,1},getfield(ProgramSynthesis.Types, Symbol("##3#4")){Context}})
+1	./array.jl:628; collect_to_with_first!(::Array{TypeConstructor,1}, ::TypeConstructor, ::Base.Generator{Array{AbstractType,1},getfield(ProgramSynthesis.Types, Symbol("##3#4")){Context}}, ::Int64)
+1	./generator.jl:43; iterate(::Base.Generator{Array{AbstractType,1},getfield(ProgramSynthesis.Types, Symbol("##3#4")){Context}}, ::Int64)
+1	./array.jl:649; collect_to!(::Array{ProgramSynthesis.Types.TypeVariable,1}, ::Base.Generator{Array{AbstractType,1},getfield(ProgramSynthesis.Types, Symbol("##3#4")){Context}}, ::Int64, ::Int64)
+1	./array.jl:658; collect_to!(::Array{ProgramSynthesis.Types.TypeVariable,1}, ::Base.Generator{Array{AbstractType,1},getfield(ProgramSynthesis.Types, Symbol("##3#4")){Context}}, ::Int64, ::Int64)
 1	./array.jl:642; setindex_widen_up_to
-1	./array.jl:649; collect_to!(::Array{Bool,1}, ::Base.Generator{Array{AbstractType,1},getfield(DreamCore.Types, Symbol("##1#2"))}, ::Int64, ::Int64)
-1	./array.jl:606; collect(::Base.Generator{Array{TypeConstructor,1},getfield(DreamCore.Types, Symbol("##1#2"))})
-1	./array.jl:629; collect_to_with_first!(::Array{DreamCore.Types.TypeVariable,1}, ::DreamCore.Types.TypeVariable, ::Base.Generator{Array{AbstractType,1},getfield(DreamCore.Types, Symbol("##3#4")){Context}}, ::Int64)
+1	./array.jl:649; collect_to!(::Array{Bool,1}, ::Base.Generator{Array{AbstractType,1},getfield(ProgramSynthesis.Types, Symbol("##1#2"))}, ::Int64, ::Int64)
+1	./array.jl:606; collect(::Base.Generator{Array{TypeConstructor,1},getfield(ProgramSynthesis.Types, Symbol("##1#2"))})
+1	./array.jl:629; collect_to_with_first!(::Array{ProgramSynthesis.Types.TypeVariable,1}, ::ProgramSynthesis.Types.TypeVariable, ::Base.Generator{Array{AbstractType,1},getfield(ProgramSynthesis.Types, Symbol("##3#4")){Context}}, ::Int64)
 1	./reducedim.jl:657; any
 1	./reducedim.jl:657; #any#558
 1	./reducedim.jl:659; _any
 1	./reduce.jl:619; _any
-1	./array.jl:651; collect_to!(::Array{AbstractType,1}, ::Base.Generator{Array{AbstractType,1},getfield(DreamCore.Types, Symbol("##3#4")){Context}}, ::Int64, ::Int64)
-1	./generator.jl:45; iterate(::Base.Generator{Array{AbstractType,1},getfield(DreamCore.Types, Symbol("##3#4")){Context}}, ::Int64)
-1	./array.jl:606; collect(::Base.Generator{Array{AbstractType,1},getfield(DreamCore.Types, Symbol("##1#2"))})
-1	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:79; Type
-1	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:178; apply(::TypeConstructor, ::Context)
-1	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:253; unify(::Context, ::TypeConstructor, ::TypeConstructor)
-1	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:110; hash(::TypeConstructor, ::UInt64)
+1	./array.jl:651; collect_to!(::Array{AbstractType,1}, ::Base.Generator{Array{AbstractType,1},getfield(ProgramSynthesis.Types, Symbol("##3#4")){Context}}, ::Int64, ::Int64)
+1	./generator.jl:45; iterate(::Base.Generator{Array{AbstractType,1},getfield(ProgramSynthesis.Types, Symbol("##3#4")){Context}}, ::Int64)
+1	./array.jl:606; collect(::Base.Generator{Array{AbstractType,1},getfield(ProgramSynthesis.Types, Symbol("##1#2"))})
+1	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:79; Type
+1	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:178; apply(::TypeConstructor, ::Context)
+1	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:253; unify(::Context, ::TypeConstructor, ::TypeConstructor)
+1	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:110; hash(::TypeConstructor, ::UInt64)
 1	./strings/substring.jl:183; string(::String, ::String, ::Vararg{String,N} where N)
 1	./array.jl:225; __unsafe_string!
-1	./array.jl:611; collect(::Base.Generator{Array{DreamCore.Generation.Candidate,1},getfield(DreamCore.Generation, Symbol("##1#2"))})
-1	/Users/lcary/w/mit/DreamCore.jl/src/utils.jl:30; lse(::Array{Float64,1})
+1	./array.jl:611; collect(::Base.Generator{Array{ProgramSynthesis.Generation.Candidate,1},getfield(ProgramSynthesis.Generation, Symbol("##1#2"))})
+1	/Users/lcary/w/mit/ProgramSynthesis.jl/src/utils.jl:30; lse(::Array{Float64,1})
 1	./reduce.jl:416; sum
 1	./reduce.jl:399; sum
 1	./reduce.jl:205; mapreduce
@@ -466,21 +466,21 @@
 1	./none:0; #5
 1	./special/exp.jl:131; exp(::Float64)
 1	./float.jl:395; +
-1	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:164; final_candidates(::Array{DreamCore.Generation.Candidate,1})
+1	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:164; final_candidates(::Array{ProgramSynthesis.Generation.Candidate,1})
 1	./abstractarray.jl:2018; map
 1	./array.jl:548; collect_similar
 1	./array.jl:624; _collect
-1	./array.jl:630; collect_to_with_first!(::Array{DreamCore.Generation.Candidate,1}, ::DreamCore.Generation.Candidate, ::Base.Generator{Array{DreamCore.Generation.Candidate,1},getfield(DreamCore.Utils, Symbol("##3#4")){typeof(DreamCore.Generation.update_log_probability),Float64}}, ::Int64)
-1	/Users/lcary/w/mit/DreamCore.jl/src/utils.jl:23; #3
-1	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:79; update_log_probability
-1	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:378; generator(::Channel{Any}, ::Grammar, ::ProgramState, ::Bool)
-1	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:216; valid
+1	./array.jl:630; collect_to_with_first!(::Array{ProgramSynthesis.Generation.Candidate,1}, ::ProgramSynthesis.Generation.Candidate, ::Base.Generator{Array{ProgramSynthesis.Generation.Candidate,1},getfield(ProgramSynthesis.Utils, Symbol("##3#4")){typeof(ProgramSynthesis.Generation.update_log_probability),Float64}}, ::Int64)
+1	/Users/lcary/w/mit/ProgramSynthesis.jl/src/utils.jl:23; #3
+1	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:79; update_log_probability
+1	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:378; generator(::Channel{Any}, ::Grammar, ::ProgramState, ::Bool)
+1	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:216; valid
 1	./float.jl:387; -
-1	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:151; function_arguments(::TypeConstructor)
+1	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:151; function_arguments(::TypeConstructor)
 1	./promotion.jl:0; function_arguments(::TypeConstructor)
-1	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:153; function_arguments(::TypeConstructor)
+1	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:153; function_arguments(::TypeConstructor)
 1	./array.jl:854; push!(::Array{Union{TypeConstructor, TypeVariable},1}, ::TypeConstructor)
-1	/Users/lcary/w/mit/DreamCore.jl/src/types.jl:155; function_arguments(::TypeConstructor)
+1	/Users/lcary/w/mit/ProgramSynthesis.jl/src/types.jl:155; function_arguments(::TypeConstructor)
 1	./event.jl:18; Type
 1	./channels.jl:53; Channel{Any}(::Int64)
 1	/Applications/Julia-1.1.app/Contents/Resources/julia/lib/julia/sys.dylib:?; Channel{Any}(::Int64)
@@ -490,28 +490,28 @@
 1	./event.jl:192; try_yieldto(::getfield(Base, Symbol("##612#614")){Channel{Any}}, ::Base.RefValue{Task})
 1	./event.jl:199; try_yieldto(::getfield(Base, Symbol("##612#614")){Channel{Any}}, ::Base.RefValue{Task})
 1	./event.jl:192; try_yieldto(::typeof(Base.ensure_rescheduled), ::Base.RefValue{Task})
-1	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:247; is_symmetrical(::DreamCore.Generation.ApplicationState, ::Program, ::Dict{String,Primitive})
-1	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:343; appgenerator(::Channel{Any}, ::Grammar, ::DreamCore.Generation.ApplicationState, ::Bool)
+1	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:247; is_symmetrical(::ProgramSynthesis.Generation.ApplicationState, ::Program, ::Dict{String,Primitive})
+1	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:343; appgenerator(::Channel{Any}, ::Grammar, ::ProgramSynthesis.Generation.ApplicationState, ::Bool)
 1	./strings/io.jl:113; print_to_string(::String, ::Vararg{Any,N} where N)
-1	./dict.jl:314; ht_keyindex2!(::Dict{String,DreamCore.Types.TypeVariable}, ::String)
+1	./dict.jl:314; ht_keyindex2!(::Dict{String,ProgramSynthesis.Types.TypeVariable}, ::String)
 1	./none:0; #ndigits
 1	./intfuncs.jl:540; #ndigits#320
 1	./intfuncs.jl:512; ndigits0z
 1	./intfuncs.jl:0; ndigits0zpb(::UInt64, ::Int64)
 1	./array.jl:767; collect_to!
 1	./array.jl:729; getindex(::Array{Tuple{Int64,AbstractType},1}, ::Int64)
-1	./array.jl:651; collect_to!(::Array{Bool,1}, ::Base.Generator{Array{AbstractType,1},getfield(DreamCore.Types, Symbol("##1#2"))}, ::Int64, ::Int64)
-1	./channels.jl:260; appgenerator(::Channel{Any}, ::Grammar, ::DreamCore.Generation.ApplicationState, ::Bool)
-1	./channels.jl:286; put_unbuffered(::Channel{Any}, ::DreamCore.Generation.Result)
-1	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:319; appgenerator(::Channel{Any}, ::Grammar, ::DreamCore.Generation.ApplicationState, ::Bool)
-1	./channels.jl:276; put_unbuffered(::Channel{Any}, ::DreamCore.Generation.Result)
-1	./channels.jl:279; put_unbuffered(::Channel{Any}, ::DreamCore.Generation.Result)
-1	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:97; to_program_state(::DreamCore.Generation.ApplicationState)
-1	./channels.jl:115; #Channel#596(::Type, ::Int64, ::Nothing, ::Type, ::getfield(DreamCore.Generation, Symbol("##3#5")){Grammar,Bool,ProgramState})
+1	./array.jl:651; collect_to!(::Array{Bool,1}, ::Base.Generator{Array{AbstractType,1},getfield(ProgramSynthesis.Types, Symbol("##1#2"))}, ::Int64, ::Int64)
+1	./channels.jl:260; appgenerator(::Channel{Any}, ::Grammar, ::ProgramSynthesis.Generation.ApplicationState, ::Bool)
+1	./channels.jl:286; put_unbuffered(::Channel{Any}, ::ProgramSynthesis.Generation.Result)
+1	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:319; appgenerator(::Channel{Any}, ::Grammar, ::ProgramSynthesis.Generation.ApplicationState, ::Bool)
+1	./channels.jl:276; put_unbuffered(::Channel{Any}, ::ProgramSynthesis.Generation.Result)
+1	./channels.jl:279; put_unbuffered(::Channel{Any}, ::ProgramSynthesis.Generation.Result)
+1	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:97; to_program_state(::ProgramSynthesis.Generation.ApplicationState)
+1	./channels.jl:115; #Channel#596(::Type, ::Int64, ::Nothing, ::Type, ::getfield(ProgramSynthesis.Generation, Symbol("##3#5")){Grammar,Bool,ProgramState})
 1	./channels.jl:398; iterate(::Channel{Any}, ::Nothing)
-1	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:247; is_symmetrical(::DreamCore.Generation.ApplicationState, ::DreamCore.Programs.Application, ::Dict{String,Primitive})
-1	/Users/lcary/w/mit/DreamCore.jl/src/generation.jl:255; is_symmetrical(::DreamCore.Generation.ApplicationState, ::Program, ::Dict{String,Primitive})
-1	./channels.jl:111; #Channel#596(::Type, ::Int64, ::Nothing, ::Type, ::getfield(DreamCore.Generation, Symbol("##4#6")){Grammar,Bool,DreamCore.Generation.ApplicationState})
+1	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:247; is_symmetrical(::ProgramSynthesis.Generation.ApplicationState, ::ProgramSynthesis.Programs.Application, ::Dict{String,Primitive})
+1	/Users/lcary/w/mit/ProgramSynthesis.jl/src/generation.jl:255; is_symmetrical(::ProgramSynthesis.Generation.ApplicationState, ::Program, ::Dict{String,Primitive})
+1	./channels.jl:111; #Channel#596(::Type, ::Int64, ::Nothing, ::Type, ::getfield(ProgramSynthesis.Generation, Symbol("##4#6")){Grammar,Bool,ProgramSynthesis.Generation.ApplicationState})
 1	./event.jl:189; try_yieldto(::typeof(Base.ensure_rescheduled), ::Base.RefValue{Task})
 1	./refvalue.jl:32; getindex
 1	./channels.jl:329; take_unbuffered(::Channel{Any})

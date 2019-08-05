@@ -1,7 +1,7 @@
 using Test
 
-using DreamCore
-using DreamCore.Utils
+using ProgramSynthesis
+using ProgramSynthesis.Utils
 
 @testset "utils.jl" begin
     @testset "getoptional" begin

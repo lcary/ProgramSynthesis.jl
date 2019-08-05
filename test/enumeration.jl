@@ -1,8 +1,8 @@
 using Test
 using JSON
 
-using DreamCore
-using DreamCore.Enumeration: Request
+using ProgramSynthesis
+using ProgramSynthesis.Enumeration: Request
 
 get_resource(filename) = abspath(@__DIR__, "resources", filename)
 

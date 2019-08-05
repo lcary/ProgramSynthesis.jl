@@ -1,10 +1,10 @@
 using Test
 using JSON
 
-using DreamCore
-using DreamCore.Primitives: base_primitives
-using DreamCore.Enumeration: Request
-using DreamCore.Generation: generator,
+using ProgramSynthesis
+using ProgramSynthesis.Primitives: base_primitives
+using ProgramSynthesis.Enumeration: Request
+using ProgramSynthesis.Generation: generator,
                             program_generator,
                             Result,
                             Candidate,
@@ -24,8 +24,8 @@ using DreamCore.Generation: generator,
                             LEFT,
                             RIGHT,
                             get_parent
-using DreamCore.Types: tlist, tint, t0, t1, UNIFICATION_FAILURE
-using DreamCore.Utils: lse, allequal
+using ProgramSynthesis.Types: tlist, tint, t0, t1, UNIFICATION_FAILURE
+using ProgramSynthesis.Utils: lse, allequal
 
 get_resource(filename) = abspath(@__DIR__, "resources", filename)
 

@@ -1,4 +1,4 @@
-module DreamCore
+module ProgramSynthesis
 
 include("utils.jl")
 include("types.jl")

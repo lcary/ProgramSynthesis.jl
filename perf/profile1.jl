@@ -1,7 +1,7 @@
 using Statistics
 using Profile
 
-using DreamCore
+using ProgramSynthesis
 
 f = "../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID26993_20190719_T155300.json"
 

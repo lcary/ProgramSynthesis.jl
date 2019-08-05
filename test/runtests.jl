@@ -1,9 +1,9 @@
 #!/usr/bin/env julia
 
-using DreamCore
+using ProgramSynthesis
 using Test
 
-@testset "DreamCore" begin
+@testset "ProgramSynthesis" begin
     include("enumeration.jl")
     include("programs.jl")
     include("parsers.jl")

@@ -4,7 +4,7 @@ Benchmark
 Julia repl w/ `julia --project`:
 ```
 f = "../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID26993_20190719_T155300.json"
-using DreamCore
+using ProgramSynthesis
 run_enumeration(f)
 using BenchmarkTools
 @benchmark run_enumeration(f)

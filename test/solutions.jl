@@ -2,8 +2,8 @@ using Test
 using JSON
 using DataStructures
 
-using DreamCore
-using DreamCore.Solutions: add!, prune!
+using ProgramSynthesis
+using ProgramSynthesis.Solutions: add!, prune!
 
 function get_test_problem()
     filename = abspath(@__DIR__, "resources", "example_request_task_1.json")
@@ -26,7 +26,7 @@ end
 
         @test solution.program == program
         @test priority(solution) == 2.0
-        @test DreamCore.Solutions.json_format(solution) == expect
+        @test ProgramSynthesis.Solutions.json_format(solution) == expect
     end
     @testset "test SolutionSet" begin
         solutions = SolutionSet(1)

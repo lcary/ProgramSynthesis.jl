@@ -2,7 +2,7 @@ using Statistics
 
 using BenchmarkTools
 
-using DreamCore
+using ProgramSynthesis
 
 f = "../dreamcoder-testing/messages/messages/ocaml_request_enumeration_PID27008_20190719_T155300.json"
 

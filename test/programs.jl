@@ -1,9 +1,9 @@
 using Test
 using JSON
 
-using DreamCore
-using DreamCore.Parsers: parse_program
-using DreamCore.Programs: evaluate,
+using ProgramSynthesis
+using ProgramSynthesis.Parsers: parse_program
+using ProgramSynthesis.Programs: evaluate,
                           DeBruijnIndex,
                           try_solve,
                           Abstraction,
@@ -17,9 +17,9 @@ using DreamCore.Programs: evaluate,
                           INDEX,
                           INVENTED,
                           Unknown
-using DreamCore.Problems: Problem
-using DreamCore.Primitives: base_primitives
-using DreamCore.Types: arrow, t0, t1, tlist
+using ProgramSynthesis.Problems: Problem
+using ProgramSynthesis.Primitives: base_primitives
+using ProgramSynthesis.Types: arrow, t0, t1, tlist
 
 @testset "programs.jl" begin
     @testset "parse primitive programs" begin
